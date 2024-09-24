@@ -1,12 +1,17 @@
 import { assertSignedEvent } from '@ceramic-sdk/events'
+import type { CeramicClient } from '@ceramic-sdk/http-client'
+import { StreamID, randomCID } from '@ceramic-sdk/identifiers'
 import {
   MODEL_RESOURCE_URI,
   type ModelDefinition,
+  STREAM_TYPE_ID,
 } from '@ceramic-sdk/model-protocol'
 import { EthereumDID } from '@ceramic-sdk/test-utils'
 import { getAuthenticatedDID } from '@didtools/key-did'
+import { jest } from '@jest/globals'
+import { DID } from 'dids'
 
-import { createInitEvent } from '../src/index.js'
+import { ModelClient, createInitEvent } from '../src/index.js'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
@@ -67,5 +72,44 @@ describe('createInitEvent()', () => {
   test('returns the signed event', async () => {
     const event = await createInitEvent(authenticatedDID, testModelV1)
     assertSignedEvent(event)
+  })
+})
+
+describe('ModelClient', () => {
+  describe('_getDID() method', () => {
+    test('throws if no DID is provided or set in the constructor', () => {
+      const client = new ModelClient({ ceramic: 'http://localhost:5101' })
+      expect(() => client._getDID()).toThrow('Missing DID')
+    })
+
+    test('returns the DID set in the constructor', () => {
+      const client = new ModelClient({
+        ceramic: 'http://localhost:5101',
+        did: authenticatedDID,
+      })
+      expect(client._getDID()).toBe(authenticatedDID)
+    })
+
+    test('returns the DID provided as argument', async () => {
+      const did = new DID()
+      const client = new ModelClient({
+        ceramic: 'http://localhost:5101',
+        did: authenticatedDID,
+      })
+      expect(client._getDID(did)).toBe(did)
+    })
+  })
+
+  describe('postDeterministicInit() method', () => {
+    test('posts the signed event and returns the model StreamID', async () => {
+      const postEventType = jest.fn(() => randomCID())
+      const ceramic = { postEventType } as unknown as CeramicClient
+      const client = new ModelClient({ ceramic, did: authenticatedDID })
+
+      const id = await client.postModel(testModelV1)
+      expect(postEventType).toHaveBeenCalled()
+      expect(id).toBeInstanceOf(StreamID)
+      expect(id.type).toBe(STREAM_TYPE_ID)
+    })
   })
 })

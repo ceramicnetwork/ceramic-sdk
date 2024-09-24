@@ -22,9 +22,9 @@
     "@mantine/hooks": "^7.12.2",
     "@tabler/icons-react": "^3.17.0",
     "@tanstack/react-query": "^5.56.2",
-    "@tanstack/react-router": "^1.58.3",
+    "@tanstack/react-router": "^1.58.7",
     "codeco": "^1.4.3",
-    "jotai": "^2.9.2",
+    "jotai": "^2.10.0",
     "multiformats": "^13.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
@@ -32,15 +32,15 @@
   "devDependencies": {
     "@ceramic-sdk/model-client": "workspace:^",
     "@ceramic-sdk/model-instance-client": "workspace:^",
-    "@tanstack/router-devtools": "^1.58.3",
+    "@tanstack/router-devtools": "^1.58.7",
     "@tanstack/router-plugin": "^1.58.4",
-    "@types/react": "^18.3.7",
+    "@types/react": "^18.3.8",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "postcss": "^8.4.47",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
     "typescript": "^5.6.2",
-    "vite": "^5.4.6"
+    "vite": "^5.4.7"
   }
 }

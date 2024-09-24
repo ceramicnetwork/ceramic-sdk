@@ -1,13 +1,18 @@
 import { assertSignedEvent, getSignedEventPayload } from '@ceramic-sdk/events'
+import type { CeramicClient } from '@ceramic-sdk/http-client'
 import { CommitID, randomCID, randomStreamID } from '@ceramic-sdk/identifiers'
 import {
   DataInitEventPayload,
   DocumentDataEventPayload,
+  STREAM_TYPE_ID,
 } from '@ceramic-sdk/model-instance-protocol'
 import { getAuthenticatedDID } from '@didtools/key-did'
+import { jest } from '@jest/globals'
+import { DID } from 'dids'
 import { equals } from 'uint8arrays'
 
 import {
+  DocumentClient,
   createDataEvent,
   createInitEvent,
   getDeterministicInitEvent,
@@ -128,5 +133,87 @@ describe('createDataEvent()', () => {
     })
     const payload = await getSignedEventPayload(DocumentDataEventPayload, event)
     expect(payload.header).toEqual({ shouldIndex: true })
+  })
+})
+
+describe('DocumentClient', () => {
+  describe('_getDID() method', () => {
+    test('throws if no DID is provided or set in the constructor', () => {
+      const client = new DocumentClient({ ceramic: 'http://localhost:5101' })
+      expect(() => client._getDID()).toThrow('Missing DID')
+    })
+
+    test('returns the DID set in the constructor', () => {
+      const client = new DocumentClient({
+        ceramic: 'http://localhost:5101',
+        did: authenticatedDID,
+      })
+      expect(client._getDID()).toBe(authenticatedDID)
+    })
+
+    test('returns the DID provided as argument', async () => {
+      const did = new DID()
+      const client = new DocumentClient({
+        ceramic: 'http://localhost:5101',
+        did: authenticatedDID,
+      })
+      expect(client._getDID(did)).toBe(did)
+    })
+  })
+
+  describe('postDeterministicInit() method', () => {
+    test('posts the deterministic init event and returns the MID init CommitID', async () => {
+      const postEventType = jest.fn(() => randomCID())
+      const ceramic = { postEventType } as unknown as CeramicClient
+      const client = new DocumentClient({ ceramic, did: authenticatedDID })
+
+      const id = await client.postDeterministicInit({
+        controller: 'did:key:123',
+        model: randomStreamID(),
+      })
+      expect(postEventType).toHaveBeenCalled()
+      expect(id).toBeInstanceOf(CommitID)
+      expect(id.baseID.type).toBe(STREAM_TYPE_ID)
+    })
+  })
+
+  describe('postSignedInit() method', () => {
+    test('posts the signed init event and returns the MID init CommitID', async () => {
+      const postEventType = jest.fn(() => randomCID())
+      const ceramic = { postEventType } as unknown as CeramicClient
+      const client = new DocumentClient({ ceramic, did: authenticatedDID })
+
+      const id = await client.postSignedInit({
+        content: { test: true },
+        controller: authenticatedDID,
+        model: randomStreamID(),
+      })
+      expect(postEventType).toHaveBeenCalled()
+      expect(id).toBeInstanceOf(CommitID)
+      expect(id.baseID.type).toBe(STREAM_TYPE_ID)
+    })
+  })
+
+  describe('postData() method', () => {
+    test('posts the signed data event and returns the CommitID', async () => {
+      const postEventType = jest.fn(() => randomCID())
+      const ceramic = { postEventType } as unknown as CeramicClient
+      const client = new DocumentClient({ ceramic, did: authenticatedDID })
+
+      const initCommitID = await client.postSignedInit({
+        content: { test: 0 },
+        controller: authenticatedDID,
+        model: randomStreamID(),
+      })
+      expect(postEventType).toHaveBeenCalledTimes(1)
+
+      const dataCommitID = await client.postData({
+        controller: authenticatedDID,
+        currentID: initCommitID,
+        newContent: { test: 1 },
+      })
+      expect(dataCommitID).toBeInstanceOf(CommitID)
+      expect(dataCommitID.baseID.equals(initCommitID.baseID)).toBe(true)
+    })
   })
 })

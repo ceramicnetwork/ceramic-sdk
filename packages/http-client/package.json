@@ -33,13 +33,13 @@
   },
   "dependencies": {
     "@ceramic-sdk/events": "workspace:^",
-    "openapi-fetch": "^0.12.0"
+    "openapi-fetch": "^0.12.2"
   },
   "devDependencies": {
     "cartonne": "^3.0.1",
     "codeco": "^1.4.3",
     "multiformats": "^13.3.0",
-    "openapi-typescript": "^7.4.0",
+    "openapi-typescript": "^7.4.1",
     "type-fest": "^4.26.1"
   },
   "jest": {
