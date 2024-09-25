@@ -45,12 +45,18 @@ export const streamIDAsString = new Type<StreamID, string, string>(
 /**
  * codeco codec for StreamID encoded as Uint8Array bytes.
  */
-export const streamIDAsBytes = new Type<StreamID, Uint8Array, Uint8Array>(
+export const streamIDAsBytes = new Type<
+  StreamID,
+  Uint8Array,
+  StreamID | Uint8Array
+>(
   'StreamID-as-bytes',
   (input: unknown): input is StreamID => StreamID.isInstance(input),
-  (input: Uint8Array, context: Context) => {
+  (input: StreamID | Uint8Array, context: Context) => {
     try {
-      return context.success(StreamID.fromBytes(input))
+      return context.success(
+        StreamID.isInstance(input) ? input : StreamID.fromBytes(input),
+      )
     } catch {
       return context.failure()
     }

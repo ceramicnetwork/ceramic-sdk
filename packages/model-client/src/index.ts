@@ -2,12 +2,14 @@ import {
   type PartialInitEventHeader,
   SignedEvent,
   createSignedInitEvent,
+  eventToContainer,
 } from '@ceramic-sdk/events'
 import { type CeramicClient, getCeramicClient } from '@ceramic-sdk/http-client'
-import type { StreamID } from '@ceramic-sdk/identifiers'
+import { StreamID } from '@ceramic-sdk/identifiers'
 import {
   MODEL,
   type ModelDefinition,
+  ModelInitEventPayload,
   assertValidModelContent,
   getModelStreamID,
   validateController,
@@ -58,11 +60,30 @@ export class ModelClient {
     throw new Error('Missing DID')
   }
 
-  async postModel(
+  async getInitEvent(streamID: StreamID | string): Promise<SignedEvent> {
+    const id =
+      typeof streamID === 'string' ? StreamID.fromString(streamID) : streamID
+    return await this.#ceramic.getEventType(SignedEvent, id.cid.toString())
+  }
+
+  async getPayload(
+    streamID: StreamID | string,
+    verifier?: DID,
+  ): Promise<ModelInitEventPayload> {
+    const event = await this.getInitEvent(streamID)
+    const container = await eventToContainer(
+      this._getDID(verifier),
+      ModelInitEventPayload,
+      event,
+    )
+    return container.payload
+  }
+
+  async postDefinition(
     definition: ModelDefinition,
-    useDID?: DID,
+    signer?: DID,
   ): Promise<StreamID> {
-    const did = this._getDID(useDID)
+    const did = this._getDID(signer)
     const event = await createInitEvent(did, definition)
     const cid = await this.#ceramic.postEventType(SignedEvent, event)
     return getModelStreamID(cid)

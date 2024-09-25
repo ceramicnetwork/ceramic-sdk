@@ -4,6 +4,7 @@ import { CommitID, randomCID, randomStreamID } from '@ceramic-sdk/identifiers'
 import {
   DataInitEventPayload,
   DocumentDataEventPayload,
+  DocumentEvent,
   STREAM_TYPE_ID,
 } from '@ceramic-sdk/model-instance-protocol'
 import { getAuthenticatedDID } from '@didtools/key-did'
@@ -158,6 +159,24 @@ describe('DocumentClient', () => {
         did: authenticatedDID,
       })
       expect(client._getDID(did)).toBe(did)
+    })
+  })
+
+  describe('getEvent() method', () => {
+    test('gets a MID event by commit ID', async () => {
+      const streamID = randomStreamID()
+      const docEvent = getDeterministicInitEvent(streamID, 'did:key:123')
+      const getEventType = jest.fn(() => docEvent)
+      const ceramic = { getEventType } as unknown as CeramicClient
+      const client = new DocumentClient({ ceramic, did: authenticatedDID })
+
+      const commitID = CommitID.fromStream(streamID)
+      const event = await client.getEvent(CommitID.fromStream(streamID))
+      expect(getEventType).toHaveBeenCalledWith(
+        DocumentEvent,
+        commitID.cid.toString(),
+      )
+      expect(event).toBe(docEvent)
     })
   })
 

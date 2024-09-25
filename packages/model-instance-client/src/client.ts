@@ -1,7 +1,10 @@
 import { InitEventPayload, SignedEvent } from '@ceramic-sdk/events'
 import { type CeramicClient, getCeramicClient } from '@ceramic-sdk/http-client'
 import { CommitID, type StreamID } from '@ceramic-sdk/identifiers'
-import { getStreamID } from '@ceramic-sdk/model-instance-protocol'
+import {
+  DocumentEvent,
+  getStreamID,
+} from '@ceramic-sdk/model-instance-protocol'
 import type { DIDString } from '@didtools/codecs'
 import type { DID } from 'dids'
 
@@ -54,6 +57,15 @@ export class DocumentClient {
       return this.#did
     }
     throw new Error('Missing DID')
+  }
+
+  async getEvent(commitID: CommitID | string): Promise<DocumentEvent> {
+    const id =
+      typeof commitID === 'string' ? CommitID.fromString(commitID) : commitID
+    return (await this.#ceramic.getEventType(
+      DocumentEvent,
+      id.commit.toString(),
+    )) as DocumentEvent
   }
 
   async postDeterministicInit(
