@@ -1,10 +1,10 @@
 import { InitEventPayload, SignedEvent } from '@ceramic-sdk/events'
-import { type CeramicClient, getCeramicClient } from '@ceramic-sdk/http-client'
 import { CommitID, type StreamID } from '@ceramic-sdk/identifiers'
 import {
   DocumentEvent,
   getStreamID,
 } from '@ceramic-sdk/model-instance-protocol'
+import { StreamClient } from '@ceramic-sdk/stream-client'
 import type { DIDString } from '@didtools/codecs'
 import type { DID } from 'dids'
 
@@ -35,34 +35,11 @@ export type PostDataParams<T extends UnknownContent = UnknownContent> = Omit<
   controller?: DID
 }
 
-export type DocumentClientParams = {
-  ceramic: CeramicClient | string
-  did?: DID
-}
-
-export class DocumentClient {
-  #ceramic: CeramicClient
-  #did?: DID
-
-  constructor(params: DocumentClientParams) {
-    this.#ceramic = getCeramicClient(params.ceramic)
-    this.#did = params.did
-  }
-
-  _getDID(provided?: DID): DID {
-    if (provided != null) {
-      return provided
-    }
-    if (this.#did != null) {
-      return this.#did
-    }
-    throw new Error('Missing DID')
-  }
-
+export class DocumentClient extends StreamClient {
   async getEvent(commitID: CommitID | string): Promise<DocumentEvent> {
     const id =
       typeof commitID === 'string' ? CommitID.fromString(commitID) : commitID
-    return (await this.#ceramic.getEventType(
+    return (await this.ceramic.getEventType(
       DocumentEvent,
       id.commit.toString(),
     )) as DocumentEvent
@@ -76,7 +53,7 @@ export class DocumentClient {
       params.controller,
       params.uniqueValue,
     )
-    const cid = await this.#ceramic.postEventType(InitEventPayload, event)
+    const cid = await this.ceramic.postEventType(InitEventPayload, event)
     return CommitID.fromStream(getStreamID(cid))
   }
 
@@ -86,9 +63,9 @@ export class DocumentClient {
     const { controller, ...rest } = params
     const event = await createInitEvent({
       ...rest,
-      controller: this._getDID(controller),
+      controller: this.getDID(controller),
     })
-    const cid = await this.#ceramic.postEventType(SignedEvent, event)
+    const cid = await this.ceramic.postEventType(SignedEvent, event)
     return CommitID.fromStream(getStreamID(cid))
   }
 
@@ -98,9 +75,9 @@ export class DocumentClient {
     const { controller, ...rest } = params
     const event = await createDataEvent({
       ...rest,
-      controller: this._getDID(controller),
+      controller: this.getDID(controller),
     })
-    const cid = await this.#ceramic.postEventType(SignedEvent, event)
+    const cid = await this.ceramic.postEventType(SignedEvent, event)
     return CommitID.fromStream(params.currentID.baseID, cid)
   }
 }

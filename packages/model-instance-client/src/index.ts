@@ -1,5 +1,4 @@
 export {
-  type DocumentClientParams,
   DocumentClient,
   type PostDataParams,
   type PostDeterministicInitParams,

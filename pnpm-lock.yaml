@@ -252,16 +252,19 @@ importers:
       '@ceramic-sdk/events':
         specifier: workspace:^
         version: link:../events
-      '@ceramic-sdk/http-client':
-        specifier: workspace:^
-        version: link:../http-client
       '@ceramic-sdk/identifiers':
         specifier: workspace:^
         version: link:../identifiers
       '@ceramic-sdk/model-protocol':
         specifier: workspace:^
         version: link:../model-protocol
+      '@ceramic-sdk/stream-client':
+        specifier: workspace:^
+        version: link:../stream-client
     devDependencies:
+      '@ceramic-sdk/http-client':
+        specifier: workspace:^
+        version: link:../http-client
       '@ceramic-sdk/test-utils':
         specifier: workspace:^
         version: link:../test-utils
@@ -317,15 +320,15 @@ importers:
       '@ceramic-sdk/events':
         specifier: workspace:^
         version: link:../events
-      '@ceramic-sdk/http-client':
-        specifier: workspace:^
-        version: link:../http-client
       '@ceramic-sdk/identifiers':
         specifier: workspace:^
         version: link:../identifiers
       '@ceramic-sdk/model-instance-protocol':
         specifier: workspace:^
         version: link:../model-instance-protocol
+      '@ceramic-sdk/stream-client':
+        specifier: workspace:^
+        version: link:../stream-client
       '@didtools/codecs':
         specifier: ^3.0.0
         version: 3.0.0
@@ -333,6 +336,9 @@ importers:
         specifier: ^3.1.1
         version: 3.1.1
     devDependencies:
+      '@ceramic-sdk/http-client':
+        specifier: workspace:^
+        version: link:../http-client
       '@didtools/key-did':
         specifier: ^1.0.0
         version: 1.0.0(typescript@5.6.2)(zod@3.23.8)
@@ -444,6 +450,16 @@ importers:
       multiformats:
         specifier: ^13.3.0
         version: 13.3.0
+
+  packages/stream-client:
+    dependencies:
+      '@ceramic-sdk/http-client':
+        specifier: workspace:^
+        version: link:../http-client
+    devDependencies:
+      dids:
+        specifier: ^5.0.2
+        version: 5.0.2(typescript@5.6.2)(zod@3.23.8)
 
   packages/test-utils:
     dependencies:

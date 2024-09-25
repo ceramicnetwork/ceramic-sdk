@@ -4,7 +4,6 @@ import {
   createSignedInitEvent,
   eventToContainer,
 } from '@ceramic-sdk/events'
-import { type CeramicClient, getCeramicClient } from '@ceramic-sdk/http-client'
 import { StreamID } from '@ceramic-sdk/identifiers'
 import {
   MODEL,
@@ -14,6 +13,7 @@ import {
   getModelStreamID,
   validateController,
 } from '@ceramic-sdk/model-protocol'
+import { StreamClient } from '@ceramic-sdk/stream-client'
 import type { DID } from 'dids'
 
 const header: PartialInitEventHeader = { model: MODEL, sep: 'model' }
@@ -35,35 +35,11 @@ export async function createInitEvent(
   return event
 }
 
-export type ModelClientParams = {
-  ceramic: CeramicClient | string
-  did?: DID
-}
-
-export class ModelClient {
-  #ceramic: CeramicClient
-  #did?: DID
-
-  constructor(params: ModelClientParams) {
-    this.#ceramic = getCeramicClient(params.ceramic)
-    this.#did = params.did
-  }
-
-  /** @private */
-  _getDID(provided?: DID): DID {
-    if (provided != null) {
-      return provided
-    }
-    if (this.#did != null) {
-      return this.#did
-    }
-    throw new Error('Missing DID')
-  }
-
+export class ModelClient extends StreamClient {
   async getInitEvent(streamID: StreamID | string): Promise<SignedEvent> {
     const id =
       typeof streamID === 'string' ? StreamID.fromString(streamID) : streamID
-    return await this.#ceramic.getEventType(SignedEvent, id.cid.toString())
+    return await this.ceramic.getEventType(SignedEvent, id.cid.toString())
   }
 
   async getPayload(
@@ -72,7 +48,7 @@ export class ModelClient {
   ): Promise<ModelInitEventPayload> {
     const event = await this.getInitEvent(streamID)
     const container = await eventToContainer(
-      this._getDID(verifier),
+      this.getDID(verifier),
       ModelInitEventPayload,
       event,
     )
@@ -83,9 +59,9 @@ export class ModelClient {
     definition: ModelDefinition,
     signer?: DID,
   ): Promise<StreamID> {
-    const did = this._getDID(signer)
+    const did = this.getDID(signer)
     const event = await createInitEvent(did, definition)
-    const cid = await this.#ceramic.postEventType(SignedEvent, event)
+    const cid = await this.ceramic.postEventType(SignedEvent, event)
     return getModelStreamID(cid)
   }
 }

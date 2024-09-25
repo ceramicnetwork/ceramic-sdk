@@ -32,11 +32,12 @@
   },
   "dependencies": {
     "@ceramic-sdk/events": "workspace:^",
-    "@ceramic-sdk/http-client": "workspace:^",
     "@ceramic-sdk/identifiers": "workspace:^",
-    "@ceramic-sdk/model-protocol": "workspace:^"
+    "@ceramic-sdk/model-protocol": "workspace:^",
+    "@ceramic-sdk/stream-client": "workspace:^"
   },
   "devDependencies": {
+    "@ceramic-sdk/http-client": "workspace:^",
     "@ceramic-sdk/test-utils": "workspace:^",
     "@didtools/key-did": "^1.0.0",
     "dids": "^5.0.2"

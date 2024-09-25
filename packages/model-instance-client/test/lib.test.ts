@@ -9,7 +9,6 @@ import {
 } from '@ceramic-sdk/model-instance-protocol'
 import { getAuthenticatedDID } from '@didtools/key-did'
 import { jest } from '@jest/globals'
-import { DID } from 'dids'
 import { equals } from 'uint8arrays'
 
 import {
@@ -138,30 +137,6 @@ describe('createDataEvent()', () => {
 })
 
 describe('DocumentClient', () => {
-  describe('_getDID() method', () => {
-    test('throws if no DID is provided or set in the constructor', () => {
-      const client = new DocumentClient({ ceramic: 'http://localhost:5101' })
-      expect(() => client._getDID()).toThrow('Missing DID')
-    })
-
-    test('returns the DID set in the constructor', () => {
-      const client = new DocumentClient({
-        ceramic: 'http://localhost:5101',
-        did: authenticatedDID,
-      })
-      expect(client._getDID()).toBe(authenticatedDID)
-    })
-
-    test('returns the DID provided as argument', async () => {
-      const did = new DID()
-      const client = new DocumentClient({
-        ceramic: 'http://localhost:5101',
-        did: authenticatedDID,
-      })
-      expect(client._getDID(did)).toBe(did)
-    })
-  })
-
   describe('getEvent() method', () => {
     test('gets a MID event by commit ID', async () => {
       const streamID = randomStreamID()

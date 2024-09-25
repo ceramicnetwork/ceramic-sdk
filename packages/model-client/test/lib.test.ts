@@ -9,7 +9,6 @@ import {
 import { EthereumDID } from '@ceramic-sdk/test-utils'
 import { getAuthenticatedDID } from '@didtools/key-did'
 import { jest } from '@jest/globals'
-import { DID } from 'dids'
 
 import { ModelClient, createInitEvent } from '../src/index.js'
 
@@ -76,30 +75,6 @@ describe('createInitEvent()', () => {
 })
 
 describe('ModelClient', () => {
-  describe('_getDID() method', () => {
-    test('throws if no DID is provided or set in the constructor', () => {
-      const client = new ModelClient({ ceramic: 'http://localhost:5101' })
-      expect(() => client._getDID()).toThrow('Missing DID')
-    })
-
-    test('returns the DID set in the constructor', () => {
-      const client = new ModelClient({
-        ceramic: 'http://localhost:5101',
-        did: authenticatedDID,
-      })
-      expect(client._getDID()).toBe(authenticatedDID)
-    })
-
-    test('returns the DID provided as argument', async () => {
-      const did = new DID()
-      const client = new ModelClient({
-        ceramic: 'http://localhost:5101',
-        did: authenticatedDID,
-      })
-      expect(client._getDID(did)).toBe(did)
-    })
-  })
-
   describe('getInitEvent() method', () => {
     test('gets the model init event', async () => {
       const modelEvent = await createInitEvent(authenticatedDID, testModelV1)
