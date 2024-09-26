@@ -17,7 +17,3 @@ Decode the provided `input` as a TimeEvent. Throws if decoding fails.
 ## Returns
 
 [`TimeEvent`](../type-aliases/TimeEvent.md)
-
-## Defined in
-
-[packages/events/src/codecs.ts:89](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/events/src/codecs.ts#L89)

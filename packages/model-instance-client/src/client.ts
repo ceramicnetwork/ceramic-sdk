@@ -36,6 +36,7 @@ export type PostDataParams<T extends UnknownContent = UnknownContent> = Omit<
 }
 
 export class DocumentClient extends StreamClient {
+  /** Get a DocumentEvent based on its commit ID */
   async getEvent(commitID: CommitID | string): Promise<DocumentEvent> {
     const id =
       typeof commitID === 'string' ? CommitID.fromString(commitID) : commitID
@@ -45,6 +46,7 @@ export class DocumentClient extends StreamClient {
     )) as DocumentEvent
   }
 
+  /** Post a deterministic init event and return its commit ID */
   async postDeterministicInit(
     params: PostDeterministicInitParams,
   ): Promise<CommitID> {
@@ -57,6 +59,7 @@ export class DocumentClient extends StreamClient {
     return CommitID.fromStream(getStreamID(cid))
   }
 
+  /** Post a signed (non-deterministic) init event and return its commit ID */
   async postSignedInit<T extends UnknownContent = UnknownContent>(
     params: PostSignedInitParams<T>,
   ): Promise<CommitID> {
@@ -69,6 +72,7 @@ export class DocumentClient extends StreamClient {
     return CommitID.fromStream(getStreamID(cid))
   }
 
+  /** Post a data event and return its commit ID */
   async postData<T extends UnknownContent = UnknownContent>(
     params: PostDataParams<T>,
   ): Promise<CommitID> {

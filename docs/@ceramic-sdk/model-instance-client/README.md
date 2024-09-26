@@ -6,10 +6,17 @@
 
 # @ceramic-sdk/model-instance-client
 
+## Classes
+
+- [DocumentClient](classes/DocumentClient.md)
+
 ## Type Aliases
 
 - [CreateDataEventParams](type-aliases/CreateDataEventParams.md)
 - [CreateInitEventParams](type-aliases/CreateInitEventParams.md)
+- [PostDataParams](type-aliases/PostDataParams.md)
+- [PostDeterministicInitParams](type-aliases/PostDeterministicInitParams.md)
+- [PostSignedInitParams](type-aliases/PostSignedInitParams.md)
 - [UnknownContent](type-aliases/UnknownContent.md)
 
 ## Functions

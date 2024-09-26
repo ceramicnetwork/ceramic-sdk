@@ -42,19 +42,11 @@ new StreamID('MID', cid);
 new StreamID(3, cid);
 ```
 
-#### Defined in
-
-[stream-id.ts:106](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L106)
-
 ## Properties
 
 ### \_tag
 
 > `protected` `readonly` **\_tag**: `symbol` = `TAG`
-
-#### Defined in
-
-[stream-id.ts:73](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L73)
 
 ***
 
@@ -82,10 +74,6 @@ error on invalid input
 
 StreamID#bytes
 
-#### Defined in
-
-[stream-id.ts:78](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L78)
-
 ***
 
 ### fromString()
@@ -109,10 +97,6 @@ string representation of StreamID, be it base36-encoded string or URL.
  - StreamID#toString
  - StreamID#toUrl
 
-#### Defined in
-
-[stream-id.ts:79](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L79)
-
 ## Accessors
 
 ### baseID
@@ -126,8 +110,6 @@ Copy of self. Exists to maintain compatibility with CommitID.
 [`StreamID`](StreamID.md)
 
 #### Defined in
-
-[stream-id.ts:170](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L170)
 
 ***
 
@@ -143,8 +125,6 @@ Bytes representation of StreamID.
 
 #### Defined in
 
-[stream-id.ts:160](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L160)
-
 ***
 
 ### cid
@@ -158,8 +138,6 @@ Genesis commits CID
 `CID`\<`unknown`, `number`, `number`, `Version`\>
 
 #### Defined in
-
-[stream-id.ts:152](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L152)
 
 ***
 
@@ -175,8 +153,6 @@ Stream type code
 
 #### Defined in
 
-[stream-id.ts:137](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L137)
-
 ***
 
 ### typeName
@@ -190,8 +166,6 @@ Stream type name
 `"tile"` \| `"caip10-link"` \| `"model"` \| `"MID"` \| `"UNLOADABLE"`
 
 #### Defined in
-
-[stream-id.ts:145](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L145)
 
 ## Methods
 
@@ -209,10 +183,6 @@ Compare equality with another StreamID.
 
 `boolean`
 
-#### Defined in
-
-[stream-id.ts:177](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L177)
-
 ***
 
 ### toString()
@@ -225,10 +195,6 @@ Encode the StreamID into a string.
 
 `string`
 
-#### Defined in
-
-[stream-id.ts:187](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L187)
-
 ***
 
 ### toUrl()
@@ -240,10 +206,6 @@ Encode the StreamID into a base36 url.
 #### Returns
 
 `string`
-
-#### Defined in
-
-[stream-id.ts:195](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L195)
 
 ***
 
@@ -278,10 +240,6 @@ const streamId = StreamID.fromPayload('MID', {
 });
 ```
 
-#### Defined in
-
-[stream-id.ts:130](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L130)
-
 ***
 
 ### isInstance()
@@ -295,7 +253,3 @@ const streamId = StreamID.fromPayload('MID', {
 #### Returns
 
 `instance is StreamID`
-
-#### Defined in
-
-[stream-id.ts:84](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L84)

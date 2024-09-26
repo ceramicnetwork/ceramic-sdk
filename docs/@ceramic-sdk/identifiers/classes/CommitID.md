@@ -41,19 +41,11 @@ new StreamID(<type>, <CID>|<cidStr>)
 new StreamID(<type>, <CID>|<cidStr>, <CommitCID>|<CommitCidStr>)
 ```
 
-#### Defined in
-
-[commit-id.ts:121](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/commit-id.ts#L121)
-
 ## Properties
 
 ### \_tag
 
 > `protected` `readonly` **\_tag**: `symbol` = `TAG`
-
-#### Defined in
-
-[commit-id.ts:79](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/commit-id.ts#L79)
 
 ***
 
@@ -81,10 +73,6 @@ error on invalid input
 
 CommitID#bytes
 
-#### Defined in
-
-[commit-id.ts:85](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/commit-id.ts#L85)
-
 ***
 
 ### fromString()
@@ -108,10 +96,6 @@ string representation of CommitID, be it base36-encoded string or URL.
  - CommitID#toString
  - CommitID#toUrl
 
-#### Defined in
-
-[commit-id.ts:86](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/commit-id.ts#L86)
-
 ## Accessors
 
 ### baseID
@@ -125,8 +109,6 @@ Construct StreamID, no commit information included
 [`StreamID`](StreamID.md)
 
 #### Defined in
-
-[commit-id.ts:137](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/commit-id.ts#L137)
 
 ***
 
@@ -142,8 +124,6 @@ Bytes representation
 
 #### Defined in
 
-[commit-id.ts:175](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/commit-id.ts#L175)
-
 ***
 
 ### cid
@@ -157,8 +137,6 @@ Genesis CID
 `CID`\<`unknown`, `number`, `number`, `Version`\>
 
 #### Defined in
-
-[commit-id.ts:159](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/commit-id.ts#L159)
 
 ***
 
@@ -174,8 +152,6 @@ Commit CID
 
 #### Defined in
 
-[commit-id.ts:167](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/commit-id.ts#L167)
-
 ***
 
 ### type
@@ -190,8 +166,6 @@ Stream type code
 
 #### Defined in
 
-[commit-id.ts:144](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/commit-id.ts#L144)
-
 ***
 
 ### typeName
@@ -205,8 +179,6 @@ Stream type name
 `"tile"` \| `"caip10-link"` \| `"model"` \| `"MID"` \| `"UNLOADABLE"`
 
 #### Defined in
-
-[commit-id.ts:152](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/commit-id.ts#L152)
 
 ## Methods
 
@@ -224,10 +196,6 @@ Compare equality with another CommitID.
 
 `boolean`
 
-#### Defined in
-
-[commit-id.ts:186](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/commit-id.ts#L186)
-
 ***
 
 ### toString()
@@ -240,10 +208,6 @@ Encode the CommitID into a string.
 
 `string`
 
-#### Defined in
-
-[commit-id.ts:198](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/commit-id.ts#L198)
-
 ***
 
 ### toUrl()
@@ -255,10 +219,6 @@ Encode the StreamID into a base36 url
 #### Returns
 
 `string`
-
-#### Defined in
-
-[commit-id.ts:206](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/commit-id.ts#L206)
 
 ***
 
@@ -278,10 +238,6 @@ Construct new CommitID for a given stream and commit
 
 [`CommitID`](CommitID.md)
 
-#### Defined in
-
-[commit-id.ts:91](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/commit-id.ts#L91)
-
 ***
 
 ### isInstance()
@@ -295,7 +251,3 @@ Construct new CommitID for a given stream and commit
 #### Returns
 
 `instance is CommitID`
-
-#### Defined in
-
-[commit-id.ts:101](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/commit-id.ts#L101)

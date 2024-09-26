@@ -19,7 +19,3 @@ Create a signed init event for a model using the provided DID and model definiti
 ## Returns
 
 `Promise`\<[`SignedEvent`](../../events/type-aliases/SignedEvent.md)\>
-
-## Defined in
-
-[model-client/src/index.ts:19](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/model-client/src/index.ts#L19)

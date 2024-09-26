@@ -20,10 +20,6 @@
 
 [`CeramicClient`](CeramicClient.md)
 
-#### Defined in
-
-[packages/http-client/src/index.ts:40](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/http-client/src/index.ts#L40)
-
 ## Accessors
 
 ### api
@@ -37,8 +33,6 @@ OpenAPI client used internally, provides low-level access to the HTTP APIs expos
 `Client`\<`paths`, \`$\{string\}/$\{string\}\`\>
 
 #### Defined in
-
-[packages/http-client/src/index.ts:49](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/http-client/src/index.ts#L49)
 
 ## Methods
 
@@ -72,10 +66,6 @@ Multibase encoding of event data.
 
 Multibase encoding of event root CID bytes.
 
-#### Defined in
-
-[packages/http-client/src/index.ts:54](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/http-client/src/index.ts#L54)
-
 ***
 
 ### getEventCAR()
@@ -92,10 +82,6 @@ Get the CAR-encoded event for the given event CID
 
 `Promise`\<`CAR`\>
 
-#### Defined in
-
-[packages/http-client/src/index.ts:74](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/http-client/src/index.ts#L74)
-
 ***
 
 ### getEventData()
@@ -111,10 +97,6 @@ Get the string-encoded event for the given event CID
 #### Returns
 
 `Promise`\<`string`\>
-
-#### Defined in
-
-[packages/http-client/src/index.ts:65](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/http-client/src/index.ts#L65)
 
 ***
 
@@ -148,10 +130,6 @@ An array of events. For now, the event data payload is empty.
 
 The token/highwater mark to used as resumeAt on a future request
 
-#### Defined in
-
-[packages/http-client/src/index.ts:89](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/http-client/src/index.ts#L89)
-
 ***
 
 ### getEventType()
@@ -174,10 +152,6 @@ Get the decoded event for the given decoder and event CID
 
 `Promise`\<`Payload` \| `MapIn`\<`RequiredProps`\<`object`\>, `$TypeOf`\> & `MapIn`\<`OptionalProps`\<`object`\>, `$TypeOf`\>\>
 
-#### Defined in
-
-[packages/http-client/src/index.ts:80](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/http-client/src/index.ts#L80)
-
 ***
 
 ### getVersion()
@@ -198,10 +172,6 @@ Get information about the Ceramic One server version
 
 Version of the Ceramic node
 
-#### Defined in
-
-[packages/http-client/src/index.ts:102](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/http-client/src/index.ts#L102)
-
 ***
 
 ### postEvent()
@@ -218,10 +188,6 @@ Post a string-encoded event to the server
 
 `Promise`\<`void`\>
 
-#### Defined in
-
-[packages/http-client/src/index.ts:111](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/http-client/src/index.ts#L111)
-
 ***
 
 ### postEventCAR()
@@ -237,10 +203,6 @@ Post a CAR-encoded event to the server
 #### Returns
 
 `Promise`\<`CID`\<`unknown`, `number`, `number`, `Version`\>\>
-
-#### Defined in
-
-[packages/http-client/src/index.ts:119](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/http-client/src/index.ts#L119)
 
 ***
 
@@ -260,10 +222,6 @@ Encode and post an event to the server
 
 `Promise`\<`CID`\<`unknown`, `number`, `number`, `Version`\>\>
 
-#### Defined in
-
-[packages/http-client/src/index.ts:125](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/http-client/src/index.ts#L125)
-
 ***
 
 ### registerInterestModel()
@@ -279,7 +237,3 @@ Register interest in streams using the given model stream ID
 #### Returns
 
 `Promise`\<`void`\>
-
-#### Defined in
-
-[packages/http-client/src/index.ts:131](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/http-client/src/index.ts#L131)

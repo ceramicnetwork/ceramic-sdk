@@ -36,12 +36,14 @@ export async function createInitEvent(
 }
 
 export class ModelClient extends StreamClient {
+  /** Get the signed init event of a Model based on its stream ID */
   async getInitEvent(streamID: StreamID | string): Promise<SignedEvent> {
     const id =
       typeof streamID === 'string' ? StreamID.fromString(streamID) : streamID
     return await this.ceramic.getEventType(SignedEvent, id.cid.toString())
   }
 
+  /** Get the init event payload of a Model based on its stream ID */
   async getPayload(
     streamID: StreamID | string,
     verifier?: DID,
@@ -55,6 +57,7 @@ export class ModelClient extends StreamClient {
     return container.payload
   }
 
+  /** Post a Model definition and return its stream ID */
   async postDefinition(
     definition: ModelDefinition,
     signer?: DID,

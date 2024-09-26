@@ -17,7 +17,3 @@ Get the StreamID of a ModelInstanceDocument based on its init CID
 ## Returns
 
 [`StreamID`](../../identifiers/classes/StreamID.md)
-
-## Defined in
-
-[packages/model-instance-protocol/src/stream-id.ts:29](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/model-instance-protocol/src/stream-id.ts#L29)

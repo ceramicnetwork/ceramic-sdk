@@ -14,7 +14,3 @@ Represents the relationship between an instance of this model and the controller
 overrides the old one)
 - 'none' means there can be no instance associated to an account (for interfaces notably)
 - 'set' means there can be only one instance of this model per account and value of the specified content 'fields'
-
-## Defined in
-
-[packages/model-protocol/src/codecs.ts:135](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/model-protocol/src/codecs.ts#L135)

@@ -23,7 +23,3 @@ Decode the payload of a signed event using the provided decoder
 ## Returns
 
 `Promise`\<`Payload`\>
-
-## Defined in
-
-[packages/events/src/signing.ts:53](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/events/src/signing.ts#L53)

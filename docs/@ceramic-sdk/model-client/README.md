@@ -6,6 +6,10 @@
 
 # @ceramic-sdk/model-client
 
+## Classes
+
+- [ModelClient](classes/ModelClient.md)
+
 ## Functions
 
 - [createInitEvent](functions/createInitEvent.md)
