@@ -39,8 +39,7 @@
     "object-sizeof": "^2.6.4"
   },
   "devDependencies": {
-    "multiformats": "^13.3.0",
-    "ts-essentials": "^10.0.2"
+    "multiformats": "^13.3.0"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],
