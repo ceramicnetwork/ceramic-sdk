@@ -15,8 +15,10 @@ const startContainer = (withContainer as unknown as { default: StartContainer })
 
 type RunningContainer = Awaited<ReturnType<StartContainer>>
 
+const DEFAULT_PORT = 5101
+
 const DEFAULT_ENVIRONMENT = {
-  CERAMIC_ONE_BIND_ADDRESS: '0.0.0.0:5001',
+  CERAMIC_ONE_BIND_ADDRESS: '0.0.0.0:5101',
   CERAMIC_ONE_LOG_FORMAT: 'single-line',
   CERAMIC_ONE_NETWORK: 'in-memory',
   CERAMIC_ONE_STORE_DIR: '/',
@@ -66,8 +68,8 @@ export default class CeramicEnvironment extends NodeEnvironment {
       containerName:
         options.containerName ??
         `ceramic-${Math.random().toString(36).slice(6)}`,
-      internalPort: options.internalPort ?? 5001,
-      defaultExternalPort: options.defaultExternalPort ?? 5001,
+      internalPort: options.internalPort ?? DEFAULT_PORT,
+      defaultExternalPort: options.defaultExternalPort ?? DEFAULT_PORT,
       externalPort: options.externalPort,
       connectTimeoutSeconds: options.connectTimeoutSeconds ?? 10,
       environment,
