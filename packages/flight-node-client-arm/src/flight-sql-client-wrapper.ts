@@ -4,6 +4,6 @@ const require = createRequire(import.meta.url);
 
 const {
   createFlightSqlClient,
-} = require("@lakehouse-rs/flight-sql-client-darwin-arm64");
+} = require("@lakehouse-rs/flight-sql-client");
 
 export { createFlightSqlClient };
