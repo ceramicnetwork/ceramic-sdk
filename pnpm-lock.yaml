@@ -190,6 +190,9 @@ importers:
       '@ceramic-sdk/events':
         specifier: workspace:^
         version: link:../events
+      '@ceramic-sdk/identifiers':
+        specifier: workspace:^
+        version: link:../identifiers
       '@lakehouse-rs/flight-sql-client-darwin-arm64':
         specifier: ^0.0.10
         version: 0.0.10
