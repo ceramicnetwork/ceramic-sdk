@@ -1,4 +1,5 @@
 import { CeramicFlightSqlClient, ClientOptions } from '../src'
+import { FlightSqlClient, createFlightSqlClient } from '@ceramic-sdk/flight-sql-client-node'
 
 const OPTIONS: ClientOptions = {
   headers: new Array(),
@@ -37,5 +38,13 @@ describe('fligh sql', () => {
     console.log(JSON.stringify(withSchema))
     console.log(JSON.stringify(noSchema))
     expect(withSchema).not.toBe(noSchema)
+  })
+})
+
+describe('local flight sql', () => {
+  test('works?', async () => {
+    const client = await createFlightSqlClient(OPTIONS)
+    const data = await client.preparedStatement('SELECT * from conclusion_feed where stream_type = $1', new Array(['$1', '3']))
+    console.log(data)
   })
 })
