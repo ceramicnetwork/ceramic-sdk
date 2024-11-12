@@ -8,7 +8,6 @@ export interface KeyValue {
 }
 
 export interface ClientOptions {
-
   headers: Array<KeyValue>;
   /** Username */
   username?: string;
@@ -73,14 +72,14 @@ export interface GetTablesOptions {
   includeSchema?: boolean;
 }
 
-export interface FlightSqlClient {
+interface FlightSqlClient {
   query(query: string): Promise<Buffer>;
   getCatalogs(): Promise<Buffer>;
   getDbSchemas(options: GetDbSchemasOptions): Promise<Buffer>;
   getTables(options: GetTablesOptions): Promise<Buffer>;
 }
 
-export class FlightSQLClient {
+export class CeramicFlightSqlClient {
   private client: Promise<FlightSqlClient>;
 
   constructor(params: ClientOptions) {
@@ -100,10 +99,25 @@ export class FlightSQLClient {
     return await this.client;
   }
 
-  // Query method using the initialized client
   async runQuery(query: string): Promise<Table> {
-    const client = await this.getClient(); // Ensures client is ready
+    const client = await this.getClient();
     const queryBuffer = await client.query(query);
     return tableFromIPC(queryBuffer);
+  }
+
+  async catalogs(): Promise<Table> {
+    const client = await this.getClient();
+    const buffer = await client.getCatalogs();
+    return tableFromIPC(buffer);
+  }
+  async dbSchemas(opts: GetDbSchemasOptions): Promise<Table> {
+    const client = await this.getClient();
+    const buffer = await client.getDbSchemas(opts);
+    return tableFromIPC(buffer);
+  }
+  async tables(opts: GetTablesOptions): Promise<Table> {
+    const client = await this.getClient();
+    const buffer = await client.getTables(opts);
+    return tableFromIPC(buffer);
   }
 }
