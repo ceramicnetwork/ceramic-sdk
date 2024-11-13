@@ -7,7 +7,10 @@
   "formatter": {
     "enabled": true,
     "formatWithErrors": false,
-    "ignore": [],
+    "ignore": [
+      "./packages/flight-sql-client-node/index.d.ts",
+      "./packages/flight-sql-client-node/index.js"
+    ],
     "indentStyle": "space",
     "lineWidth": 80
   },
@@ -23,7 +26,11 @@
   },
   "linter": {
     "enabled": true,
-    "ignore": ["*.gen.ts"],
+    "ignore": [
+      "*.gen.ts",
+      "./packages/flight-sql-client-node/index.d.ts",
+      "./packages/flight-sql-client-node/index.js"
+    ],
     "rules": {
       "recommended": true
     }

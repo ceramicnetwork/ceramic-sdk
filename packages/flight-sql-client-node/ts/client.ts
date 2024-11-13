@@ -1,43 +1,57 @@
-import { Table, tableFromIPC, Utf8, Binary, TypeMap } from 'apache-arrow';
+import {
+  type Binary,
+  type Table,
+  type TypeMap,
+  type Utf8,
+  tableFromIPC,
+} from 'apache-arrow'
 
-import { FlightSqlClient, GetTablesOptions, GetDbSchemasOptions, ClientOptions, createFlightSqlClient } from '../index';
+import {
+  type ClientOptions,
+  type FlightSqlClient,
+  type GetDbSchemasOptions,
+  type GetTablesOptions,
+  createFlightSqlClient,
+} from '../index'
 
 type catalogsSchema = {
-  catalog_name: Utf8;
-};
+  catalog_name: Utf8
+}
 
 type dbSchemasSchema = {
-  catalog_name: Utf8;
-  db_schema_name: Utf8;
-};
+  catalog_name: Utf8
+  db_schema_name: Utf8
+}
 
 type tablesSchema = {
-  catalog_name: Utf8;
-  db_schema_name: Utf8;
-  table_name: Utf8;
-  table_type: Utf8;
-  table_schema?: Binary;
-};
+  catalog_name: Utf8
+  db_schema_name: Utf8
+  table_name: Utf8
+  table_type: Utf8
+  table_schema?: Binary
+}
 
 export class ArrowFlightClient {
   static async fromOptions(options: ClientOptions): Promise<ArrowFlightClient> {
-    const client = await createFlightSqlClient(options);
-    return new ArrowFlightClient(client);
+    const client = await createFlightSqlClient(options)
+    return new ArrowFlightClient(client)
   }
 
   constructor(private readonly client: FlightSqlClient) {}
 
+  // biome-ignore lint/suspicious/noExplicitAny: matching arrow table definition
   async query<T extends TypeMap = any>(query: string): Promise<Table<T>> {
-    const result = await this.client.query(query);
-    return tableFromIPC(result);
+    const result = await this.client.query(query)
+    return tableFromIPC(result)
   }
 
+  // biome-ignore lint/suspicious/noExplicitAny: matching arrow table definition
   async preparedStatement<T extends TypeMap = any>(
     query: string,
     parameters: Array<[string, string]>,
   ): Promise<Table<T>> {
-    const result = await this.client.preparedStatement(query, parameters);
-    return tableFromIPC(result);
+    const result = await this.client.preparedStatement(query, parameters)
+    return tableFromIPC(result)
   }
 
   /**
@@ -49,8 +63,8 @@ export class ArrowFlightClient {
    * @returns Arrow Table with catalog information
    */
   async getCatalogs(): Promise<Table<catalogsSchema>> {
-    const result = await this.client.getCatalogs();
-    return tableFromIPC(result);
+    const result = await this.client.getCatalogs()
+    return tableFromIPC(result)
   }
 
   /**
@@ -62,9 +76,11 @@ export class ArrowFlightClient {
    * @param options filters to limit returned schemas
    * @returns Arrow Table with schema information
    */
-  async getDbSchemas(options: GetDbSchemasOptions): Promise<Table<dbSchemasSchema>> {
-    const result = await this.client.getDbSchemas(options);
-    return tableFromIPC(result);
+  async getDbSchemas(
+    options: GetDbSchemasOptions,
+  ): Promise<Table<dbSchemasSchema>> {
+    const result = await this.client.getDbSchemas(options)
+    return tableFromIPC(result)
   }
 
   /**
@@ -74,7 +90,7 @@ export class ArrowFlightClient {
    * @returns Arrow Table with table information
    */
   async getTables(options: GetTablesOptions): Promise<Table<tablesSchema>> {
-    const result = await this.client.getTables(options);
-    return tableFromIPC(result);
+    const result = await this.client.getTables(options)
+    return tableFromIPC(result)
   }
 }

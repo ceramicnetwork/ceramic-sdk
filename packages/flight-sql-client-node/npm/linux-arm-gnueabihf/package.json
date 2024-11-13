@@ -1,16 +1,10 @@
 {
-  "name": "@lakehouse-rs/flight-sql-client-linux-arm-gnueabihf",
-  "version": "0.0.10",
-  "os": [
-    "linux"
-  ],
-  "cpu": [
-    "arm"
-  ],
+  "name": "@ceramic-sdk/flight-sql-client-linux-arm-gnueabihf",
+  "version": "0.0.1",
+  "os": ["linux"],
+  "cpu": ["arm"],
   "main": "flight-sql-client.linux-arm-gnueabihf.node",
-  "files": [
-    "flight-sql-client.linux-arm-gnueabihf.node"
-  ],
+  "files": ["flight-sql-client.linux-arm-gnueabihf.node"],
   "description": "A FlightSQL client for  Node.js",
   "keywords": [
     "napi-rs",
@@ -18,7 +12,9 @@
     "N-API",
     "Rust",
     "node-addon",
-    "node-addon-api"
+    "node-addon-api",
+    "ceramic",
+    "FlightSQL"
   ],
   "license": "MIT",
   "engines": {
@@ -28,5 +24,5 @@
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
-  "repository": "https://github.com/roeap/flight-sql-client-node.git"
+  "repository": "https://github.com/ceramicnetwork/ceramic-sdk.git"
 }

@@ -1,6 +1,6 @@
 {
   "name": "@ceramic-sdk/flight-sql-client-node",
-  "version": "0.0.10",
+  "version": "0.0.1",
   "description": "A FlightSQL client for  Node.js",
   "main": "index.js",
   "license": "MIT",
@@ -12,10 +12,7 @@
     "ceramic",
     "FlightSQL"
   ],
-  "files": [
-    "index.js",
-    "index.d.ts"
-  ],
+  "files": ["index.js", "index.d.ts"],
   "napi": {
     "name": "flight-sql-client-node",
     "triples": {
@@ -57,9 +54,7 @@
     "version": "napi version"
   },
   "jest": {
-    "extensionsToTreatAsEsm": [
-      ".ts"
-    ],
+    "extensionsToTreatAsEsm": [".ts"],
     "moduleNameMapper": {
       "^(\\.{1,2}/.*)\\.js$": "$1"
     },
