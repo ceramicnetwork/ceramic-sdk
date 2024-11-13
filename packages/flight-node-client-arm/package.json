@@ -40,9 +40,9 @@
   },
   "dependencies": {
     "@ceramic-sdk/events": "workspace:^",
-    "@ceramic-sdk/identifiers": "workspace:^",
-    "apache-arrow": "^18.0.0",
-    "@lakehouse-rs/flight-sql-client-darwin-arm64": "^0.0.10"
+    "@ceramic-sdk/flight-sql-client-node": "workspace:^",
+    "@lakehouse-rs/flight-sql-client": "^0.0.10",
+    "apache-arrow": "^18.0.0"
   },
   "jest": {
     "extensionsToTreatAsEsm": [

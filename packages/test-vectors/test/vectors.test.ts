@@ -26,7 +26,7 @@ import {
   loadCAR,
 } from '../src/index.ts'
 
-const EXPECTED_EXPIRED_DATE = new Date(2000, 0).toISOString()
+const EXPECTED_EXPIRED_DATE = new Date(Date.UTC(2000, 0, 1, 0)).toISOString();
 
 const verifier = createDID()
 
