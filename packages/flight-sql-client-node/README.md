@@ -1,37 +1,34 @@
-# `@lakehouse-rs/flight-sql-client`
-
-![https://github.com/napi-rs/package-template/actions](https://github.com/roeap/flight-sql-client-node/workflows/CI/badge.svg)
-[![npm version](https://img.shields.io/npm/v/@lakehouse-rs/flight-sql-client.svg)](https://www.npmjs.com/package/@lakehouse-rs/flight-sql-client)
+# `@ceramic-sdk/flight-sql-client`
 
 A client library for interacting with [Arrow Flight SQL] enabled databases from Node.js.
 
 This library provides a thin wrapper around the flight-sql client implementation in
-the [arrow-flight] crate. Node bindings are created with the help of [napi-rs].
+the [arrow-flight] crate. Node bindings are created with the help of [napi-rs]. Originally forked from lakehouse-rs [npm](https://www.npmjs.com/package/@lakehouse-rs/flight-sql-client) and [github](https://github.com/roeap/flight-sql-client-node).
 
 ## Usage
 
 Install library
 
 ```sh
-yarn add @lakehouse-rs/flight-sql-client
+yarn add @ceramic-sdk/flight-sql-client
 # or
-npm install @lakehouse-rs/flight-sql-client
+npm install @ceramic-sdk/flight-sql-client
 # or
-pnpm add @lakehouse-rs/flight-sql-client
+pnpm add @ceramic-sdk/flight-sql-client
 ```
 
 Create a new client instance
 
 ```ts
-import { ClientOptions, createFlightSqlClient } from '@lakehouse-rs/flight-sql-client';
+import { ClientOptions, createFlightSqlClient } from '@ceramic-sdk/flight-sql-client';
 import { tableFromIPC } from 'apache-arrow';
 
 const options: ClientOptions = {
-  username: 'flight_username',
-  password: 'testing123',
+  username: undefined,
+  password: undefined,
   tls: false,
   host: '127.0.0.1',
-  port: 50051,
+  port: 5102,
   headers: [],
 };
 
@@ -57,44 +54,30 @@ const table = tableFromIPC(buffer);
 Requirements:
 
 - Rust
-- node.js >= 12
-- Yarn
+- node.js >= 18
+- Pnpm
 
 Install dependencies via
 
 ```sh
-yarn install
+pnpm i
 ```
 
 Build native module
 
 ```sh
-yarn build
+pnpm build
 ```
 
 Run tests
 
 ```sh
-yarn test
+pnpm test
 ```
 
 ## Release
 
-Releases are automated via github actions.
-
-To create a release, first increment the version. (note the use of npm)
-
-```sh
-npm version <patch | minor | major | ...>
-```
-
-this will bump all version fields, and create a new commit with the version number.
-
-Then trigger the release.
-
-```sh
-git push --follow-tags
-```
+TODO
 
 [Arrow Flight SQL]: https://arrow.apache.org/docs/format/FlightSql.html
 [arrow-flight]: https://crates.io/crates/arrow-flight

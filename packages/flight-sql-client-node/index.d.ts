@@ -5,8 +5,8 @@
 
 /** A ':' separated key value pair */
 export interface KeyValue {
-  key: string;
-  value: string;
+  key: string
+  value: string
 }
 export interface ClientOptions {
   /**
@@ -14,29 +14,29 @@ export interface ClientOptions {
    *
    * Values should be key value pairs separated by ':'
    */
-  headers: Array<KeyValue>;
+  headers: Array<KeyValue>
   /** Username */
-  username?: string;
+  username?: string
   /** Password */
-  password?: string;
+  password?: string
   /** Auth token. */
-  token?: string;
+  token?: string
   /** Use TLS. */
-  tls: boolean;
+  tls: boolean
   /** Server host. */
-  host: string;
+  host: string
   /** Server port. */
-  port?: number;
+  port?: number
 }
-export declare function createFlightSqlClient(options: ClientOptions): Promise<FlightSqlClient>;
-export declare function rustCrateVersion(): string;
+export declare function createFlightSqlClient(options: ClientOptions): Promise<FlightSqlClient>
+export declare function rustCrateVersion(): string
 export interface GetDbSchemasOptions {
   /**
    * Specifies the Catalog to search for the tables.
    * An empty string retrieves those without a catalog.
    * If omitted the catalog name should not be used to narrow the search.
    */
-  catalog?: string;
+  catalog?: string
   /**
    * Specifies a filter pattern for schemas to search for.
    * When no db_schema_filter_pattern is provided, the pattern will not be used to narrow the search.
@@ -44,7 +44,7 @@ export interface GetDbSchemasOptions {
    *     - "%" means to match any substring with 0 or more characters.
    *     - "_" means to match any one character.
    */
-  dbSchemaFilterPattern?: string;
+  dbSchemaFilterPattern?: string
 }
 export interface GetTablesOptions {
   /**
@@ -52,7 +52,7 @@ export interface GetTablesOptions {
    * An empty string retrieves those without a catalog.
    * If omitted the catalog name should not be used to narrow the search.
    */
-  catalog?: string;
+  catalog?: string
   /**
    * Specifies a filter pattern for schemas to search for.
    * When no db_schema_filter_pattern is provided, the pattern will not be used to narrow the search.
@@ -60,7 +60,7 @@ export interface GetTablesOptions {
    *     - "%" means to match any substring with 0 or more characters.
    *     - "_" means to match any one character.
    */
-  dbSchemaFilterPattern?: string;
+  dbSchemaFilterPattern?: string
   /**
    * Specifies a filter pattern for tables to search for.
    * When no table_name_filter_pattern is provided, all tables matching other filters are searched.
@@ -68,21 +68,21 @@ export interface GetTablesOptions {
    *     - "%" means to match any substring with 0 or more characters.
    *     - "_" means to match any one character.
    */
-  tableNameFilterPattern?: string;
+  tableNameFilterPattern?: string
   /**
    * Specifies a filter of table types which must match.
    * The table types depend on vendor/implementation.
    * It is usually used to separate tables from views or system tables.
    * TABLE, VIEW, and SYSTEM TABLE are commonly supported.
    */
-  tableTypes?: Array<string>;
+  tableTypes?: Array<string>
   /** Specifies if the Arrow schema should be returned for found tables. */
-  includeSchema?: boolean;
+  includeSchema?: boolean
 }
-export class FlightSqlClient {
-  query(query: string): Promise<Buffer>;
-  preparedStatement(query: string, params: Array<[string, string]>): Promise<Buffer>;
-  getCatalogs(): Promise<Buffer>;
-  getDbSchemas(options: GetDbSchemasOptions): Promise<Buffer>;
-  getTables(options: GetTablesOptions): Promise<Buffer>;
+export declare class FlightSqlClient {
+  query(query: string): Promise<Buffer>
+  preparedStatement(query: string, params: Array<[string, string]>): Promise<Buffer>
+  getCatalogs(): Promise<Buffer>
+  getDbSchemas(options: GetDbSchemasOptions): Promise<Buffer>
+  getTables(options: GetTablesOptions): Promise<Buffer>
 }

@@ -1,7 +1,10 @@
 [package]
-authors = ["Robert Pack <robstar.pack@gmail.com>"]
+authors = [
+  "Robert Pack <robstar.pack@gmail.com>",
+  "David Estes <david@3box.io>",
+]
 edition = "2021"
-name    = "flight-sql-client-node"
+name = "flight-sql-client-node"
 version = "0.1.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
