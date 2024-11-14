@@ -23,13 +23,14 @@ jobs:
       fail-fast: false
       matrix:
         settings:
-          - host: macos-latest
+          - host: macos-13
             target: x86_64-apple-darwin
             build: pnpm build --target x86_64-apple-darwin
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
-            build: pnpm build --target x86_64-unknown-linux-gnu
+            # in docker we don't have the step working-directory and need to move
+            build: cd ./packages/flight-sql-client/ && pnpm build --target x86_64-unknown-linux-gnu
           - host: macos-latest
             target: aarch64-apple-darwin
             build: pnpm build --target aarch64-apple-darwin
@@ -106,7 +107,7 @@ jobs:
           - host: macos-latest
             target: aarch64-apple-darwin
             architecture: arm64
-          - host: macos-latest
+          - host: macos-13
             target: x86_64-apple-darwin
             architecture: x64
         node:
