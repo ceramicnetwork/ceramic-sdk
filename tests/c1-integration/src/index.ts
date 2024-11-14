@@ -39,7 +39,7 @@ export default class CeramicOneContainer {
     this.#container = container
   }
 
-  static async healthFn(port): Promise<boolean> {
+  static async healthFn(port: number): Promise<boolean> {
     try {
       const res = await fetch(`http://localhost:${port}/ceramic/version`)
 

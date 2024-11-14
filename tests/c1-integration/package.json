@@ -14,9 +14,10 @@
   "scripts": {
     "lint": "eslint src --fix",
     "build:clean": "del dist",
+    "build:types": "tsc --project tsconfig.json --emitDeclarationOnly --skipLibCheck",
     "build:js": "swc src -d ./dist --config-file ../../.swcrc --strip-leading-paths",
-    "build": "pnpm build:clean && pnpm build:js",
-    "test": "pnpm build && node --experimental-vm-modules ../../node_modules/jest/bin/jest.js"
+    "build": "pnpm build:clean && pnpm build:types && pnpm build:js",
+    "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js --runInBand"
   },
   "dependencies": {
     "@ceramic-sdk/events": "workspace:^",

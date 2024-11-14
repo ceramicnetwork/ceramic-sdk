@@ -53,3 +53,6 @@ jobs:
 
       - name: Test
         run: pnpm run test:ci
+
+      - name: Integration tests
+        run: cd tests/c1-integration && pnpm run test
