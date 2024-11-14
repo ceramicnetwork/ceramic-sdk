@@ -16,6 +16,17 @@ TypeScript client and utilities for [Ceramic One](https://github.com/ceramicnetw
 
 Other packages present in the `packages` folder are for internal use and may not be published to the npm registry.
 
+## Development
+
+Getting started:
+
+```sh
+pnpm i
+pnpm build
+pnpm test # run all tests (unit and integration, requires docker to be running)
+pnpm test:ci # run only unit tests
+```
+
 ## License
 
 Dual licensed under MIT and Apache 2
