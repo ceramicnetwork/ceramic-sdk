@@ -67,7 +67,7 @@ impl FlightSqlClient {
     pub async fn get_catalogs(&self) -> napi::Result<Buffer> {
         let mut client = self.client.lock().await;
         let flight_info = client.get_catalogs().await.context(ArrowSnafu {
-            message: "failed to execute prepared statement",
+            message: "failed to execute get catalogs",
         })?;
         let batches = execute_flight(&mut client, flight_info).await?;
         Ok(record_batch_to_buffer(batches)?.into())
@@ -81,7 +81,7 @@ impl FlightSqlClient {
         };
         let mut client = self.client.lock().await;
         let flight_info = client.get_db_schemas(command).await.context(ArrowSnafu {
-            message: "failed to execute prepared statement",
+            message: "failed to execute get schemas",
         })?;
         let batches = execute_flight(&mut client, flight_info).await?;
         Ok(record_batch_to_buffer(batches)?.into())
@@ -98,7 +98,7 @@ impl FlightSqlClient {
         };
         let mut client = self.client.lock().await;
         let flight_info = client.get_tables(command).await.context(ArrowSnafu {
-            message: "failed to execute prepared statement",
+            message: "failed to execute get tables",
         })?;
         let batches = execute_flight(&mut client, flight_info).await?;
         Ok(record_batch_to_buffer(batches)?.into())
