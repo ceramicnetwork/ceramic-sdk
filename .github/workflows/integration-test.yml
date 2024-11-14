@@ -40,7 +40,7 @@ jobs:
           restore-keys: pnpm-store
 
       - name: Install dependencies and build
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile && pnpm build
 
       - name: Test
         run: cd tests/c1-integration && pnpm run test
