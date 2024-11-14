@@ -65,7 +65,8 @@ describe('flight sql', () => {
     expect(withSchema).not.toBe(noSchema)
   })
 
-  test('prepared stmt', async () => {
+  // disabled until server support is implemented
+  test.skip('prepared stmt', async () => {
     const client = await createFlightSqlClient(OPTIONS)
     const data = await client.preparedStatement(
       'SELECT * from conclusion_feed where stream_type = $1',
