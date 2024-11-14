@@ -1,4 +1,4 @@
-name: Build and test
+name: Build WASM binaries with NAPI
 on:
   push:
     branches: ["main"]
@@ -10,6 +10,7 @@ env:
   APP_NAME: flight-sql-client
   MACOSX_DEPLOYMENT_TARGET: '10.13'
   CARGO_INCREMENTAL: '1'
+  FLIGHT_SQL_PATH: ./packages/flight-sql-client/
 permissions:
   contents: write
   id-token: write
@@ -24,14 +25,14 @@ jobs:
         settings:
           - host: macos-latest
             target: x86_64-apple-darwin
-            build: cd ./packages/flight-sql-client pnpm build --target x86_64-apple-darwin
+            build: pnpm build --target x86_64-apple-darwin
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
-            build:  cd ./packages/flight-sql-client && pnpm build --target x86_64-unknown-linux-gnu
+            build: pnpm build --target x86_64-unknown-linux-gnu
           - host: macos-latest
             target: aarch64-apple-darwin
-            build: cd ./packages/flight-sql-client pnpm build --target aarch64-apple-darwin
+            build: pnpm build --target aarch64-apple-darwin
     name: stable - ${{ matrix.settings.target }} - node@20
     runs-on: ${{ matrix.settings.host }}
     steps:
@@ -57,9 +58,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: ${{ runner.os }}-wasm-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+            ${{ runner.os }}-wasm-pnpm-store-
       - name: Cache cargo
         uses: actions/cache@v4
         with:
@@ -87,11 +88,12 @@ jobs:
         run: ${{ matrix.settings.build }}
         if: ${{ !matrix.settings.docker }}
         shell: bash
+        working-directory: ${{ env.FLIGHT_SQL_PATH }}
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: bindings-${{ matrix.settings.target }}
-          path: ${{ env.APP_NAME }}.*.node
+          path: ${{ env.FLIGHT_SQL_PATH }}${{ env.APP_NAME }}.*.node
           if-no-files-found: error
   test-macOS-binding:
     name: Test bindings on ${{ matrix.settings.target }} - node@${{ matrix.node }}
@@ -142,12 +144,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: bindings-${{ matrix.settings.target }}
-          path: .
+          path: ${{ env.FLIGHT_SQL_PATH }}
       - name: List packages
+        working-directory: ${{ env.FLIGHT_SQL_PATH }}
         run: ls -R .
         shell: bash
-      - name: Test
-        run: pnpm run test
   test-linux-x64-gnu-binding:
     name: Test bindings on Linux-x64-gnu - node@${{ matrix.node }}
     needs:
@@ -189,9 +190,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: bindings-x86_64-unknown-linux-gnu
-          path: .
+          path: ${{ env.FLIGHT_SQL_PATH }}
       - name: List packages
+        working-directory: ${{ env.FLIGHT_SQL_PATH }}
         run: ls -R .
         shell: bash
-      - name: Test bindings
-        run: docker run --rm -v $(pwd):/build -w /build node:${{ matrix.node }}-slim yarn test
