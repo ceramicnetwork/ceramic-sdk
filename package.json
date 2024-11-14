@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "pnpm@9.8.0",
   "scripts": {
-    "build": "pnpm --filter \"@ceramic-sdk/*\" build:types && turbo run build:js",
+    "build": "pnpm --filter \"@ceramic-sdk/*\" build && turbo run build:js",
     "docs": "typedoc",
     "lint": "biome check --write apps/* packages/* tests/*",
     "lint:ci": "biome ci packages/* tests/*",

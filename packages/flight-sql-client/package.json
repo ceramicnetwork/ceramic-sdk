@@ -46,7 +46,6 @@
     "build": "napi build --platform --release",
     "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js",
     "test:ci": "pnpm run test --ci --coverage",
-    "prepare": "pnpm build",
     "prepublishOnly": "napi prepublish -t npm",
     "artifacts": "napi artifacts",
     "format": "pnpm format:rs && pnpm format:toml",
