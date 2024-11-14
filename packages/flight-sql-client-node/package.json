@@ -34,23 +34,24 @@
     "apache-arrow": "^18.0.0"
   },
   "devDependencies": {
-    "@napi-rs/cli": "^2.14.6",
-    "@taplo/cli": "^0.7.0"
+    "@napi-rs/cli": "^2.18.4",
+    "@swc-node/register": "^1.10.6",
+    "@taplo/cli": "^0.7.0",
+    "tinybench": "^3.0.0"
   },
   "scripts": {
-    "build:clean": "del dist",
-    "build:js": "pnpm build:napi && swc src -d ./dist --config-file ../../.swcrc --strip-leading-paths",
-    "build:napi": "napi build --platform --release",
-    "build": "pnpm build:clean && pnpm build:js",
+    "bench": "node --import @swc-node/register/esm-register benchmark/bench.ts",
+    "build:types": "pnpm build",
+    "build:debug": "napi build --platform",
+    "build": "napi build --platform --release",
     "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js",
     "test:ci": "pnpm run test --ci --coverage",
     "prepare": "pnpm build",
     "prepublishOnly": "napi prepublish -t npm",
     "artifacts": "napi artifacts",
-    "format": "run-p format:rs format:toml",
+    "format": "pnpm format:rs && pnpm format:toml",
     "format:toml": "taplo format",
     "format:rs": "cargo fmt",
-    "lint": "eslint ts --fix",
     "version": "napi version"
   },
   "jest": {

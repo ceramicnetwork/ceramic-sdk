@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.build.json",
   "compilerOptions": {
     "target": "ES2018",
     "strict": true,
@@ -7,8 +8,11 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "outDir": "./dist"
   },
   "include": ["."],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "bench", "__test__"]
 }
