@@ -8,10 +8,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "outDir": "./dist"
+    "allowSyntheticDefaultImports": true
   },
   "include": ["."],
   "exclude": ["node_modules", "bench", "__test__"]

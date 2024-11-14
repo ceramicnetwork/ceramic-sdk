@@ -8,8 +8,8 @@
     "enabled": true,
     "formatWithErrors": false,
     "ignore": [
-      "./packages/flight-sql-client-node/index.d.ts",
-      "./packages/flight-sql-client-node/index.js"
+      "./packages/flight-sql-client/index.d.ts",
+      "./packages/flight-sql-client/index.js"
     ],
     "indentStyle": "space",
     "lineWidth": 80
@@ -28,8 +28,8 @@
     "enabled": true,
     "ignore": [
       "*.gen.ts",
-      "./packages/flight-sql-client-node/index.d.ts",
-      "./packages/flight-sql-client-node/index.js"
+      "./packages/flight-sql-client/index.d.ts",
+      "./packages/flight-sql-client/index.js"
     ],
     "rules": {
       "recommended": true

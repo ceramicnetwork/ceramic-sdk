@@ -2,7 +2,7 @@ import {
   type ClientOptions,
   type FlightSqlClient,
   createFlightSqlClient,
-} from '@ceramic-sdk/flight-sql-client-node'
+} from '@ceramic-sdk/flight-sql-client'
 import { tableFromIPC } from 'apache-arrow'
 import CeramicOneContainer from '../src'
 import type { EnvironmentOptions } from '../src'
