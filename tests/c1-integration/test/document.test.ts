@@ -1,9 +1,5 @@
-/**
- * @jest-environment ceramic
- * @jest-environment-options {"containerName":"ceramic-test-document","externalPort":5202}
- */
-
 import { signedEventToCAR } from '@ceramic-sdk/events'
+import { CeramicClient } from '@ceramic-sdk/http-client'
 import { StreamID } from '@ceramic-sdk/identifiers'
 import { createInitEvent as createModel } from '@ceramic-sdk/model-client'
 import {
@@ -18,7 +14,8 @@ import {
   getModelStreamID,
 } from '@ceramic-sdk/model-protocol'
 import { getAuthenticatedDID } from '@didtools/key-did'
-import 'jest-environment-ceramic'
+import CeramicOneContainer, { type EnvironmentOptions } from '../src'
+import ContainerWrapper from '../src/withContainer'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
@@ -38,61 +35,82 @@ const testModel: ModelDefinition = {
   },
 }
 
-test('create model and documents using the model', async () => {
-  const modelsStore: Record<string, ModelState> = {}
+const OPTIONS: EnvironmentOptions = {
+  containerName: 'ceramic-test-document',
+  apiPort: 5211,
+  flightSqlPort: 5212,
+}
 
-  const context = {
-    getModelDefinition: async (id) => {
-      const cid = StreamID.fromString(id).cid.toString()
-      const state = modelsStore[cid]
-      if (state == null) {
-        throw new Error(`State not found for model: ${id}`)
-      }
-      return state.content
-    },
-    verifier: authenticatedDID,
-  }
+describe('model integration test', () => {
+  let c1Container: CeramicOneContainer
+  const client = new CeramicClient({
+    url: `http://127.0.0.1:${OPTIONS.apiPort}`,
+  })
 
-  const modelEvent = await createModel(authenticatedDID, testModel)
-  const modelCID = signedEventToCAR(modelEvent).roots[0]
-  const modelCIDstring = modelCID.toString()
-  modelsStore[modelCIDstring] = await handleModel(
-    modelCIDstring,
-    modelEvent,
-    context,
-  )
+  beforeAll(async () => {
+    c1Container = await CeramicOneContainer.startContainer(OPTIONS)
+  }, 10000)
 
-  await ceramic.client.registerInterestModel(modelCIDstring)
+  test('create model and documents using the model', async () => {
+    const modelsStore: Record<string, ModelState> = {}
 
-  const model = getModelStreamID(modelCID)
+    const context = {
+      getModelDefinition: async (id) => {
+        const cid = StreamID.fromString(id).cid.toString()
+        const state = modelsStore[cid]
+        if (state == null) {
+          throw new Error(`State not found for model: ${id}`)
+        }
+        return state.content
+      },
+      verifier: authenticatedDID,
+    }
 
-  async function createAndPostDocument(
-    content: Record<string, unknown>,
-  ): Promise<void> {
-    const event = await createDocument({
-      controller: authenticatedDID,
-      content,
-      model,
-    })
-    await ceramic.client.postEventType(DocumentEvent, event)
-  }
+    const modelEvent = await createModel(authenticatedDID, testModel)
+    const modelCID = signedEventToCAR(modelEvent).roots[0]
+    const modelCIDstring = modelCID.toString()
+    modelsStore[modelCIDstring] = await handleModel(
+      modelCIDstring,
+      modelEvent,
+      context,
+    )
 
-  await createAndPostDocument({ test: 'one' })
-  await createAndPostDocument({ test: 'two' })
+    await client.registerInterestModel(modelCIDstring)
 
-  const feed = await ceramic.client.getEventsFeed()
-  expect(feed.events).toHaveLength(2)
-  const eventID1 = feed.events[0].id
-  const eventID2 = feed.events[1].id
+    const model = getModelStreamID(modelCID)
 
-  const [event1, event2] = await Promise.all([
-    ceramic.client.getEventType(DocumentEvent, eventID1),
-    ceramic.client.getEventType(DocumentEvent, eventID2),
-  ])
-  const [state1, state2] = await Promise.all([
-    handleDocument(eventID1, event1, context),
-    handleDocument(eventID2, event2, context),
-  ])
-  expect(state1.content).toEqual({ test: 'one' })
-  expect(state2.content).toEqual({ test: 'two' })
+    async function createAndPostDocument(
+      content: Record<string, unknown>,
+    ): Promise<void> {
+      const event = await createDocument({
+        controller: authenticatedDID,
+        content,
+        model,
+      })
+      await client.postEventType(DocumentEvent, event)
+    }
+
+    await createAndPostDocument({ test: 'one' })
+    await createAndPostDocument({ test: 'two' })
+
+    const feed = await client.getEventsFeed()
+    expect(feed.events).toHaveLength(2)
+    const eventID1 = feed.events[0].id
+    const eventID2 = feed.events[1].id
+
+    const [event1, event2] = await Promise.all([
+      client.getEventType(DocumentEvent, eventID1),
+      client.getEventType(DocumentEvent, eventID2),
+    ])
+    const [state1, state2] = await Promise.all([
+      handleDocument(eventID1, event1, context),
+      handleDocument(eventID2, event2, context),
+    ])
+    expect(state1.content).toEqual({ test: 'one' })
+    expect(state2.content).toEqual({ test: 'two' })
+  })
+
+  afterAll(async () => {
+    await c1Container.teardown()
+  })
 })

@@ -248,22 +248,6 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
-  packages/jest-environment:
-    dependencies:
-      '@ceramic-sdk/http-client':
-        specifier: workspace:^
-        version: link:../http-client
-      '@databases/with-container':
-        specifier: ^2.1.1
-        version: 2.1.1
-      jest-environment-node:
-        specifier: ^29.7.0
-        version: 29.7.0
-    devDependencies:
-      '@jest/environment':
-        specifier: ^29.7.0
-        version: 29.7.0
-
   packages/model-client:
     dependencies:
       '@ceramic-sdk/events':
@@ -562,6 +546,12 @@ importers:
       '@ceramic-sdk/events':
         specifier: workspace:^
         version: link:../../packages/events
+      '@ceramic-sdk/flight-sql-client-node':
+        specifier: workspace:^
+        version: link:../../packages/flight-sql-client-node
+      '@ceramic-sdk/http-client':
+        specifier: workspace:^
+        version: link:../../packages/http-client
       '@ceramic-sdk/identifiers':
         specifier: workspace:^
         version: link:../../packages/identifiers
@@ -586,10 +576,21 @@ importers:
       '@didtools/key-did':
         specifier: ^1.0.0
         version: 1.0.0(typescript@5.6.2)(zod@3.23.8)
-    devDependencies:
-      jest-environment-ceramic:
-        specifier: workspace:^
-        version: link:../../packages/jest-environment
+      '@jest/environment':
+        specifier: ^29.7.0
+        version: 29.7.0
+      '@types/cross-spawn':
+        specifier: ^6.0.0
+        version: 6.0.6
+      apache-arrow:
+        specifier: 18.0.0
+        version: 18.0.0
+      cross-spawn:
+        specifier: ^7.0.5
+        version: 7.0.5
+      modern-spawn:
+        specifier: ^1.0.0
+        version: 1.0.0
 
 packages:
 
@@ -817,9 +818,6 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
-
-  '@databases/with-container@2.1.1':
-    resolution: {integrity: sha512-iHsOn/6ElWuGpcytgNh9ZAvFd78G0ikOMWj0DtMTB4fXVqRA5uYZpLpLv/fvwL895xT7VTbVA6HV3YoY0yuQUg==}
 
   '@didtools/cacao@3.0.1':
     resolution: {integrity: sha512-vV1JirxqVsBf2dqdvoS/msNN8fabvMfseZB0kf1FG8TbosrHd81+hgDOlQMZit7zJbTk5g3CGkZg3b7iYKkynw==}
@@ -1967,10 +1965,6 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  address@1.2.2:
-    resolution: {integrity: sha512-4B/qKCfeE/ODUaAUpSwfzazo5x29WD4r3vXiWsB7I2mSDAihwEqKO+g8GELZUQSSAo5e1XTYh3ZVfLyxBc12nA==}
-    engines: {node: '>= 10.0.0'}
-
   agent-base@7.1.1:
     resolution: {integrity: sha512-H0TSyFNDMomMNJQBn8wFV5YC/2eJ+VXECwOadZJT554xP6cODZHPX3H9QMQECxvrgiSOP1pHjy1sMWQVYJOUOA==}
     engines: {node: '>= 14'}
@@ -2268,10 +2262,6 @@ packages:
   cross-spawn@5.1.0:
     resolution: {integrity: sha512-pTgQJ5KC0d2hcY8eyL1IzlBPYjTkyH72XRZPnLyKus2mBfNjQs3klqbJU2VILqZryAZUt9JOb3h/mWMy23/f5A==}
 
-  cross-spawn@6.0.5:
-    resolution: {integrity: sha512-eTVLrBSt7fjbDygz805pMnstIs2VTBNkRm0qxZd+M7A5XDdxVRWO5MxGBXZhjY4cqLYLdtrGqRf8mBPmzwSpWQ==}
-    engines: {node: '>=4.8'}
-
   cross-spawn@7.0.5:
     resolution: {integrity: sha512-ZVJrKKYunU38/76t0RMOulHOnUcbU9GbpWKAOZ0mhjr7CX6FVrH+4FrAapSOekrgFQ3f/8gwMEuIft0aKq6Hug==}
     engines: {node: '>= 8'}
@@ -2350,11 +2340,6 @@ packages:
 
   detect-node-es@1.1.0:
     resolution: {integrity: sha512-ypdmJU/TbBby2Dxibuv7ZLW3Bs1QEmM7nHjEANfohJLvE0XVujisn1qPJcZxg+qDucsr+bP6fLD1rPS3AhJ7EQ==}
-
-  detect-port@1.6.1:
-    resolution: {integrity: sha512-CmnVc+Hek2egPx1PeTFVta2W78xy2K/9Rkf6cC4T59S50tVnzKj+tnx5mmx5lwvCkujZ4uRrpRSuV+IVs3f90Q==}
-    engines: {node: '>= 4.0.0'}
-    hasBin: true
 
   devlop@1.1.0:
     resolution: {integrity: sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==}
@@ -3135,9 +3120,6 @@ packages:
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
-  nice-try@1.0.5:
-    resolution: {integrity: sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==}
-
   node-fetch@2.7.0:
     resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
     engines: {node: 4.x || >=6.0.0}
@@ -3519,10 +3501,6 @@ packages:
   semver-truncate@3.0.0:
     resolution: {integrity: sha512-LJWA9kSvMolR51oDE6PN3kALBNaUdkxzAGcexw8gjMA8xr5zUqK0JiR3CgARSqanYF3Z1YHvsErb1KDgh+v7Rg==}
     engines: {node: '>=12'}
-
-  semver@5.7.2:
-    resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
-    hasBin: true
 
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
@@ -4320,15 +4298,6 @@ snapshots:
 
   '@biomejs/cli-win32-x64@1.9.1':
     optional: true
-
-  '@databases/with-container@2.1.1':
-    dependencies:
-      '@types/cross-spawn': 6.0.6
-      cross-spawn: 6.0.5
-      detect-port: 1.6.1
-      modern-spawn: 1.0.0
-    transitivePeerDependencies:
-      - supports-color
 
   '@didtools/cacao@3.0.1(typescript@5.6.2)(zod@3.23.8)':
     dependencies:
@@ -5517,8 +5486,6 @@ snapshots:
 
   acorn@8.14.0: {}
 
-  address@1.2.2: {}
-
   agent-base@7.1.1(supports-color@9.4.0):
     dependencies:
       debug: 4.3.7(supports-color@9.4.0)
@@ -5861,14 +5828,6 @@ snapshots:
       shebang-command: 1.2.0
       which: 1.3.1
 
-  cross-spawn@6.0.5:
-    dependencies:
-      nice-try: 1.0.5
-      path-key: 2.0.1
-      semver: 5.7.2
-      shebang-command: 1.2.0
-      which: 1.3.1
-
   cross-spawn@7.0.5:
     dependencies:
       path-key: 3.1.1
@@ -5935,13 +5894,6 @@ snapshots:
   detect-newline@3.1.0: {}
 
   detect-node-es@1.1.0: {}
-
-  detect-port@1.6.1:
-    dependencies:
-      address: 1.2.2
-      debug: 4.3.7(supports-color@9.4.0)
-    transitivePeerDependencies:
-      - supports-color
 
   devlop@1.1.0:
     dependencies:
@@ -6965,8 +6917,6 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  nice-try@1.0.5: {}
-
   node-fetch@2.7.0:
     dependencies:
       whatwg-url: 5.0.0
@@ -7337,8 +7287,6 @@ snapshots:
   semver-truncate@3.0.0:
     dependencies:
       semver: 7.6.3
-
-  semver@5.7.2: {}
 
   semver@6.3.1: {}
 

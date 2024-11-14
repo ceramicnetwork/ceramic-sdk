@@ -1,9 +1,18 @@
-import { tableFromIPC } from 'apache-arrow'
 import {
   type ClientOptions,
   type FlightSqlClient,
   createFlightSqlClient,
-} from '..'
+} from '@ceramic-sdk/flight-sql-client-node'
+import { tableFromIPC } from 'apache-arrow'
+import CeramicOneContainer from '../src'
+import type { EnvironmentOptions } from '../src'
+
+const CONTAINER_OPTS: EnvironmentOptions = {
+  containerName: 'ceramic-test-flight',
+  apiPort: 5222,
+  flightSqlPort: 5223,
+  testPort: 5223,
+}
 
 const OPTIONS: ClientOptions = {
   headers: new Array(),
@@ -12,14 +21,20 @@ const OPTIONS: ClientOptions = {
   token: undefined,
   tls: false,
   host: '127.0.0.1',
-  port: 5102,
+  port: CONTAINER_OPTS.flightSqlPort,
 }
 
 async function getClient(): Promise<FlightSqlClient> {
   return createFlightSqlClient(OPTIONS)
 }
 
-describe('fligh sql', () => {
+describe('flight sql', () => {
+  let c1Container: CeramicOneContainer
+
+  beforeAll(async () => {
+    c1Container = await CeramicOneContainer.startContainer(CONTAINER_OPTS)
+  }, 10000)
+
   test('makes query', async () => {
     const client = await getClient()
     const buffer = await client.query('SELECT * FROM conclusion_feed')
@@ -57,5 +72,9 @@ describe('fligh sql', () => {
       new Array(['$1', '3']),
     )
     console.log(data)
+  })
+
+  afterAll(async () => {
+    await c1Container.teardown()
   })
 })
