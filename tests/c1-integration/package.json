@@ -16,7 +16,7 @@
     "build:clean": "del dist",
     "build:js": "swc src -d ./dist --config-file ../../.swcrc --strip-leading-paths",
     "build": "pnpm build:clean && pnpm build:js",
-    "test": "pnpm build && node --experimental-vm-modules ../../node_modules/jest/bin/jest.js"
+    "test": "pnpm build && node --experimental-vm-modules ../../node_modules/jest/bin/jest.js --runInBand"
   },
   "dependencies": {
     "@ceramic-sdk/events": "workspace:^",
