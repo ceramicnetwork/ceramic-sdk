@@ -14,13 +14,15 @@
   "scripts": {
     "lint": "eslint src --fix",
     "build:clean": "del dist",
+    "build:types": "tsc --project tsconfig.json --emitDeclarationOnly --skipLibCheck",
     "build:js": "swc src -d ./dist --config-file ../../.swcrc --strip-leading-paths",
-    "build": "pnpm build:clean && pnpm build:js",
-    "test": "pnpm build && node --experimental-vm-modules ../../node_modules/jest/bin/jest.js --runInBand"
+    "build": "pnpm build:clean && pnpm build:types && pnpm build:js",
+    "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js --runInBand"
   },
   "dependencies": {
     "@ceramic-sdk/events": "workspace:^",
     "@ceramic-sdk/identifiers": "workspace:^",
+    "@ceramic-sdk/flight-sql-client": "workspace:^",
     "@ceramic-sdk/http-client": "workspace:^",
     "@ceramic-sdk/model-client": "workspace:^",
     "@ceramic-sdk/model-handler": "workspace:^",
@@ -29,6 +31,7 @@
     "@ceramic-sdk/model-instance-protocol": "workspace:^",
     "@ceramic-sdk/model-protocol": "workspace:^",
     "@didtools/key-did": "^1.0.0",
+    "apache-arrow": "18.0.0",
     "@jest/environment": "^29.7.0",
     "@types/cross-spawn": "^6.0.0",
     "cross-spawn": "^7.0.5",
