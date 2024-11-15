@@ -191,9 +191,6 @@ importers:
         specifier: ^18.0.0
         version: 18.0.0
     devDependencies:
-      '@biomejs/biome':
-        specifier: 1.9.1
-        version: 1.9.1
       '@napi-rs/cli':
         specifier: ^2.18.4
         version: 2.18.4
