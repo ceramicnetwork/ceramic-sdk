@@ -29,7 +29,6 @@ jobs:
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
-            # in docker we don't have the step working-directory and need to move
             build: pnpm build:wasm --target x86_64-unknown-linux-gnu && pnpm build:js
           - host: macos-latest
             target: aarch64-apple-darwin
@@ -91,11 +90,18 @@ jobs:
         run: ${{ matrix.settings.build }}
         if: ${{ !matrix.settings.docker }}
         shell: bash
-        working-directory: ${{ env.FLIGHT_SQL_PATH }}
+      - name: Test in docker
+        uses: addnab/docker-run-action@v3
+        if: ${{ matrix.settings.docker }}
+        with:
+          image: ${{ matrix.settings.docker }}
+          options: '--user 0:0 -v ${{ github.workspace }}/.cargo-cache/git/db:/usr/local/cargo/git/db -v ${{ github.workspace }}/.cargo/registry/cache:/usr/local/cargo/registry/cache -v ${{ github.workspace }}/.cargo/registry/index:/usr/local/cargo/registry/index -v ${{ github.workspace }}:/build -w /build'
+          # skip integration tests because container inside container is a problem
+          run: pnpm run test:ci
       - name: Test
-        run: pnpm run test:ci
-      - name: Integration tests
-        run: cd tests/c1-integration && pnpm run test
+        run: pnpm run test:ci && cd tests/c1-integration && pnpm run test
+        if: ${{ !matrix.settings.docker }}
+        shell: bash
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
