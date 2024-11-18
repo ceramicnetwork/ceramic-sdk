@@ -28,12 +28,11 @@ impl FlightSqlClient {
     #[napi]
     pub async fn query(&self, query: String) -> napi::Result<Buffer> {
         let mut client = self.client.lock().await;
-        let mut prepared_stmt = client.prepare(query, None).await.context(ArrowSnafu {
-            message: "failed to prepare statement",
+
+        let flight_info = client.execute(query, None).await.context(ArrowSnafu {
+            message: "failed to execute query",
         })?;
-        let flight_info = prepared_stmt.execute().await.context(ArrowSnafu {
-            message: "failed to execute prepared statement",
-        })?;
+
         let batches = execute_flight(&mut client, flight_info).await?;
         Ok(record_batch_to_buffer(batches)?.into())
     }
