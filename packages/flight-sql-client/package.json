@@ -28,9 +28,6 @@
   },
   "scripts": {
     "artifacts": "napi artifacts",
-    "build:cleanjs": "del dist",
-    "build:js": "swc src -d ./dist --config-file ../../.swcrc --strip-leading-paths",
-    "build:types": "pnpm build && pnpm:cleanjs && pnpm build:js",
     "build:debug": "napi build --platform",
     "build": "napi build --platform --release",
     "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js",
