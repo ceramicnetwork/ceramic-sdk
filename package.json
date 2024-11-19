@@ -4,6 +4,8 @@
   "packageManager": "pnpm@9.8.0",
   "scripts": {
     "build": "pnpm --filter \"@ceramic-sdk/*\" build && turbo run build:js",
+    "build:rust": "pnpm --filter \"@ceramic-sdk/flight-sql-client\" build",
+    "build:js": "pnpm --filter \"@ceramic-sdk/*\" --filter !@ceramic-sdk/flight-sql-client build && turbo run build:js",
     "docs": "typedoc",
     "lint": "biome check --write apps/* packages/* tests/*",
     "lint:ci": "biome ci packages/* tests/*",

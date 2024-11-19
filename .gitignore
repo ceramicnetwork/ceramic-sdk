@@ -4,3 +4,9 @@ coverage
 .vscode
 .turbo
 .ceramic-one
+
+# rust
+target
+Cargo.lock
+# napi binaries
+*.node
