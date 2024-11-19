@@ -29,6 +29,7 @@
     "lint": "eslint src --fix",
     "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js",
     "test:ci": "pnpm run test --ci --coverage",
+    "prepare": "pnpm build",
     "prepublishOnly": "package-check"
   },
   "dependencies": {
