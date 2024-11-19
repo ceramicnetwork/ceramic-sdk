@@ -8,17 +8,17 @@ pub type Result<T, E = Error> = std::result::Result<T, E>;
 #[derive(Debug, Snafu)]
 #[snafu(visibility(pub(crate)))]
 pub enum Error {
-    #[snafu(display("column '{name}' is missing"))]
-    MissingColumn { name: String },
-    #[snafu(display("{message}"))]
+    #[snafu(display("{message}: {source:?}"))]
     Arrow {
         source: ArrowError,
         message: &'static str,
     },
+    #[snafu(display("{message}: {source:?}"))]
     Flight {
         source: FlightError,
         message: &'static str,
     },
+    #[snafu(display("{message}: {source}"))]
     Status {
         source: Status,
         message: &'static str,
