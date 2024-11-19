@@ -1,3 +1,4 @@
+import { CeramicClient } from '@ceramic-sdk/http-client'
 import { StreamID } from '@ceramic-sdk/identifiers'
 import { ModelClient } from '@ceramic-sdk/model-client'
 import {
@@ -11,11 +12,9 @@ import {
 } from '@ceramic-sdk/model-instance-handler'
 import type { ModelDefinition } from '@ceramic-sdk/model-protocol'
 import { getAuthenticatedDID } from '@didtools/key-did'
-import CeramicOneContainer, { EnvironmentOptions } from '../src'
-import { CeramicClient } from '@ceramic-sdk/http-client'
+import CeramicOneContainer, { type EnvironmentOptions } from '../src'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
-
 
 const OPTIONS: EnvironmentOptions = {
   containerName: 'ceramic-test-document',
@@ -32,7 +31,6 @@ describe('stream classes', () => {
   beforeAll(async () => {
     c1Container = await CeramicOneContainer.startContainer(OPTIONS)
   }, 10000)
-
 
   test('create and update deterministic document', async () => {
     const testModel: ModelDefinition = {
