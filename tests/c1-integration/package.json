@@ -13,22 +13,28 @@
   "sideEffects": false,
   "scripts": {
     "lint": "eslint src --fix",
-    "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js"
+    "build:clean": "del dist",
+    "build:js": "swc src -d ./dist --config-file ../../.swcrc --strip-leading-paths",
+    "build": "pnpm build:clean && pnpm build:js",
+    "test": "pnpm build && node --experimental-vm-modules ../../node_modules/jest/bin/jest.js --runInBand"
   },
   "dependencies": {
     "@ceramic-sdk/events": "workspace:^",
     "@ceramic-sdk/identifiers": "workspace:^",
+    "@ceramic-sdk/http-client": "workspace:^",
     "@ceramic-sdk/model-client": "workspace:^",
     "@ceramic-sdk/model-handler": "workspace:^",
     "@ceramic-sdk/model-instance-client": "workspace:^",
     "@ceramic-sdk/model-instance-handler": "workspace:^",
     "@ceramic-sdk/model-instance-protocol": "workspace:^",
     "@ceramic-sdk/model-protocol": "workspace:^",
-    "@didtools/key-did": "^1.0.0"
+    "@didtools/key-did": "^1.0.0",
+    "@jest/environment": "^29.7.0",
+    "@types/cross-spawn": "^6.0.0",
+    "cross-spawn": "^7.0.5",
+    "modern-spawn": "^1.0.0"
   },
-  "devDependencies": {
-    "jest-environment-ceramic": "workspace:^"
-  },
+  "devDependencies": {},
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],
     "moduleNameMapper": {
