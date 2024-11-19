@@ -25,16 +25,16 @@ jobs:
         settings:
           - host: macos-13
             target: x86_64-apple-darwin
-            build: pnpm build:wasm --target x86_64-apple-darwin && pnpm build:js
+            build: pnpm build:rust --target x86_64-apple-darwin && pnpm build:js
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             # using vm instead of docker, but leaving in case we need this for other targets
             # docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
-            build: pnpm build:wasm --target x86_64-unknown-linux-gnu && pnpm build:js
+            build: pnpm build:rust --target x86_64-unknown-linux-gnu && pnpm build:js
             test: cd tests/c1-integration && pnpm run test 
           - host: macos-latest
             target: aarch64-apple-darwin
-            build: pnpm build:wasm --target aarch64-apple-darwin && pnpm build:js
+            build: pnpm build:rust --target aarch64-apple-darwin && pnpm build:js
     name: stable - ${{ matrix.settings.target }} - node@20
     runs-on: ${{ matrix.settings.host }}
     steps:

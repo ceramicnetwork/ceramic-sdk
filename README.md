@@ -30,7 +30,7 @@ pnpm test:ci # run only unit tests
 
 ## CI
 
-In order to specify targets for WASM builds on CI, the build script is split into `pnpm build:wasm` which allows passing `--target TARGET_TRIPLE` and `pnpm build:js`.
+In order to specify targets for WASM builds on CI, the build script is split into `pnpm build:rust` which allows passing `--target TARGET_TRIPLE` and `pnpm build:js`.
 
 ## License
 
