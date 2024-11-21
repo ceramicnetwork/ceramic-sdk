@@ -21,7 +21,3 @@ Sign an event payload using the provided DID
 ## Returns
 
 `Promise`\<[`SignedEvent`](../type-aliases/SignedEvent.md)\>
-
-## Defined in
-
-[packages/events/src/signing.ts:15](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/events/src/signing.ts#L15)

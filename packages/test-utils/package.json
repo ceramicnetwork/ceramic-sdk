@@ -36,7 +36,7 @@
     "caip": "^1.1.1",
     "did-session": "^4.0.0",
     "dids": "^5.0.2",
-    "viem": "^2.21.9"
+    "viem": "^2.21.14"
   },
   "devDependencies": {
     "@didtools/pkh-ethereum": "^0.6.0"

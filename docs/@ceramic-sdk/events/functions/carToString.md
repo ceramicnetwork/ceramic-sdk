@@ -19,7 +19,3 @@ Encode a CAR into a string, using the given base (defaults to base64)
 ## Returns
 
 `string`
-
-## Defined in
-
-[packages/events/src/encoding.ts:25](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/events/src/encoding.ts#L25)

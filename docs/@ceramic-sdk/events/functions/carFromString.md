@@ -19,7 +19,3 @@ Decode a CAR from a string, using the given base (defaults to base64)
 ## Returns
 
 `CAR`
-
-## Defined in
-
-[packages/events/src/encoding.ts:30](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/events/src/encoding.ts#L30)

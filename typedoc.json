@@ -8,10 +8,12 @@
     "packages/model-client",
     "packages/model-instance-client",
     "packages/model-instance-protocol",
-    "packages/model-protocol"
+    "packages/model-protocol",
+    "packages/stream-client"
   ],
   "name": "Ceramic SDK",
   "packageOptions": {
+    "disableSources": true,
     "entryPoints": ["src/index.ts"],
     "excludeExternals": true,
     "excludeInternal": true,

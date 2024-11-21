@@ -54,7 +54,7 @@
     "@noble/curves": "^1.6.0",
     "@solana/signers": "^2.0.0-rc.1",
     "caip": "^1.1.1",
-    "cborg": "^4.2.3",
+    "cborg": "^4.2.4",
     "did-session": "^4.0.0",
     "dids": "^5.0.2",
     "key-did-resolver": "^4.0.0",

@@ -1,4 +1,10 @@
 export {
+  DocumentClient,
+  type PostDataParams,
+  type PostDeterministicInitParams,
+  type PostSignedInitParams,
+} from './client.js'
+export {
   type CreateDataEventParams,
   type CreateInitEventParams,
   createDataEvent,

@@ -43,7 +43,3 @@ New JSON object content for the ModelInstanceDocument stream, used with `current
 > `optional` **shouldIndex**: `boolean`
 
 Flag notifying indexers if they should index the ModelInstanceDocument stream or not
-
-## Defined in
-
-[model-instance-client/src/events.ts:112](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/model-instance-client/src/events.ts#L112)

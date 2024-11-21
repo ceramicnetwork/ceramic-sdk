@@ -19,7 +19,3 @@ Currently supported types of view properties:
 - 'relationFrom': view properties of this type represent inverse relations identified by the given 'model' and 'property' fields
 - 'relationCountFrom': view properties of this type represent the number of inverse relations identified by the given 'model' and 'property' fields
 - 'relationSetFrom': view properties of this type represent a single inverse relation identified by the given 'model' and 'property' fields for models using the SET account relation
-
-## Defined in
-
-[packages/model-protocol/src/codecs.ts:298](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/model-protocol/src/codecs.ts#L298)

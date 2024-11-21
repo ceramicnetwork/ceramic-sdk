@@ -14,7 +14,7 @@ Init event header for a ModelInstanceDocument Stream
 
 ### context
 
-> **context**: `OptionalCodec`\<`Type`\<[`StreamID`](../../identifiers/classes/StreamID.md), `Uint8Array`, `Uint8Array`\>\>
+> **context**: `OptionalCodec`\<`Type`\<[`StreamID`](../../identifiers/classes/StreamID.md), `Uint8Array`, [`StreamID`](../../identifiers/classes/StreamID.md) \| `Uint8Array`\>\>
 
 ### controllers
 
@@ -22,7 +22,7 @@ Init event header for a ModelInstanceDocument Stream
 
 ### model
 
-> **model**: `Type`\<[`StreamID`](../../identifiers/classes/StreamID.md), `Uint8Array`, `Uint8Array`\> = `streamIDAsBytes`
+> **model**: `Type`\<[`StreamID`](../../identifiers/classes/StreamID.md), `Uint8Array`, [`StreamID`](../../identifiers/classes/StreamID.md) \| `Uint8Array`\> = `streamIDAsBytes`
 
 ### sep
 
@@ -35,7 +35,3 @@ Init event header for a ModelInstanceDocument Stream
 ### unique
 
 > **unique**: `OptionalCodec`\<`TrivialCodec`\<`Uint8Array`\>\>
-
-## Defined in
-
-[packages/model-instance-protocol/src/codecs.ts:101](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/model-instance-protocol/src/codecs.ts#L101)

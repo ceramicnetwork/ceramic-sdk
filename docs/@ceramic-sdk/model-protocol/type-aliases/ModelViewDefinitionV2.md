@@ -7,7 +7,3 @@
 # Type Alias: ModelViewDefinitionV2
 
 > **ModelViewDefinitionV2**: `TypeOf`\<*typeof* [`ModelViewDefinitionV2`](../variables/ModelViewDefinitionV2.md)\>
-
-## Defined in
-
-[packages/model-protocol/src/codecs.ts:298](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/model-protocol/src/codecs.ts#L298)

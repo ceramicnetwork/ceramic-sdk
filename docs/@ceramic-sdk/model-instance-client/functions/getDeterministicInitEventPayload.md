@@ -25,7 +25,3 @@ Get a deterministic init event payload for a ModelInstanceDocument stream.
 ## See
 
 [createInitEvent](createInitEvent.md) for creating non-deterministic events.
-
-## Defined in
-
-[model-instance-client/src/events.ts:57](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/model-instance-client/src/events.ts#L57)
