@@ -37,7 +37,7 @@ describe('flight sql', () => {
 
   test('makes query', async () => {
     const client = await getClient()
-    const buffer = await client.query('SELECT * FROM conclusion_feed')
+    const buffer = await client.query('SELECT * FROM conclusion_events')
     const data = tableFromIPC(buffer)
     console.log(JSON.stringify(data))
   })
@@ -68,11 +68,12 @@ describe('flight sql', () => {
   // disabled until server support is implemented
   test.skip('prepared stmt', async () => {
     const client = await createFlightSqlClient(OPTIONS)
-    const data = await client.preparedStatement(
-      'SELECT * from conclusion_feed where stream_type = $1',
+    const buffer = await client.preparedStatement(
+      'SELECT * from conclusion_events where stream_type = $1',
       new Array(['$1', '3']),
     )
-    console.log(data)
+    const data = tableFromIPC(buffer)
+    console.log(JSON.stringify(data))
   })
 
   afterAll(async () => {
