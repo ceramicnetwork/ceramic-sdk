@@ -37,7 +37,7 @@ describe('flight sql', () => {
 
   test('makes query', async () => {
     const client = await getClient()
-    const buffer = await client.query('SELECT * FROM conclusion_feed')
+    const buffer = await client.query('SELECT * FROM conclusion_events')
     const data = tableFromIPC(buffer)
     console.log(JSON.stringify(data))
   })
