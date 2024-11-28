@@ -3,7 +3,11 @@
   "version": "0.1.0",
   "author": "3Box Labs",
   "license": "(Apache-2.0 OR MIT)",
-  "keywords": ["ceramic", "stream", "client"],
+  "keywords": [
+    "ceramic",
+    "stream",
+    "client"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/ceramicstudio/ceramic-sdk",
@@ -15,7 +19,9 @@
   "exports": {
     ".": "./dist/index.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=20"
   },
@@ -32,13 +38,20 @@
     "prepublishOnly": "package-check"
   },
   "dependencies": {
-    "@ceramic-sdk/http-client": "workspace:^"
+    "@ceramic-sdk/http-client": "workspace:^",
+    "@ceramic-sdk/events": "workspace:^",
+    "deep-diff": "^1.0.2",
+    "openapi-fetch": "^0.12.2"
   },
   "devDependencies": {
-    "dids": "^5.0.2"
+    "dids": "^5.0.2",
+    "openapi-typescript": "^7.4.1",
+    "type-fest": "^4.26.1"
   },
   "jest": {
-    "extensionsToTreatAsEsm": [".ts"],
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
     "moduleNameMapper": {
       "^(\\.{1,2}/.*)\\.js$": "$1"
     },
