@@ -453,12 +453,30 @@ importers:
 
   packages/stream-client:
     dependencies:
+      '@ceramic-sdk/events':
+        specifier: workspace:^
+        version: link:../events
       '@ceramic-sdk/http-client':
         specifier: workspace:^
         version: link:../http-client
-      deep-diff:
-        specifier: ^1.0.2
-        version: 1.0.2
+      '@ceramic-sdk/identifiers':
+        specifier: workspace:^
+        version: link:../identifiers
+      '@ceramic-sdk/model-instance-client':
+        specifier: workspace:^
+        version: link:../model-instance-client
+      '@ceramic-sdk/model-instance-protocol':
+        specifier: workspace:^
+        version: link:../model-instance-protocol
+      '@didtools/codecs':
+        specifier: ^3.0.0
+        version: 3.0.0
+      codeco:
+        specifier: ^1.4.3
+        version: 1.4.3
+      fast-json-patch:
+        specifier: ^3.1.1
+        version: 3.1.1
       openapi-fetch:
         specifier: ^0.12.2
         version: 0.12.2
@@ -466,6 +484,9 @@ importers:
       dids:
         specifier: ^5.0.2
         version: 5.0.2(typescript@5.6.2)
+      multiformats:
+        specifier: ^13.3.0
+        version: 13.3.0
       openapi-typescript:
         specifier: ^7.4.1
         version: 7.4.1(typescript@5.6.2)
@@ -3987,10 +4008,6 @@ packages:
       babel-plugin-macros:
         optional: true
     dev: true
-
-  /deep-diff@1.0.2:
-    resolution: {integrity: sha512-aWS3UIVH+NPGCD1kki+DCU9Dua032iSsO43LqQpcs4R3+dVv7tX0qBGjiVHJHjplsoUM2XRO/KB92glqc68awg==}
-    dev: false
 
   /deepmerge@4.3.1:
     resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}

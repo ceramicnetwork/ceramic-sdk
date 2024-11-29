@@ -1,14 +1,9 @@
 import { type CeramicClient, getCeramicClient } from "@ceramic-sdk/http-client";
 import type { DID } from "dids";
-import { diff } from "deep-diff";
-// import {
-//   InitEventPayload,
-//   eventToCAR,
-//   eventFromCAR,
-//   signedEventToCAR,
-//   signEvent,
-// } from "@ceramic-sdk/events";
-
+import { CID } from "multiformats/cid";
+import { signedEventToCAR } from "@ceramic-sdk/events";
+import { createDataEvent } from "./utils.js";
+import { CommitID, StreamID } from "@ceramic-sdk/identifiers";
 import type { components } from "@ceramic-sdk/http-client/src/__generated__/api";
 
 type StreamState = components["schemas"]["StreamState"];
@@ -73,72 +68,57 @@ export class StreamClient {
    * @param previousState - The previous state of the stream (optional)
    * @returns The updated stream state
    */
-  // async updateStream(
-  //   streamId: string,
-  //   newContent: Content,
-  //   previousState?: StreamState
-  // ): Promise<StreamState> {
-  //   try {
-  //     // Fetch the current state if previousState isn't provided
-  //     const currentState =
-  //       previousState || (await this.getStreamState(streamId));
+  async updateStream(
+    streamId: string,
+    newContent: Content,
+    previousState?: StreamState
+  ): Promise<StreamState> {
+    try {
+      // Fetch the current state if previousState isn't provided
+      const currentState =
+        previousState || (await this.getStreamState(streamId));
 
-  //     // Compute the diff
-  //     const currentData =
-  //       typeof currentState.data === "string"
-  //         ? JSON.parse(currentState.data)
-  //         : currentState.data;
+      const baseData = currentState?.data || {};
 
-  //     const diff = this.computeDiff(currentData, newContent);
+      // Determine the updated content
+      const currentData =
+        typeof baseData === "string"
+          ? JSON.parse(currentState.data)
+          : currentState.data;
 
-  //     // Construct event payload
-  //     const did = this.getDID();
-  //     const eventPayload: InitEventPayload = {
-  //       data: newContent,
-  //       header: {
-  //         controllers: [did.id],
-  //         model: streamId,
-  //         sep: "model",
-  //       },
-  //     };
+      // Obtain identifier values for the stream
+      const did = this.getDID();
+      const currentCid = CID.parse(currentState.event_cid);
+      const currentStreamId = StreamID.fromString(streamId);
+      const currentCommitId = CommitID.fromStream(currentStreamId, currentCid);
 
-  //     // Encode payload and create CAR file
-  //     const encodedPayload = InitEventPayload.encode(eventPayload);
+      // Create the new data event
+      const signedDataEvent = await createDataEvent({
+        controller: did,
+        currentID: currentCommitId,
+        currentContent: currentData,
+        newContent,
+        shouldIndex: true,
+      });
 
-  //     // Sign the event
-  //     const signedEvent = await signEvent(did, encodedPayload);
-  //     const signedCar = signedEventToCAR(signedEvent);
+      // Convert the signed event to a CAR file
+      const signedCar = signedEventToCAR(signedDataEvent);
 
-  //     // Post the event to Ceramic
-  //     const cid = await this.#ceramic.postEventCAR(signedCar);
+      // Post the event to Ceramic
+      await this.#ceramic.postEventCAR(signedCar);
 
-  //     // Return the updated StreamState
-  //     const { data: updatedState, error: postError } =
-  //       await this.#ceramic.api.GET("/streams/{stream_id}", {
-  //         params: { path: { stream_id: streamId } },
-  //       });
-  //     if (postError)
-  //       throw new Error(
-  //         `Failed to fetch updated stream state: ${postError.message}`
-  //       );
-  //     return updatedState!;
-  //   } catch (error) {
-  //     throw new Error(`Failed to update stream: ${(error as Error).message}`);
-  //   }
-  // }
-  /**
-   * Compute the differences between the previous and current content.
-   * @param previous - The previous content (JSON object).
-   * @param current - The new content (JSON object).
-   * @returns The computed diff as an array of changes.
-   */
-  // private computeDiff(previous: Content, current: Content): Content[] {
-  //   const changes = diff(previous, current);
-  //   if (!changes) {
-  //     throw new Error(
-  //       "No differences detected between previous and current content."
-  //     );
-  //   }
-  //   return changes;
-  // }
+      // Return the updated StreamState
+      const { data: updatedState, error: postError } =
+        await this.#ceramic.api.GET("/streams/{stream_id}", {
+          params: { path: { stream_id: streamId } },
+        });
+      if (postError)
+        throw new Error(
+          `Failed to fetch updated stream state: ${postError.message}`
+        );
+      return updatedState;
+    } catch (error) {
+      throw new Error(`Failed to update stream: ${(error as Error).message}`);
+    }
+  }
 }
