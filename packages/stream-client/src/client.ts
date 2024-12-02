@@ -1,9 +1,9 @@
 import { type CeramicClient, getCeramicClient } from "@ceramic-sdk/http-client";
 import type { DID } from "dids";
-import { signedEventToCAR } from "@ceramic-sdk/events";
+import { SignedEvent } from "@ceramic-sdk/events";
 import { createDataEvent } from "./utils.js";
 import { CommitID, StreamID, createCID } from "@ceramic-sdk/identifiers";
-import type { components } from "@ceramic-sdk/http-client/src/__generated__/api";
+import type { components } from "@ceramic-sdk/http-client/src/__generated__/api.js";
 
 export type StreamState = components["schemas"]["StreamState"];
 export type Content = Record<string, any>;
@@ -94,7 +94,7 @@ export class StreamClient {
       const currentID = CommitID.fromStream(currentStreamId, currentCid);
 
       // Create the new data event
-      const signedDataEvent = await createDataEvent({
+      const event = await createDataEvent({
         controller,
         currentID,
         currentContent,
@@ -102,11 +102,7 @@ export class StreamClient {
         shouldIndex,
       });
 
-      // Convert the signed event to a CAR file
-      const signedCar = signedEventToCAR(signedDataEvent);
-
-      // Post the event to Ceramic
-      await this.#ceramic.postEventCAR(signedCar);
+      await this.ceramic.postEventType(SignedEvent, event);
 
       // Return the updated StreamState
       const { data: updatedState, error: postError } =

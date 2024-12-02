@@ -1,22 +1,14 @@
 import { CeramicClient } from "@ceramic-sdk/http-client";
 import { CommitID, randomCID, randomStreamID } from "@ceramic-sdk/identifiers";
-import * as utils from "../src/utils"; // Import utils directly
-import {
-  assertSignedEvent,
-  getSignedEventPayload,
-  InitEventPayload,
-  signedEventToCAR,
-} from "@ceramic-sdk/events";
+import { getSignedEventPayload } from "@ceramic-sdk/events";
 import { getAuthenticatedDID } from "@didtools/key-did";
 import { DID } from "dids";
 import {
   StreamClient,
   createDataEvent,
-  StreamState,
   GenericDataEventPayload,
 } from "../src/index.js";
 import { jest } from "@jest/globals";
-import { asDIDString } from "@didtools/codecs";
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32));
 
