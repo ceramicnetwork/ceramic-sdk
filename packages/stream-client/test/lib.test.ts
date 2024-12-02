@@ -1,6 +1,11 @@
 import { CeramicClient } from "@ceramic-sdk/http-client";
-import { CommitID, randomCID, randomStreamID } from "@ceramic-sdk/identifiers";
-import { getSignedEventPayload } from "@ceramic-sdk/events";
+import {
+  CommitID,
+  createCID,
+  randomCID,
+  randomStreamID,
+} from "@ceramic-sdk/identifiers";
+import { getSignedEventPayload, SignedEvent } from "@ceramic-sdk/events";
 import { getAuthenticatedDID } from "@didtools/key-did";
 import { DID } from "dids";
 import {
@@ -140,6 +145,92 @@ describe("StreamClient", () => {
         event
       );
       expect(payload.header).toEqual({ shouldIndex: true });
+    });
+  });
+  describe("updateStream() method", () => {
+    const mockStreamId = randomStreamID();
+    const mockEventCid = randomCID();
+    let mockCeramicClient;
+    let client;
+
+    beforeEach(async () => {
+      mockCeramicClient = {
+        api: {
+          GET: jest.fn(),
+        },
+        postEventType: jest.fn(),
+      } as unknown as CeramicClient;
+
+      client = new StreamClient({
+        ceramic: mockCeramicClient,
+        did: authenticatedDID,
+      });
+    });
+
+    test("successfully updates stream with new content", async () => {
+      const currentState = {
+        data: JSON.stringify({ title: "Old Title" }),
+        event_cid: mockEventCid,
+      };
+
+      const newContent = { title: "New Title" };
+
+      mockCeramicClient.api.GET.mockResolvedValue({
+        data: currentState,
+        error: null,
+      });
+
+      mockCeramicClient.postEventType.mockResolvedValue(
+        createCID(mockEventCid)
+      );
+
+      const result = await client.updateStream(mockStreamId, newContent);
+
+      expect(result.data).toBe(JSON.stringify(newContent));
+      expect(result.event_cid).toBeDefined();
+      expect(mockCeramicClient.postEventType).toHaveBeenCalledWith(
+        SignedEvent,
+        expect.any(Object)
+      );
+    });
+
+    test("uses provided previousState instead of fetching", async () => {
+      const previousState = {
+        data: JSON.stringify({ title: "Previous Title" }),
+        event_cid: mockEventCid,
+      };
+
+      const newContent = { title: "Updated Title" };
+
+      mockCeramicClient.postEventType.mockResolvedValue(
+        createCID(mockEventCid)
+      );
+
+      await client.updateStream(mockStreamId, newContent, previousState);
+
+      // Verify that GET was not called since we provided previousState
+      expect(mockCeramicClient.api.GET).not.toHaveBeenCalled();
+    });
+
+    test("throws error when update fails", async () => {
+      const newContent = { title: "New Title" };
+      const errorMessage = "Network error";
+
+      mockCeramicClient.api.GET.mockResolvedValue({
+        data: {
+          data: JSON.stringify({ title: "Old Title" }),
+          event_cid: mockEventCid,
+        },
+        error: null,
+      });
+
+      mockCeramicClient.postEventType.mockRejectedValue(
+        new Error(errorMessage)
+      );
+
+      await expect(
+        client.updateStream(mockStreamId, newContent)
+      ).rejects.toThrow(`Failed to update stream: ${errorMessage}`);
     });
   });
 });
