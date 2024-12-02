@@ -102,18 +102,15 @@ export class StreamClient {
         shouldIndex,
       });
 
-      await this.ceramic.postEventType(SignedEvent, event);
+      const cid = await this.ceramic.postEventType(SignedEvent, event);
 
-      // Return the updated StreamState
-      const { data: updatedState, error: postError } =
-        await this.#ceramic.api.GET("/streams/{stream_id}", {
-          params: { path: { stream_id: streamId } },
-        });
-      if (postError)
-        throw new Error(
-          `Failed to fetch updated stream state: ${postError.message}`
-        );
-      return updatedState;
+      // Return the updated state without performing additional read
+      const commitId = CommitID.fromStream(currentStreamId, cid);
+      return {
+        ...currentState,
+        data: JSON.stringify(newContent),
+        event_cid: commitId.cid.toString(),
+      };
     } catch (error) {
       throw new Error(`Failed to update stream: ${(error as Error).message}`);
     }
