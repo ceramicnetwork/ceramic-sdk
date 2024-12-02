@@ -1,7 +1,24 @@
 import { CeramicClient } from "@ceramic-sdk/http-client";
+import { CommitID, randomCID, randomStreamID } from "@ceramic-sdk/identifiers";
+import * as utils from "../src/utils"; // Import utils directly
+import {
+  assertSignedEvent,
+  getSignedEventPayload,
+  InitEventPayload,
+  signedEventToCAR,
+} from "@ceramic-sdk/events";
+import { getAuthenticatedDID } from "@didtools/key-did";
 import { DID } from "dids";
-import { StreamClient } from "../src/index.js";
+import {
+  StreamClient,
+  createDataEvent,
+  StreamState,
+  GenericDataEventPayload,
+} from "../src/index.js";
 import { jest } from "@jest/globals";
+import { asDIDString } from "@didtools/codecs";
+
+const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32));
 
 describe("StreamClient", () => {
   describe("ceramic getter", () => {
@@ -96,6 +113,41 @@ describe("StreamClient", () => {
       expect(mockGet).toHaveBeenCalledWith("/streams/{stream_id}", {
         params: { path: { stream_id: streamId } },
       });
+    });
+  });
+  describe("createDataEvent()", () => {
+    const commitID = CommitID.fromStream(randomStreamID(), randomCID());
+
+    test("creates the JSON patch payload", async () => {
+      const event = await createDataEvent({
+        controller: authenticatedDID,
+        currentID: commitID,
+        currentContent: { hello: "test" },
+        newContent: { hello: "world", test: true },
+      });
+      const payload = await getSignedEventPayload(
+        GenericDataEventPayload,
+        event
+      );
+      expect(payload.data).toEqual([
+        { op: "replace", path: "/hello", value: "world" },
+        { op: "add", path: "/test", value: true },
+      ]);
+      expect(payload.header).toBeUndefined();
+    });
+
+    test("adds the shouldIndex header when provided", async () => {
+      const event = await createDataEvent({
+        controller: authenticatedDID,
+        currentID: commitID,
+        newContent: { hello: "world" },
+        shouldIndex: true,
+      });
+      const payload = await getSignedEventPayload(
+        GenericDataEventPayload,
+        event
+      );
+      expect(payload.header).toEqual({ shouldIndex: true });
     });
   });
 });

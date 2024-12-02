@@ -1,9 +1,12 @@
 import type { CommitID } from "@ceramic-sdk/identifiers";
 import type { DID } from "dids";
 import { type SignedEvent, signEvent } from "@ceramic-sdk/events";
-import { type JSONPatchOperation } from "@ceramic-sdk/model-instance-protocol";
 import jsonpatch from "fast-json-patch";
-import { GenericDataEventHeader, GenericDataEventPayload } from "./codecs.js";
+import {
+  GenericDataEventHeader,
+  GenericDataEventPayload,
+  JSONPatchOperation,
+} from "./codecs.js";
 
 export type UnknownContent = Record<string, unknown>;
 

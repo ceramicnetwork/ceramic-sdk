@@ -462,12 +462,6 @@ importers:
       '@ceramic-sdk/identifiers':
         specifier: workspace:^
         version: link:../identifiers
-      '@ceramic-sdk/model-instance-client':
-        specifier: workspace:^
-        version: link:../model-instance-client
-      '@ceramic-sdk/model-instance-protocol':
-        specifier: workspace:^
-        version: link:../model-instance-protocol
       '@didtools/codecs':
         specifier: ^3.0.0
         version: 3.0.0
@@ -477,10 +471,10 @@ importers:
       fast-json-patch:
         specifier: ^3.1.1
         version: 3.1.1
-      openapi-fetch:
-        specifier: ^0.12.2
-        version: 0.12.2
     devDependencies:
+      '@didtools/key-did':
+        specifier: ^1.0.0
+        version: 1.0.0(typescript@5.6.2)
       dids:
         specifier: ^5.0.2
         version: 5.0.2(typescript@5.6.2)
