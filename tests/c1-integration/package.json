@@ -30,6 +30,8 @@
     "@ceramic-sdk/model-instance-handler": "workspace:^",
     "@ceramic-sdk/model-instance-protocol": "workspace:^",
     "@ceramic-sdk/model-protocol": "workspace:^",
+    "@ceramic-sdk/stream-client": "workspace:^",
+    "@didtools/codecs": "^3.0.0",
     "@didtools/key-did": "^1.0.0",
     "apache-arrow": "18.0.0",
     "@jest/environment": "^29.7.0",
@@ -37,7 +39,10 @@
     "cross-spawn": "^7.0.6",
     "modern-spawn": "^1.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@didtools/key-did": "^1.0.0",
+    "multiformats": "^13.3.0"
+  },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],
     "moduleNameMapper": {

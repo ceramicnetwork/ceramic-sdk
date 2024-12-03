@@ -624,6 +624,12 @@ importers:
       '@ceramic-sdk/model-protocol':
         specifier: workspace:^
         version: link:../../packages/model-protocol
+      '@ceramic-sdk/stream-client':
+        specifier: workspace:^
+        version: link:../../packages/stream-client
+      '@didtools/codecs':
+        specifier: ^3.0.0
+        version: 3.0.0
       '@didtools/key-did':
         specifier: ^1.0.0
         version: 1.0.0(typescript@5.6.2)
@@ -642,6 +648,10 @@ importers:
       modern-spawn:
         specifier: ^1.0.0
         version: 1.0.0
+    devDependencies:
+      multiformats:
+        specifier: ^13.3.0
+        version: 13.3.0
 
 packages:
 
