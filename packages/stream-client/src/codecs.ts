@@ -1,6 +1,15 @@
-import { type TypeOf, record, boolean, optional, sparse, string } from "codeco";
+import {
+  type TypeOf,
+  record,
+  boolean,
+  optional,
+  sparse,
+  string,
+  unknown,
+} from "codeco";
 import { cid, uint8array } from "@didtools/codecs";
 import "multiformats"; // Import needed for TS reference
+import { CID } from "multiformats";
 
 export const Dimensions = record(string, uint8array);
 export type Dimensions = TypeOf<typeof Dimensions>;
@@ -21,7 +30,7 @@ export type GenericDataEventHeader = TypeOf<typeof GenericDataEventHeader>;
  */
 export const GenericDataEventPayload = sparse(
   {
-    data: string,
+    data: unknown,
     prev: cid,
     id: cid,
     header: optional(GenericDataEventHeader),
@@ -29,4 +38,10 @@ export const GenericDataEventPayload = sparse(
   },
   "DocumentDataEventPayload"
 );
-export type GenericDataEventPayload = TypeOf<typeof GenericDataEventPayload>;
+export type GenericDataEventPayload<T = unknown> = {
+  data: T;
+  prev: CID;
+  id: CID;
+  header?: GenericDataEventHeader;
+  dimensions?: Dimensions;
+};

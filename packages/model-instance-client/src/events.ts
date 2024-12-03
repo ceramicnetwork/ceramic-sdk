@@ -115,9 +115,9 @@ export type CreateDataEventParams<T extends UnknownContent = UnknownContent> = {
   /** Commit ID of the current tip of the ModelInstanceDocument stream */
   currentID: CommitID
   /** Current JSON object content for the ModelInstanceDocument stream, used with `newContent` to create the JSON patch */
-  currentContent?: T
+  currentContent: T
   /** New JSON object content for the ModelInstanceDocument stream, used with `currentContent` to create the JSON patch */
-  newContent?: T
+  newContent: T
   /** Flag notifying indexers if they should index the ModelInstanceDocument stream or not */
   shouldIndex?: boolean
 }

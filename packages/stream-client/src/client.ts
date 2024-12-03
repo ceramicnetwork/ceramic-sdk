@@ -76,7 +76,7 @@ export class StreamClient {
    * @param streamId - The stream ID to update
    * @returns The updated stream state
    */
-  async postData(streamId: string, signedEvent: SignedEvent): Promise<StreamState> {
+  async updateStream(streamId: string, signedEvent: SignedEvent): Promise<StreamState> {
     try {
       // Post the data event using the http-client
       const cid = await this.ceramic.postEventType(SignedEvent, signedEvent);

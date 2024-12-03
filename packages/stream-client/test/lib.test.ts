@@ -113,7 +113,7 @@ describe("StreamClient", () => {
       });
     });
   });
-  describe("postData() method", () => {
+  describe("updateStream() method", () => {
     const mockStreamId = randomStreamID();
     const mockEventCid = randomCID();
     let mockCeramicClient;
@@ -158,7 +158,7 @@ describe("StreamClient", () => {
       // Mock successful event posting
       mockCeramicClient.postEventType.mockResolvedValue(mockEventCid);
 
-      const result = await client.postData(
+      const result = await client.updateStream(
         mockStreamId.toString(),
         mockSignedEvent
       );
@@ -184,7 +184,7 @@ describe("StreamClient", () => {
         createCID(mockEventCid)
       );
 
-      const result = await client.postData(
+      const result = await client.updateStream(
         mockStreamId.toString(),
         mockSignedEvent
       );
@@ -206,7 +206,7 @@ describe("StreamClient", () => {
       );
 
       await expect(
-        client.postData(mockStreamId.toString(), mockSignedEvent)
+        client.updateStream(mockStreamId.toString(), mockSignedEvent)
       ).rejects.toThrow(`Failed to update stream: ${errorMessage}`);
     });
 
@@ -221,7 +221,7 @@ describe("StreamClient", () => {
       const mockSignedEvent = await signEvent(authenticatedDID, mockPayload);
 
       await expect(
-        clientWithoutDID.postData(mockStreamId.toString(), mockSignedEvent)
+        clientWithoutDID.updateStream(mockStreamId.toString(), mockSignedEvent)
       ).rejects.toThrow("Missing DID");
     });
 
@@ -246,7 +246,7 @@ describe("StreamClient", () => {
         createCID(mockEventCid)
       );
 
-      const result = await client.postData(
+      const result = await client.updateStream(
         mockStreamId.toString(),
         mockSignedEvent
       );

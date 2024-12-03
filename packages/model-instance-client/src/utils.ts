@@ -60,11 +60,11 @@ export function createInitHeader(
 
 /** @internal */
 export function getPatchOperations<T extends UnknownContent = UnknownContent>(
-  fromContent?: T,
-  toContent?: T,
+  fromContent: T,
+  toContent: T,
 ): Array<JSONPatchOperation> {
   return jsonpatch.compare(
-    fromContent ?? {},
-    toContent ?? {},
+    fromContent,
+    toContent,
   ) as Array<JSONPatchOperation>
 }
