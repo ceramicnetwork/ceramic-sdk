@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@didtools/key-did": "^1.0.0",
+    "dids": "^5.0.2",
     "multiformats": "^13.3.0"
   },
   "jest": {

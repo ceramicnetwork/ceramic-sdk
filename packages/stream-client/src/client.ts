@@ -1,11 +1,21 @@
 import { type CeramicClient, getCeramicClient } from "@ceramic-sdk/http-client";
 import type { DID } from "dids";
-import { SignedEvent } from "@ceramic-sdk/events";
-import { createDataEvent } from "./utils.js";
-import { CommitID, StreamID, createCID } from "@ceramic-sdk/identifiers";
-import type { components } from "@ceramic-sdk/http-client/src/__generated__/api.js";
+import { getSignedEventPayload, SignedEvent } from "@ceramic-sdk/events";
+import { GenericDataEventPayload } from "./codecs.js";
 
-export type StreamState = components["schemas"]["StreamState"];
+export type StreamState = {
+  /** Multibase encoding of the stream id */
+  id: string;
+  /** CID of the event that produced this state */
+  event_cid: string;
+  /** Controller of the stream */
+  controller: string;
+  /** Dimensions of the stream, each value is multibase encoded */
+  dimensions: Record<string, Uint8Array>;
+  /** Multibase encoding of the data of the stream. Content is stream type specific */
+  data: string;
+};
+
 export type Content = Record<string, any>;
 
 export type StreamClientParams = {
@@ -61,55 +71,29 @@ export class StreamClient {
   }
 
   /**
-   * Updates a stream by creating a diff, signing it, submitting it as a CAR file, and returns new StreamState.
-   * @param streamId - Multibase encoded stream ID
-   * @param newContent - The new JSON content to update the stream with
-   * @param previousState - The previous state of the stream (optional)
+   * Posts an update to a stream and returns new StreamState.
+   * @param signedEvent - A DID-signed event to post to the http-client
+   * @param streamId - The stream ID to update
    * @returns The updated stream state
    */
-  async updateStream(
-    streamId: string,
-    newContent: Content,
-    previousState?: StreamState
-  ): Promise<StreamState> {
+  async postData(streamId: string, signedEvent: SignedEvent): Promise<StreamState> {
     try {
-      // Fetch the current state if previousState isn't provided
-      const currentState =
-        previousState || (await this.getStreamState(streamId));
+      // Post the data event using the http-client
+      const cid = await this.ceramic.postEventType(SignedEvent, signedEvent);
 
-      const baseData = currentState?.data || {};
-
-      // Determine the updated content
-      const currentContent =
-        typeof baseData === "string"
-          ? JSON.parse(currentState.data)
-          : currentState.data;
-
-      const shouldIndex = true;
-
-      // Obtain identifier values for the stream
-      const controller = this.getDID();
-      const currentCid = createCID(currentState.event_cid);
-      const currentStreamId = StreamID.fromString(streamId);
-      const currentID = CommitID.fromStream(currentStreamId, currentCid);
-
-      // Create the new data event
-      const event = await createDataEvent({
-        controller,
-        currentID,
-        currentContent,
-        newContent,
-        shouldIndex,
-      });
-
-      const cid = await this.ceramic.postEventType(SignedEvent, event);
+      // get the new stream state from the signed event
+      const payload = await getSignedEventPayload(
+        GenericDataEventPayload,
+        signedEvent
+      );
 
       // Return the updated state without performing additional read
-      const commitId = CommitID.fromStream(currentStreamId, cid);
       return {
-        ...currentState,
-        data: JSON.stringify(newContent),
-        event_cid: commitId.cid.toString(),
+        id: streamId,
+        controller: this.getDID().id,
+        dimensions: payload.dimensions || {},
+        data: JSON.stringify(payload.data),
+        event_cid: cid.toString(),
       };
     } catch (error) {
       throw new Error(`Failed to update stream: ${(error as Error).message}`);

@@ -41,13 +41,11 @@
     "@ceramic-sdk/http-client": "workspace:^",
     "@ceramic-sdk/identifiers": "workspace:^",
     "@ceramic-sdk/events": "workspace:^",
-    "fast-json-patch": "^3.1.1",
     "@didtools/codecs": "^3.0.0",
     "codeco": "^1.4.3"
   },
   "devDependencies": {
     "dids": "^5.0.2",
-    "openapi-typescript": "^7.4.1",
     "@didtools/key-did": "^1.0.0",
     "type-fest": "^4.26.1",
     "multiformats": "^13.3.0"

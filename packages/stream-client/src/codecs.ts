@@ -1,87 +1,9 @@
-import {
-  type TypeOf,
-  array,
-  boolean,
-  literal,
-  optional,
-  sparse,
-  strict,
-  string,
-  union,
-  unknown,
-} from "codeco";
-import { cid } from "@didtools/codecs";
+import { type TypeOf, record, boolean, optional, sparse, string } from "codeco";
+import { cid, uint8array } from "@didtools/codecs";
 import "multiformats"; // Import needed for TS reference
 
-/**
- * JSON patch operations.
- */
-
-export const JSONPatchAddOperation = strict(
-  {
-    op: literal("add"),
-    path: string,
-    value: unknown,
-  },
-  "JSONPatchAddOperation"
-);
-
-export const JSONPatchRemoveOperation = strict(
-  {
-    op: literal("remove"),
-    path: string,
-  },
-  "JSONPatchRemoveOperation"
-);
-
-export const JSONPatchReplaceOperation = strict(
-  {
-    op: literal("replace"),
-    path: string,
-    value: unknown,
-  },
-  "JSONPatchReplaceOperation"
-);
-
-export const JSONPatchMoveOperation = strict(
-  {
-    op: literal("move"),
-    path: string,
-    from: string,
-  },
-  "JSONPatchMoveOperation"
-);
-
-export const JSONPatchCopyOperation = strict(
-  {
-    op: literal("copy"),
-    path: string,
-    from: string,
-  },
-  "JSONPatchCopyOperation"
-);
-
-export const JSONPatchTestOperation = strict(
-  {
-    op: literal("test"),
-    path: string,
-    value: unknown,
-  },
-  "JSONPatchTestOperation"
-);
-
-export const JSONPatchOperation = union(
-  [
-    JSONPatchAddOperation,
-    JSONPatchRemoveOperation,
-    JSONPatchReplaceOperation,
-    JSONPatchMoveOperation,
-    JSONPatchCopyOperation,
-    JSONPatchTestOperation,
-  ],
-  "JSONPatchOperation"
-);
-export type JSONPatchOperation = TypeOf<typeof JSONPatchOperation>;
+export const Dimensions = record(string, uint8array);
+export type Dimensions = TypeOf<typeof Dimensions>;
 
 /**
  * Data event header for a generic Stream
@@ -99,10 +21,11 @@ export type GenericDataEventHeader = TypeOf<typeof GenericDataEventHeader>;
  */
 export const GenericDataEventPayload = sparse(
   {
-    data: array(JSONPatchOperation),
+    data: string,
     prev: cid,
     id: cid,
     header: optional(GenericDataEventHeader),
+    dimensions: optional(Dimensions),
   },
   "DocumentDataEventPayload"
 );
