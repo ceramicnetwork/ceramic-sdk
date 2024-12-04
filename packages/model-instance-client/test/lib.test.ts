@@ -287,4 +287,118 @@ describe("DocumentClient", () => {
       ).rejects.toThrow("Missing DID");
     });
   });
+  describe("updateDocument() method", () => {
+    test("updates document with provided current state", async () => {
+      const eventCid = randomCID();
+      const streamID = randomStreamID();
+      const commitID = CommitID.fromStream(streamID);
+      const currentState = {
+        id: streamID.toString(),
+        controller: authenticatedDID.id,
+        data: JSON.stringify({ test: 1 }),
+        event_cid: commitID.toString(),
+        dimensions: {},
+      };
+
+      const mockCeramic = {
+        // @ts-ignore
+        postEventType: jest.fn().mockResolvedValue(eventCid),
+        // @ts-ignore
+        updateStream: jest.fn().mockResolvedValue({
+          event_cid: eventCid.toString(),
+        }),
+      } as unknown as CeramicClient;
+
+      const client = new DocumentClient({
+        ceramic: mockCeramic,
+        did: authenticatedDID,
+      });
+
+      const result = await client.updateDocument({
+        id: streamID.toString(),
+        currentState,
+        newContent: { test: 2 },
+        shouldIndex: true,
+      });
+
+      expect(result).toEqual({
+        id: expect.any(String),
+        content: { test: 2 },
+      });
+      expect(mockCeramic.postEventType).toHaveBeenCalledWith(
+        SignedEvent,
+        expect.any(Object)
+      );
+    });
+
+    test("fetches current state if not provided", async () => {
+      const eventCid = randomCID();
+      const streamID = randomStreamID();
+      const commitID = CommitID.fromStream(streamID);
+      const currentState = {
+        id: streamID.toString(),
+        controller: authenticatedDID.id,
+        data: JSON.stringify({ test: 1 }),
+        event_cid: commitID.toString(),
+        dimensions: {},
+      };
+      // @ts-ignore
+      const mockGet = jest.fn().mockResolvedValue({
+        data: currentState,
+        error: null,
+      });
+
+      const mockCeramic = {
+        // @ts-ignore
+        postEventType: jest.fn().mockResolvedValue(eventCid),
+        api: { GET: mockGet },
+      } as unknown as CeramicClient;
+
+      const client = new DocumentClient({
+        ceramic: mockCeramic,
+        did: authenticatedDID,
+      });
+
+      // @ts-ignore
+      const result = await client.updateDocument({
+        id: streamID.toString(),
+        newContent: { test: 2 },
+        shouldIndex: true,
+      });
+
+      expect(mockGet).toHaveBeenCalledWith(
+        "/streams/{stream_id}",
+        expect.any(Object)
+      );
+      expect(result).toEqual({
+        id: expect.any(String),
+        content: { test: 2 },
+      });
+    });
+
+    test("handles parsing errors in current state data", async () => {
+      const streamID = randomStreamID();
+      const commitID = CommitID.fromStream(streamID);
+      const currentState = {
+        id: streamID.toString(),
+        controller: authenticatedDID.id,
+        data: "invalid-json",
+        event_cid: commitID.toString(),
+        dimensions: {},
+      };
+
+      const client = new DocumentClient({
+        ceramic: {} as CeramicClient,
+        did: authenticatedDID,
+      });
+
+      await expect(
+        client.updateDocument({
+          id: streamID.toString(),
+          currentState,
+          newContent: { test: 2 },
+        })
+      ).rejects.toThrow();
+    });
+  });
 });

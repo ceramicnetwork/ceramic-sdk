@@ -1,11 +1,11 @@
 import { InitEventPayload, SignedEvent } from "@ceramic-sdk/events";
-import { CommitID, type StreamID } from "@ceramic-sdk/identifiers";
+import { CommitID, createCID, type StreamID } from "@ceramic-sdk/identifiers";
 import {
   DocumentEvent,
   getStreamID,
 } from "@ceramic-sdk/model-instance-protocol";
 import { StreamClient, StreamState } from "@ceramic-sdk/stream-client";
-import type { DIDString } from "@didtools/codecs";
+import type { DIDString, cid } from "@didtools/codecs";
 import type { DID } from "dids";
 
 import {
@@ -108,7 +108,7 @@ export class DocumentClient extends StreamClient {
     const currentState = params.currentState || (await this.getStreamState(id));
     // use existing postUpdate utility to create the update
     const update = await this.postUpdate(id, {
-      currentID: CommitID.fromString(currentState.event_cid),
+      currentID: new CommitID("MID", createCID(currentState.id)),
       currentContent: JSON.parse(currentState.data),
       newContent,
       shouldIndex,
