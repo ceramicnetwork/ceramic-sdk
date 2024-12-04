@@ -99,6 +99,7 @@ describe('stream classes', () => {
     const updateCommitID = await docClient.postData({
       currentID: initCommitID,
       newContent: { test: 'set' },
+      currentContent: {test: 'current'},
     })
     const updateEvent = await docClient.getEvent(updateCommitID)
     docState = await handleDocument(
@@ -110,6 +111,7 @@ describe('stream classes', () => {
 
     const finalCommitID = await docClient.postData({
       currentID: updateCommitID,
+      currentContent: { test: 'set' },
       newContent: { test: 'changed' },
     })
     const finalEvent = await docClient.getEvent(finalCommitID)
@@ -187,6 +189,7 @@ describe('stream classes', () => {
 
     const updateCommitID = await docClient.postData({
       currentID: initCommitID,
+      currentContent: { test: 'one' },
       newContent: { test: 'two' },
     })
     const updateEvent = await docClient.getEvent(updateCommitID)
@@ -199,6 +202,7 @@ describe('stream classes', () => {
 
     const finalCommitID = await docClient.postData({
       currentID: updateCommitID,
+      currentContent: { test: 'two' },
       newContent: { test: 'three' },
     })
     const finalEvent = await docClient.getEvent(finalCommitID)

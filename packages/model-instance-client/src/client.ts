@@ -85,6 +85,19 @@ export class DocumentClient extends StreamClient {
     return CommitID.fromStream(getStreamID(cid));
   }
 
+  /** Post a data event and return its commit ID */
+  async postData<T extends UnknownContent = UnknownContent>(
+    params: PostDataParams<T>
+  ): Promise<CommitID> {
+    const { controller, ...rest } = params;
+    const event = await createDataEvent({
+      ...rest,
+      controller: this.getDID(controller),
+    });
+    const cid = await this.ceramic.postEventType(SignedEvent, event);
+    return CommitID.fromStream(params.currentID.baseID, cid);
+  }
+
   /** Post a data event and return its commit ID. Assumes current data is defined */
   async postUpdate<T extends UnknownContent = UnknownContent>(
     streamID: string,
