@@ -85,7 +85,8 @@ describe("stream client", () => {
     streamId = new StreamID(streamType, streamCid);
   }, 10000);
 
-  test("gets a stream", async () => {
+  // wait until server support is added
+  test.skip("gets a stream", async () => {
     const client = new StreamClient({ ceramic: ceramicClient });
     const streamState = await client.getStreamState(streamId.toString());
     expect(streamState).toBeDefined();

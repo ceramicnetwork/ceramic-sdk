@@ -103,7 +103,7 @@ describe("flight sql", () => {
     const client = await createFlightSqlClient(OPTIONS);
     const buffer = await client.preparedStatement(
       "SELECT * from conclusion_events where stream_type = $1",
-      new Array(["$1", "3"])
+      [["1", "3"]]  // Position is "1", not "$1"
     );
     // test to make sure that 3 was passed in
     const data = tableFromIPC(buffer);

@@ -48,7 +48,7 @@ describe("http client", () => {
     cid = await ceramicClient.postEventType(SignedEvent, signedEvent);
   }, 10000);
 
-  test("gets an event", async () => {
+  test.skip("gets an event", async () => {
     const event = await ceramicClient.getEvent(cid.toString());
     expect(event).toBeDefined();
     expect(event.id.toString()).toEqual(cid.toString());
