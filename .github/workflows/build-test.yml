@@ -213,3 +213,65 @@ jobs:
       - name: Test bindings
         working-directory: ${{ env.FLIGHT_SQL_PATH }}
         run: pnpm test
+  publish:
+    name: Publish flight-sql-client
+    runs-on: ubuntu-latest
+    needs:
+      - test-linux-x64-gnu-binding
+      - test-macOS-binding
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install pnpm
+        id: pnpm-install
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.8.0
+          run_install: false
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+            echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}_publish-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}_publish-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: ${{ env.FLIGHT_SQL_PATH }}
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ${{ env.FLIGHT_SQL_PATH }}/artifacts
+      - name: Move artifacts
+        run: pnpm artifacts
+        working-directory: ${{ env.FLIGHT_SQL_PATH }}
+      - name: List packages
+        run: ls -R ./npm
+        shell: bash
+        working-directory: ${{ env.FLIGHT_SQL_PATH }}
+      - name: Publish
+        working-directory: ${{ env.FLIGHT_SQL_PATH }}
+        run: |
+          npm config set provenance true
+          if git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
+          then
+            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+            npm publish --access public
+          elif git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+";
+          then
+            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+            npm publish --tag next --access public
+          else
+            echo "Not a release, skipping publish"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
