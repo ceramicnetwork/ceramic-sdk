@@ -5,7 +5,7 @@ import {
   getStreamID,
 } from "@ceramic-sdk/model-instance-protocol";
 import { StreamClient, StreamState } from "@ceramic-sdk/stream-client";
-import type { DIDString, cid } from "@didtools/codecs";
+import type { DIDString } from "@didtools/codecs";
 import type { DID } from "dids";
 
 import {
