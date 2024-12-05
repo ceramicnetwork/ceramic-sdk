@@ -5,7 +5,7 @@ import {
   type ModelState,
   handleInitEvent as handleModel,
 } from '@ceramic-sdk/model-handler'
-import { DocumentClient } from '@ceramic-sdk/model-instance-client'
+import { ModelInstanceClient } from '@ceramic-sdk/model-instance-client'
 import {
   type DocumentState,
   handleEvent as handleDocument,
@@ -80,7 +80,7 @@ describe('stream classes', () => {
       context,
     )
 
-    const docClient = new DocumentClient({
+    const docClient = new ModelInstanceClient({
       ceramic: client,
       did: authenticatedDID,
     })
@@ -169,7 +169,7 @@ describe('stream classes', () => {
       context,
     )
 
-    const docClient = new DocumentClient({
+    const docClient = new ModelInstanceClient({
       ceramic: client,
       did: authenticatedDID,
     })

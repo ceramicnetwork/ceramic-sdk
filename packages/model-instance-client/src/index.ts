@@ -1,5 +1,5 @@
 export {
-  DocumentClient,
+  ModelInstanceClient,
   type PostDataParams,
   type PostDeterministicInitParams,
   type PostSignedInitParams,

@@ -12,7 +12,7 @@ import { jest } from '@jest/globals'
 import { equals } from 'uint8arrays'
 
 import {
-  DocumentClient,
+  ModelInstanceClient,
   createDataEvent,
   createInitEvent,
   getDeterministicInitEvent,
@@ -136,14 +136,14 @@ describe('createDataEvent()', () => {
   })
 })
 
-describe('DocumentClient', () => {
+describe('ModelInstanceClient', () => {
   describe('getEvent() method', () => {
     test('gets a MID event by commit ID', async () => {
       const streamID = randomStreamID()
       const docEvent = getDeterministicInitEvent(streamID, 'did:key:123')
       const getEventType = jest.fn(() => docEvent)
       const ceramic = { getEventType } as unknown as CeramicClient
-      const client = new DocumentClient({ ceramic, did: authenticatedDID })
+      const client = new ModelInstanceClient({ ceramic, did: authenticatedDID })
 
       const commitID = CommitID.fromStream(streamID)
       const event = await client.getEvent(CommitID.fromStream(streamID))
@@ -159,7 +159,7 @@ describe('DocumentClient', () => {
     test('posts the deterministic init event and returns the MID init CommitID', async () => {
       const postEventType = jest.fn(() => randomCID())
       const ceramic = { postEventType } as unknown as CeramicClient
-      const client = new DocumentClient({ ceramic, did: authenticatedDID })
+      const client = new ModelInstanceClient({ ceramic, did: authenticatedDID })
 
       const id = await client.postDeterministicInit({
         controller: 'did:key:123',
@@ -175,7 +175,7 @@ describe('DocumentClient', () => {
     test('posts the signed init event and returns the MID init CommitID', async () => {
       const postEventType = jest.fn(() => randomCID())
       const ceramic = { postEventType } as unknown as CeramicClient
-      const client = new DocumentClient({ ceramic, did: authenticatedDID })
+      const client = new ModelInstanceClient({ ceramic, did: authenticatedDID })
 
       const id = await client.postSignedInit({
         content: { test: true },
@@ -192,7 +192,7 @@ describe('DocumentClient', () => {
     test('posts the signed data event and returns the CommitID', async () => {
       const postEventType = jest.fn(() => randomCID())
       const ceramic = { postEventType } as unknown as CeramicClient
-      const client = new DocumentClient({ ceramic, did: authenticatedDID })
+      const client = new ModelInstanceClient({ ceramic, did: authenticatedDID })
 
       const initCommitID = await client.postSignedInit({
         content: { test: 0 },
