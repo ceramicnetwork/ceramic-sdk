@@ -27,20 +27,21 @@ const testModel: ModelDefinition = {
   },
 }
 
-const OPTIONS: EnvironmentOptions = {
+const CONTAINER_OPTS: EnvironmentOptions = {
   containerName: 'ceramic-test-model',
-  apiPort: 5201,
-  flightSqlPort: 5202,
+  apiPort: 5222,
+  flightSqlPort: 5223,
+  testPort: 5223,
 }
 
 describe('model integration test', () => {
   let c1Container: CeramicOneContainer
   const client = new CeramicClient({
-    url: `http://127.0.0.1:${OPTIONS.apiPort}`,
+    url: `http://127.0.0.1:${CONTAINER_OPTS.apiPort}`,
   })
 
   beforeAll(async () => {
-    c1Container = await CeramicOneContainer.startContainer(OPTIONS)
+    c1Container = await CeramicOneContainer.startContainer(CONTAINER_OPTS)
   }, 10000)
 
   test('create model', async () => {

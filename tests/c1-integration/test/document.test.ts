@@ -15,7 +15,6 @@ import {
 } from '@ceramic-sdk/model-protocol'
 import { getAuthenticatedDID } from '@didtools/key-did'
 import CeramicOneContainer, { type EnvironmentOptions } from '../src'
-import ContainerWrapper from '../src/withContainer'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
@@ -35,20 +34,21 @@ const testModel: ModelDefinition = {
   },
 }
 
-const OPTIONS: EnvironmentOptions = {
+const CONTAINER_OPTS: EnvironmentOptions = {
   containerName: 'ceramic-test-document',
-  apiPort: 5211,
-  flightSqlPort: 5212,
+  apiPort: 5222,
+  flightSqlPort: 5223,
+  testPort: 5223,
 }
 
 describe('model integration test', () => {
   let c1Container: CeramicOneContainer
   const client = new CeramicClient({
-    url: `http://127.0.0.1:${OPTIONS.apiPort}`,
+    url: `http://127.0.0.1:${CONTAINER_OPTS.apiPort}`,
   })
 
   beforeAll(async () => {
-    c1Container = await CeramicOneContainer.startContainer(OPTIONS)
+    c1Container = await CeramicOneContainer.startContainer(CONTAINER_OPTS)
   }, 10000)
 
   test('create model and documents using the model', async () => {
