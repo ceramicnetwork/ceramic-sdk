@@ -386,6 +386,93 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/streams/{stream_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get stream state */
+    get: {
+      parameters: {
+        query?: never
+        header?: never
+        path: {
+          /** @description Multibase encoded stream ID */
+          stream_id: string
+        }
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description success */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content: {
+            'application/json': components['schemas']['StreamState']
+          }
+        }
+        /** @description bad request */
+        400: {
+          headers: {
+            [name: string]: unknown
+          }
+          content: {
+            'application/json': components['schemas']['BadRequestResponse']
+          }
+        }
+        /** @description Stream not found */
+        404: {
+          headers: {
+            [name: string]: unknown
+          }
+          content: {
+            'text/plain': string
+          }
+        }
+        /** @description Internal server error */
+        500: {
+          headers: {
+            [name: string]: unknown
+          }
+          content: {
+            'application/json': components['schemas']['ErrorResponse']
+          }
+        }
+      }
+    }
+    put?: never
+    post?: never
+    delete?: never
+    /** cors */
+    options: {
+      parameters: {
+        query?: never
+        header?: never
+        path: {
+          /** @description Multibase encoded stream ID */
+          stream_id: string
+        }
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description cors */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
+        }
+      }
+    }
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/interests/{sort_key}/{sort_value}': {
     parameters: {
       query?: never
@@ -1070,6 +1157,29 @@ export interface components {
     NetworkInfo: {
       /** @description Name of the Ceramic network */
       name: string
+    }
+    /**
+     * State of a Ceramic stream
+     * @description The state of a Ceramic stream as defined by the stream type aggregation and conflict resolution rules.
+     * @example {
+     *       "controller": "controller",
+     *       "data": "data",
+     *       "id": "id",
+     *       "event_cid": "event_cid",
+     *       "dimensions": "{}"
+     *     }
+     */
+    StreamState: {
+      /** @description Multibase encoding of the stream id */
+      id: string
+      /** @description CID of the event that produced this state */
+      event_cid: string
+      /** @description Controller of the stream */
+      controller: string
+      /** @description Dimensions of the stream, each value is multibase encoded. */
+      dimensions: Record<string, never>
+      /** @description Multibase encoding of the data of the stream. Content is stream type specific. */
+      data: string
     }
     /** @example {
      *       "resumeToken": "resumeToken"
