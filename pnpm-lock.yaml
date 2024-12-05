@@ -108,12 +108,12 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
     devDependencies:
+      '@ceramic-sdk/document-client':
+        specifier: workspace:^
+        version: link:../../packages/document-client
       '@ceramic-sdk/model-client':
         specifier: workspace:^
         version: link:../../packages/model-client
-      '@ceramic-sdk/model-instance-client':
-        specifier: workspace:^
-        version: link:../../packages/model-instance-client
       '@tanstack/router-devtools':
         specifier: ^1.58.9
         version: 1.58.9(@tanstack/react-router@1.58.9(@tanstack/router-generator@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(csstype@3.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -144,6 +144,40 @@ importers:
       vite:
         specifier: ^5.4.8
         version: 5.4.8(@types/node@22.7.0)(sugarss@4.0.1(postcss@8.4.47))
+
+  packages/document-client:
+    dependencies:
+      '@ceramic-sdk/events':
+        specifier: workspace:^
+        version: link:../events
+      '@ceramic-sdk/identifiers':
+        specifier: workspace:^
+        version: link:../identifiers
+      '@ceramic-sdk/model-instance-protocol':
+        specifier: workspace:^
+        version: link:../model-instance-protocol
+      '@ceramic-sdk/stream-client':
+        specifier: workspace:^
+        version: link:../stream-client
+      '@didtools/codecs':
+        specifier: ^3.0.0
+        version: 3.0.0
+      fast-json-patch:
+        specifier: ^3.1.1
+        version: 3.1.1
+    devDependencies:
+      '@ceramic-sdk/http-client':
+        specifier: workspace:^
+        version: link:../http-client
+      '@didtools/key-did':
+        specifier: ^1.0.0
+        version: 1.0.0(typescript@5.6.2)(zod@3.23.8)
+      dids:
+        specifier: ^5.0.2
+        version: 5.0.2(typescript@5.6.2)(zod@3.23.8)
+      uint8arrays:
+        specifier: ^5.1.0
+        version: 5.1.0
 
   packages/events:
     dependencies:
@@ -315,40 +349,6 @@ importers:
         specifier: ^13.3.0
         version: 13.3.0
 
-  packages/model-instance-client:
-    dependencies:
-      '@ceramic-sdk/events':
-        specifier: workspace:^
-        version: link:../events
-      '@ceramic-sdk/identifiers':
-        specifier: workspace:^
-        version: link:../identifiers
-      '@ceramic-sdk/model-instance-protocol':
-        specifier: workspace:^
-        version: link:../model-instance-protocol
-      '@ceramic-sdk/stream-client':
-        specifier: workspace:^
-        version: link:../stream-client
-      '@didtools/codecs':
-        specifier: ^3.0.0
-        version: 3.0.0
-      fast-json-patch:
-        specifier: ^3.1.1
-        version: 3.1.1
-    devDependencies:
-      '@ceramic-sdk/http-client':
-        specifier: workspace:^
-        version: link:../http-client
-      '@didtools/key-did':
-        specifier: ^1.0.0
-        version: 1.0.0(typescript@5.6.2)(zod@3.23.8)
-      dids:
-        specifier: ^5.0.2
-        version: 5.0.2(typescript@5.6.2)(zod@3.23.8)
-      uint8arrays:
-        specifier: ^5.1.0
-        version: 5.1.0
-
   packages/model-instance-handler:
     dependencies:
       '@ceramic-sdk/events':
@@ -376,9 +376,9 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0
     devDependencies:
-      '@ceramic-sdk/model-instance-client':
+      '@ceramic-sdk/document-client':
         specifier: workspace:^
-        version: link:../model-instance-client
+        version: link:../document-client
       '@ceramic-sdk/model-protocol':
         specifier: workspace:^
         version: link:../model-protocol
@@ -504,15 +504,15 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
     devDependencies:
+      '@ceramic-sdk/document-client':
+        specifier: workspace:^
+        version: link:../document-client
       '@ceramic-sdk/events':
         specifier: workspace:^
         version: link:../events
       '@ceramic-sdk/identifiers':
         specifier: workspace:^
         version: link:../identifiers
-      '@ceramic-sdk/model-instance-client':
-        specifier: workspace:^
-        version: link:../model-instance-client
       '@ceramic-sdk/model-instance-protocol':
         specifier: workspace:^
         version: link:../model-instance-protocol
@@ -567,6 +567,9 @@ importers:
 
   tests/c1-integration:
     dependencies:
+      '@ceramic-sdk/document-client':
+        specifier: workspace:^
+        version: link:../../packages/document-client
       '@ceramic-sdk/events':
         specifier: workspace:^
         version: link:../../packages/events
@@ -585,9 +588,6 @@ importers:
       '@ceramic-sdk/model-handler':
         specifier: workspace:^
         version: link:../../packages/model-handler
-      '@ceramic-sdk/model-instance-client':
-        specifier: workspace:^
-        version: link:../../packages/model-instance-client
       '@ceramic-sdk/model-instance-handler':
         specifier: workspace:^
         version: link:../../packages/model-instance-handler

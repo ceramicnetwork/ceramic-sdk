@@ -1,10 +1,10 @@
-**@ceramic-sdk/model-instance-client v0.1.0** • **Docs**
+**@ceramic-sdk/document-client v0.1.0** • **Docs**
 
 ***
 
-[Ceramic SDK](../../README.md) / @ceramic-sdk/model-instance-client
+[Ceramic SDK](../../README.md) / @ceramic-sdk/document-client
 
-# @ceramic-sdk/model-instance-client
+# @ceramic-sdk/document-client
 
 ## Classes
 

@@ -42,7 +42,7 @@
   "devDependencies": {
     "@ceramic-sdk/events": "workspace:^",
     "@ceramic-sdk/identifiers": "workspace:^",
-    "@ceramic-sdk/model-instance-client": "workspace:^",
+    "@ceramic-sdk/document-client": "workspace:^",
     "@ceramic-sdk/model-instance-protocol": "workspace:^",
     "@ceramic-sdk/test-utils": "workspace:^",
     "@didtools/cacao": "^3.0.1",

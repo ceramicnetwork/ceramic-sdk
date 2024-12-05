@@ -1,12 +1,12 @@
-import type { TimeEvent } from '@ceramic-sdk/events'
-import { CommitID, randomCID, randomStreamID } from '@ceramic-sdk/identifiers'
 import {
   createDataEvent,
   createInitEvent,
   createInitHeader,
   getDeterministicInitEvent,
   getDeterministicInitEventPayload,
-} from '@ceramic-sdk/model-instance-client'
+} from '@ceramic-sdk/document-client'
+import type { TimeEvent } from '@ceramic-sdk/events'
+import { CommitID, randomCID, randomStreamID } from '@ceramic-sdk/identifiers'
 import {
   type DocumentDataEventPayload,
   type DocumentInitEventPayload,

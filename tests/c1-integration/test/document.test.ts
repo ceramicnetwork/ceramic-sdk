@@ -6,7 +6,6 @@ import {
   type ModelState,
   handleInitEvent as handleModel,
 } from '@ceramic-sdk/model-handler'
-import { createInitEvent as createDocument } from '@ceramic-sdk/model-instance-client'
 import { handleEvent as handleDocument } from '@ceramic-sdk/model-instance-handler'
 import { DocumentEvent } from '@ceramic-sdk/model-instance-protocol'
 import {
@@ -14,6 +13,7 @@ import {
   getModelStreamID,
 } from '@ceramic-sdk/model-protocol'
 import { getAuthenticatedDID } from '@didtools/key-did'
+import { createInitEvent as createDocument } from '../../../packages/document-client/dist'
 import CeramicOneContainer, { type EnvironmentOptions } from '../src'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))

@@ -5,13 +5,13 @@ import {
   type ModelState,
   handleInitEvent as handleModel,
 } from '@ceramic-sdk/model-handler'
-import { DocumentClient } from '@ceramic-sdk/model-instance-client'
 import {
   type DocumentState,
   handleEvent as handleDocument,
 } from '@ceramic-sdk/model-instance-handler'
 import type { ModelDefinition } from '@ceramic-sdk/model-protocol'
 import { getAuthenticatedDID } from '@didtools/key-did'
+import { DocumentClient } from '../../../packages/document-client/dist'
 import CeramicOneContainer, { type EnvironmentOptions } from '../src'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))

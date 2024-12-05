@@ -1,15 +1,15 @@
 import {
+  createDataEventPayload,
+  createInitHeader,
+  getDeterministicInitEvent,
+} from '@ceramic-sdk/document-client'
+import {
   InitEventPayload,
   type SignedEvent,
   signEvent,
   signedEventToCAR,
 } from '@ceramic-sdk/events'
 import { CommitID, StreamID } from '@ceramic-sdk/identifiers'
-import {
-  createDataEventPayload,
-  createInitHeader,
-  getDeterministicInitEvent,
-} from '@ceramic-sdk/model-instance-client'
 import { getStreamID } from '@ceramic-sdk/model-instance-protocol'
 import type { AuthMethod, Cacao } from '@didtools/cacao'
 import type { IBlock } from 'cartonne'

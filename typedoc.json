@@ -6,7 +6,7 @@
     "packages/http-client",
     "packages/identifiers",
     "packages/model-client",
-    "packages/model-instance-client",
+    "packages/document-client",
     "packages/model-instance-protocol",
     "packages/model-protocol",
     "packages/stream-client"
