@@ -4,1112 +4,1222 @@
  */
 
 export interface paths {
-  '/liveness': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Test the liveness of the Ceramic node */
-    get: {
-      parameters: {
-        query?: never
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description success */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content?: never
-        }
-        /** @description Internal server error */
-        500: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['ErrorResponse']
-          }
-        }
-      }
-    }
-    put?: never
-    post?: never
-    delete?: never
-    /** cors */
-    options: {
-      parameters: {
-        query?: never
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description cors */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content?: never
-        }
-      }
-    }
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/debug/heap': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Get the heap statistics of the Ceramic node */
-    get: {
-      parameters: {
-        query?: never
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description success */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/octet-stream': string
-          }
-        }
-        /** @description bad request */
-        400: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['BadRequestResponse']
-          }
-        }
-        /** @description Internal server error */
-        500: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['ErrorResponse']
-          }
-        }
-      }
-    }
-    put?: never
-    post?: never
-    delete?: never
-    /** cors */
-    options: {
-      parameters: {
-        query?: never
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description cors */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content?: never
-        }
-      }
-    }
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/version': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Get the version of the Ceramic node */
-    get: {
-      parameters: {
-        query?: never
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description success */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['Version']
-          }
-        }
-        /** @description Internal server error */
-        500: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['ErrorResponse']
-          }
-        }
-      }
-    }
-    put?: never
-    /** Get the version of the Ceramic node */
-    post: {
-      parameters: {
-        query?: never
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description success */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['Version']
-          }
-        }
-        /** @description Internal server error */
-        500: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['ErrorResponse']
-          }
-        }
-      }
-    }
-    delete?: never
-    /** cors */
-    options: {
-      parameters: {
-        query?: never
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description cors */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content?: never
-        }
-      }
-    }
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/events': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /** Creates a new event */
-    post: {
-      parameters: {
-        query?: never
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody: components['requestBodies']['EventData']
-      responses: {
-        /** @description success */
-        204: {
-          headers: {
-            [name: string]: unknown
-          }
-          content?: never
-        }
-        /** @description bad request */
-        400: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['BadRequestResponse']
-          }
-        }
-        /** @description Internal server error */
-        500: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['ErrorResponse']
-          }
-        }
-      }
-    }
-    delete?: never
-    /** cors */
-    options: {
-      parameters: {
-        query?: never
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description cors */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content?: never
-        }
-      }
-    }
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/events/{event_id}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Get event data */
-    get: {
-      parameters: {
-        query?: never
-        header?: never
-        path: {
-          /** @description CID of the root block of the event, used to identify of the event */
-          event_id: string
-        }
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description success */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['Event']
-          }
-        }
-        /** @description bad request */
-        400: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['BadRequestResponse']
-          }
-        }
-        /** @description Event not found */
-        404: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'text/plain': string
-          }
-        }
-        /** @description Internal server error */
-        500: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['ErrorResponse']
-          }
-        }
-      }
-    }
-    put?: never
-    post?: never
-    delete?: never
-    /** cors */
-    options: {
-      parameters: {
-        query?: never
-        header?: never
-        path: {
-          /** @description Name of the field in the Events header that holds the separator value e.g. 'model' */
-          event_id: string
-        }
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description cors */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content?: never
-        }
-      }
-    }
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/interests/{sort_key}/{sort_value}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /** Register interest for a sort key */
-    post: {
-      parameters: {
-        query?: {
-          /** @description the controller to register interest for */
-          controller?: string
-          /** @description the stream to register interest for */
-          streamId?: string
-        }
-        header?: never
-        path: {
-          /** @description name of the sort_key */
-          sort_key: string
-          /** @description value associated with the sort key */
-          sort_value: string
-        }
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description success */
-        204: {
-          headers: {
-            [name: string]: unknown
-          }
-          content?: never
-        }
-        /** @description bad request */
-        400: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['BadRequestResponse']
-          }
-        }
-        /** @description Internal server error */
-        500: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['ErrorResponse']
-          }
-        }
-      }
-    }
-    delete?: never
-    /** cors */
-    options: {
-      parameters: {
-        query?: never
-        header?: never
-        path: {
-          /** @description Name of the field in the Events header that holds the separator value e.g. 'model' */
-          sort_key: string
-          /** @description The value of the field in the Events header indicated by the separator key e.g. multibase encoded model ID */
-          sort_value: string
-        }
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description cors */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content?: never
-        }
-      }
-    }
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/interests': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /** Register interest for a sort key */
-    post: {
-      parameters: {
-        query?: never
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody: components['requestBodies']['Interest']
-      responses: {
-        /** @description success */
-        204: {
-          headers: {
-            [name: string]: unknown
-          }
-          content?: never
-        }
-        /** @description bad request */
-        400: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['BadRequestResponse']
-          }
-        }
-        /** @description Internal server error */
-        500: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['ErrorResponse']
-          }
-        }
-      }
-    }
-    delete?: never
-    /** cors */
-    options: {
-      parameters: {
-        query?: never
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description cors */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content?: never
-        }
-      }
-    }
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/config/network': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Get info about the Ceramic network the node is connected to */
-    get: {
-      parameters: {
-        query?: never
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description success */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['NetworkInfo']
-          }
-        }
-      }
-    }
-    put?: never
-    post?: never
-    delete?: never
-    /** cors */
-    options: {
-      parameters: {
-        query?: never
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description cors */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content?: never
-        }
-      }
-    }
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/experimental/interests': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Get the interests stored on the node */
-    get: {
-      parameters: {
-        query?: {
-          /** @description Only return interests from the specified peer ID. */
-          peerId?: string
-        }
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description success */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['InterestsGet']
-          }
-        }
-        /** @description bad request */
-        400: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['BadRequestResponse']
-          }
-        }
-        /** @description Internal server error */
-        500: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['ErrorResponse']
-          }
-        }
-      }
-    }
-    put?: never
-    post?: never
-    delete?: never
-    /** cors */
-    options: {
-      parameters: {
-        query?: {
-          /** @description Only return interests from the specified peer ID. */
-          peerId?: string
-        }
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description cors */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content?: never
-        }
-      }
-    }
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/experimental/events/{sep}/{sepValue}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Get events matching the interest stored on the node */
-    get: {
-      parameters: {
-        query?: {
-          /** @description the controller to filter (DID string) */
-          controller?: string
-          /** @description the stream to filter (multibase encoded stream ID) */
-          streamId?: string
-          /** @description token that designates the point to resume from, that is find keys added after this point */
-          offset?: number
-          /** @description the maximum number of events to return, default is 10000. */
-          limit?: number
-        }
-        header?: never
-        path: {
-          /** @description Name of the field in the Events header that holds the separator value e.g. 'model' */
-          sep: string
-          /** @description The value of the field in the Events header indicated by the separator key e.g. multibase encoded model ID */
-          sepValue: string
-        }
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description success */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['EventsGet']
-          }
-        }
-        /** @description bad request */
-        400: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['BadRequestResponse']
-          }
-        }
-        /** @description Internal server error */
-        500: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['ErrorResponse']
-          }
-        }
-      }
-    }
-    put?: never
-    post?: never
-    delete?: never
-    /** cors */
-    options: {
-      parameters: {
-        query?: never
-        header?: never
-        path: {
-          /** @description Name of the field in the Events header that holds the separator value e.g. 'model' */
-          sep: string
-          /** @description The value of the field in the Events header indicated by the separator key e.g. multibase encoded model ID */
-          sepValue: string
-        }
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description cors */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content?: never
-        }
-      }
-    }
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/feed/events': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Get all new event keys since resume token */
-    get: {
-      parameters: {
-        query?: {
-          /** @description token that designates the point to resume from, that is find keys added after this point */
-          resumeAt?: string
-          /** @description The maximum number of events to return, default is 100. The max with data is 10000. */
-          limit?: number
-          /** @description Whether to include the event data (carfile) in the response. In the future, only the payload or other options may be supported:
-           *       * `none` - Empty, only the event ID is returned
-           *       * `full` - The entire event carfile (including the envelope and payload)
-           *      */
-          includeData?: 'none' | 'full'
-        }
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description success */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['EventFeed']
-          }
-        }
-        /** @description bad request */
-        400: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['BadRequestResponse']
-          }
-        }
-        /** @description Internal server error */
-        500: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['ErrorResponse']
-          }
-        }
-      }
-    }
-    put?: never
-    post?: never
-    delete?: never
-    /** cors */
-    options: {
-      parameters: {
-        query?: never
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description cors */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content?: never
-        }
-      }
-    }
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/feed/resumeToken': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Get the current (maximum) highwater mark/continuation token of the feed. Allows starting `feed/events` from 'now'. */
-    get: {
-      parameters: {
-        query?: never
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description success */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['_feed_resumeToken_get_200_response']
-          }
-        }
-        /** @description bad request */
-        400: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['BadRequestResponse']
-          }
-        }
-        /** @description Internal server error */
-        500: {
-          headers: {
-            [name: string]: unknown
-          }
-          content: {
-            'application/json': components['schemas']['ErrorResponse']
-          }
-        }
-      }
-    }
-    put?: never
-    post?: never
-    delete?: never
-    /** cors */
-    options: {
-      parameters: {
-        query?: never
-        header?: never
-        path?: never
-        cookie?: never
-      }
-      requestBody?: never
-      responses: {
-        /** @description cors */
-        200: {
-          headers: {
-            [name: string]: unknown
-          }
-          content?: never
-        }
-      }
-    }
-    head?: never
-    patch?: never
-    trace?: never
-  }
+    "/liveness": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Test the liveness of the Ceramic node */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description success */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        /** cors */
+        options: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description cors */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/debug/heap": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get the heap statistics of the Ceramic node */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description success */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/octet-stream": string;
+                    };
+                };
+                /** @description bad request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BadRequestResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        /** cors */
+        options: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description cors */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/version": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get the version of the Ceramic node */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description success */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Version"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Get the version of the Ceramic node */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description success */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Version"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        /** cors */
+        options: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description cors */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Creates a new event */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: components["requestBodies"]["EventData"];
+            responses: {
+                /** @description success */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description bad request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BadRequestResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        /** cors */
+        options: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description cors */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/events/{event_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get event data */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description CID of the root block of the event, used to identify of the event */
+                    event_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description success */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Event"];
+                    };
+                };
+                /** @description bad request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BadRequestResponse"];
+                    };
+                };
+                /** @description Event not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": string;
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        /** cors */
+        options: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Name of the field in the Events header that holds the separator value e.g. 'model' */
+                    event_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description cors */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/streams/{stream_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get stream state */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Multibase encoded stream ID */
+                    stream_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description success */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["StreamState"];
+                    };
+                };
+                /** @description bad request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BadRequestResponse"];
+                    };
+                };
+                /** @description Stream not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": string;
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        /** cors */
+        options: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Multibase encoded stream ID */
+                    stream_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description cors */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/interests/{sort_key}/{sort_value}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Register interest for a sort key */
+        post: {
+            parameters: {
+                query?: {
+                    /** @description the controller to register interest for */
+                    controller?: string;
+                    /** @description the stream to register interest for */
+                    streamId?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description name of the sort_key */
+                    sort_key: string;
+                    /** @description value associated with the sort key */
+                    sort_value: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description success */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description bad request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BadRequestResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        /** cors */
+        options: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Name of the field in the Events header that holds the separator value e.g. 'model' */
+                    sort_key: string;
+                    /** @description The value of the field in the Events header indicated by the separator key e.g. multibase encoded model ID */
+                    sort_value: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description cors */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/interests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Register interest for a sort key */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: components["requestBodies"]["Interest"];
+            responses: {
+                /** @description success */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description bad request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BadRequestResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        /** cors */
+        options: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description cors */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/config/network": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get info about the Ceramic network the node is connected to */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description success */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["NetworkInfo"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        /** cors */
+        options: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description cors */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/experimental/interests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get the interests stored on the node */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Only return interests from the specified peer ID. */
+                    peerId?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description success */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["InterestsGet"];
+                    };
+                };
+                /** @description bad request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BadRequestResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        /** cors */
+        options: {
+            parameters: {
+                query?: {
+                    /** @description Only return interests from the specified peer ID. */
+                    peerId?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description cors */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/experimental/events/{sep}/{sepValue}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get events matching the interest stored on the node */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description the controller to filter (DID string) */
+                    controller?: string;
+                    /** @description the stream to filter (multibase encoded stream ID) */
+                    streamId?: string;
+                    /** @description token that designates the point to resume from, that is find keys added after this point */
+                    offset?: number;
+                    /** @description the maximum number of events to return, default is 10000. */
+                    limit?: number;
+                };
+                header?: never;
+                path: {
+                    /** @description Name of the field in the Events header that holds the separator value e.g. 'model' */
+                    sep: string;
+                    /** @description The value of the field in the Events header indicated by the separator key e.g. multibase encoded model ID */
+                    sepValue: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description success */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EventsGet"];
+                    };
+                };
+                /** @description bad request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BadRequestResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        /** cors */
+        options: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Name of the field in the Events header that holds the separator value e.g. 'model' */
+                    sep: string;
+                    /** @description The value of the field in the Events header indicated by the separator key e.g. multibase encoded model ID */
+                    sepValue: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description cors */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/feed/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all new event keys since resume token */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description token that designates the point to resume from, that is find keys added after this point */
+                    resumeAt?: string;
+                    /** @description The maximum number of events to return, default is 100. The max with data is 10000. */
+                    limit?: number;
+                    /** @description Whether to include the event data (carfile) in the response. In the future, only the payload or other options may be supported:
+                     *       * `none` - Empty, only the event ID is returned
+                     *       * `full` - The entire event carfile (including the envelope and payload)
+                     *      */
+                    includeData?: "none" | "full";
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description success */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EventFeed"];
+                    };
+                };
+                /** @description bad request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BadRequestResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        /** cors */
+        options: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description cors */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/feed/resumeToken": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get the current (maximum) highwater mark/continuation token of the feed. Allows starting `feed/events` from 'now'. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description success */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["_feed_resumeToken_get_200_response"];
+                    };
+                };
+                /** @description bad request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BadRequestResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        /** cors */
+        options: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description cors */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
-export type webhooks = Record<string, never>
+export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    /**
-     * @description Version of the Ceramic node in semver format, e.g. 2.1.0
-     * @example {
-     *       "version": "version"
-     *     }
-     */
-    Version: {
-      /** @description Version of the Ceramic node */
-      version?: string
-    }
-    /**
-     * Response to a bad request (400)
-     * @description Bad request (input error)
-     */
-    BadRequestResponse: {
-      /** @description Message describing the error */
-      message: string
-    }
-    /**
-     * A Ceramic Event
-     * @description A Ceramic event as part of a Ceramic Stream. Contains both the root CID used to identify the Event as well as the Event payload data.
-     * @example {
-     *       "data": "data",
-     *       "id": "id"
-     *     }
-     */
-    Event: {
-      /** @description Multibase encoding of event root CID bytes. */
-      id: string
-      /** @description Multibase encoding of event data. */
-      data?: string
-    }
-    /**
-     * A Ceramic Event Data Payload
-     * @description The data for a Ceramic event that is part of a Ceramic Stream
-     * @example {
-     *       "data": "data"
-     *     }
-     */
-    EventData: {
-      /** @description Multibase encoding of event data. */
-      data: string
-    }
-    /**
-     * Ceramic Event feed data
-     * @description Ceramic event keys as part of a Ceramic Stream
-     * @example {
-     *       "resumeToken": "resumeToken",
-     *       "events": [
-     *         {
-     *           "data": "data",
-     *           "id": "id"
-     *         },
-     *         {
-     *           "data": "data",
-     *           "id": "id"
-     *         }
-     *       ]
-     *     }
-     */
-    EventFeed: {
-      /** @description An array of events. For now, the event data payload is empty. */
-      events: components['schemas']['Event'][]
-      /** @description The token/highwater mark to used as resumeAt on a future request */
-      resumeToken: string
-    }
-    /**
-     * Information about multiple events.
-     * @description Ceramic event keys as part of a Ceramic Stream
-     * @example {
-     *       "resumeOffset": 0,
-     *       "events": [
-     *         {
-     *           "data": "data",
-     *           "id": "id"
-     *         },
-     *         {
-     *           "data": "data",
-     *           "id": "id"
-     *         }
-     *       ],
-     *       "isComplete": true
-     *     }
-     */
-    EventsGet: {
-      /** @description An array of events */
-      events: components['schemas']['Event'][]
-      /** @description An integer specifying where to resume the request. Only works correctly for the same input parameters. */
-      resumeOffset: number
-      /** @description A boolean specifying if there are more events to be fetched. Repeat with the resumeOffset to get next set. */
-      isComplete: boolean
-    }
-    /**
-     * Information about multiple interests.
-     * @description Ceramic interest keys
-     * @example {
-     *       "interests": [
-     *         {
-     *           "data": "data"
-     *         },
-     *         {
-     *           "data": "data"
-     *         }
-     *       ]
-     *     }
-     */
-    InterestsGet: {
-      /** @description An array of interests */
-      interests: components['schemas']['InterestsGet_interests_inner'][]
-    }
-    /**
-     * Error response
-     * @description Error response
-     */
-    ErrorResponse: {
-      /** @description Error message */
-      message: string
-    }
-    /**
-     * A recon interest
-     * @description Describes a recon interest range to store and synchronize
-     * @example {
-     *       "controller": "controller",
-     *       "streamId": "streamId",
-     *       "sepValue": "sepValue",
-     *       "sep": "sep"
-     *     }
-     */
-    Interest: {
-      /** @description Separator key, typically 'model' (sometimes called sort_key) */
-      sep: string
-      /** @description Multibase encoded separator value (sometimes called sort_value, typically a stream ID) */
-      sepValue: string
-      /** @description Decentralized identifier (DID) string */
-      controller?: string
-      /** @description Multibase encoded stream ID. */
-      streamId?: string
-    }
-    /**
-     * Information about the Ceramic network
-     * @description Ceramic network information
-     * @example {
-     *       "name": "name"
-     *     }
-     */
-    NetworkInfo: {
-      /** @description Name of the Ceramic network */
-      name: string
-    }
-    /** @example {
-     *       "resumeToken": "resumeToken"
-     *     } */
-    _feed_resumeToken_get_200_response: {
-      /** @description The highwater mark/resume token to use with the event/feed endpoint. */
-      resumeToken: string
-    }
-    /** @example {
-     *       "data": "data"
-     *     } */
-    InterestsGet_interests_inner: {
-      /** @description The multbase encoded bytes of the interest. */
-      data: string
-    }
-  }
-  responses: never
-  parameters: never
-  requestBodies: {
-    /** @description Event to add to the node */
-    EventData: {
-      content: {
-        'application/json': components['schemas']['EventData']
-      }
-    }
-    /** @description Recon message to send */
-    Message: {
-      content: {
-        'application/cbor-seq': string
-      }
-    }
-    /** @description Interest to register on the node */
-    Interest: {
-      content: {
-        'application/json': components['schemas']['Interest']
-      }
-    }
-  }
-  headers: never
-  pathItems: never
+    schemas: {
+        /**
+         * @description Version of the Ceramic node in semver format, e.g. 2.1.0
+         * @example {
+         *       "version": "version"
+         *     }
+         */
+        Version: {
+            /** @description Version of the Ceramic node */
+            version?: string;
+        };
+        /**
+         * Response to a bad request (400)
+         * @description Bad request (input error)
+         */
+        BadRequestResponse: {
+            /** @description Message describing the error */
+            message: string;
+        };
+        /**
+         * A Ceramic Event
+         * @description A Ceramic event as part of a Ceramic Stream. Contains both the root CID used to identify the Event as well as the Event payload data.
+         * @example {
+         *       "data": "data",
+         *       "id": "id"
+         *     }
+         */
+        Event: {
+            /** @description Multibase encoding of event root CID bytes. */
+            id: string;
+            /** @description Multibase encoding of event data. */
+            data?: string;
+        };
+        /**
+         * A Ceramic Event Data Payload
+         * @description The data for a Ceramic event that is part of a Ceramic Stream
+         * @example {
+         *       "data": "data"
+         *     }
+         */
+        EventData: {
+            /** @description Multibase encoding of event data. */
+            data: string;
+        };
+        /**
+         * Ceramic Event feed data
+         * @description Ceramic event keys as part of a Ceramic Stream
+         * @example {
+         *       "resumeToken": "resumeToken",
+         *       "events": [
+         *         {
+         *           "data": "data",
+         *           "id": "id"
+         *         },
+         *         {
+         *           "data": "data",
+         *           "id": "id"
+         *         }
+         *       ]
+         *     }
+         */
+        EventFeed: {
+            /** @description An array of events. For now, the event data payload is empty. */
+            events: components["schemas"]["Event"][];
+            /** @description The token/highwater mark to used as resumeAt on a future request */
+            resumeToken: string;
+        };
+        /**
+         * Information about multiple events.
+         * @description Ceramic event keys as part of a Ceramic Stream
+         * @example {
+         *       "resumeOffset": 0,
+         *       "events": [
+         *         {
+         *           "data": "data",
+         *           "id": "id"
+         *         },
+         *         {
+         *           "data": "data",
+         *           "id": "id"
+         *         }
+         *       ],
+         *       "isComplete": true
+         *     }
+         */
+        EventsGet: {
+            /** @description An array of events */
+            events: components["schemas"]["Event"][];
+            /** @description An integer specifying where to resume the request. Only works correctly for the same input parameters. */
+            resumeOffset: number;
+            /** @description A boolean specifying if there are more events to be fetched. Repeat with the resumeOffset to get next set. */
+            isComplete: boolean;
+        };
+        /**
+         * Information about multiple interests.
+         * @description Ceramic interest keys
+         * @example {
+         *       "interests": [
+         *         {
+         *           "data": "data"
+         *         },
+         *         {
+         *           "data": "data"
+         *         }
+         *       ]
+         *     }
+         */
+        InterestsGet: {
+            /** @description An array of interests */
+            interests: components["schemas"]["InterestsGet_interests_inner"][];
+        };
+        /**
+         * Error response
+         * @description Error response
+         */
+        ErrorResponse: {
+            /** @description Error message */
+            message: string;
+        };
+        /**
+         * A recon interest
+         * @description Describes a recon interest range to store and synchronize
+         * @example {
+         *       "controller": "controller",
+         *       "streamId": "streamId",
+         *       "sepValue": "sepValue",
+         *       "sep": "sep"
+         *     }
+         */
+        Interest: {
+            /** @description Separator key, typically 'model' (sometimes called sort_key) */
+            sep: string;
+            /** @description Multibase encoded separator value (sometimes called sort_value, typically a stream ID) */
+            sepValue: string;
+            /** @description Decentralized identifier (DID) string */
+            controller?: string;
+            /** @description Multibase encoded stream ID. */
+            streamId?: string;
+        };
+        /**
+         * Information about the Ceramic network
+         * @description Ceramic network information
+         * @example {
+         *       "name": "name"
+         *     }
+         */
+        NetworkInfo: {
+            /** @description Name of the Ceramic network */
+            name: string;
+        };
+        /**
+         * State of a Ceramic stream
+         * @description The state of a Ceramic stream as defined by the stream type aggregation and conflict resolution rules.
+         * @example {
+         *       "controller": "controller",
+         *       "data": "data",
+         *       "id": "id",
+         *       "event_cid": "event_cid",
+         *       "dimensions": "{}"
+         *     }
+         */
+        StreamState: {
+            /** @description Multibase encoding of the stream id */
+            id: string;
+            /** @description CID of the event that produced this state */
+            event_cid: string;
+            /** @description Controller of the stream */
+            controller: string;
+            /** @description Dimensions of the stream, each value is multibase encoded. */
+            dimensions: Record<string, never>;
+            /** @description Multibase encoding of the data of the stream. Content is stream type specific. */
+            data: string;
+        };
+        /** @example {
+         *       "resumeToken": "resumeToken"
+         *     } */
+        _feed_resumeToken_get_200_response: {
+            /** @description The highwater mark/resume token to use with the event/feed endpoint. */
+            resumeToken: string;
+        };
+        /** @example {
+         *       "data": "data"
+         *     } */
+        InterestsGet_interests_inner: {
+            /** @description The multbase encoded bytes of the interest. */
+            data: string;
+        };
+    };
+    responses: never;
+    parameters: never;
+    requestBodies: {
+        /** @description Event to add to the node */
+        EventData: {
+            content: {
+                "application/json": components["schemas"]["EventData"];
+            };
+        };
+        /** @description Recon message to send */
+        Message: {
+            content: {
+                "application/cbor-seq": string;
+            };
+        };
+        /** @description Interest to register on the node */
+        Interest: {
+            content: {
+                "application/json": components["schemas"]["Interest"];
+            };
+        };
+    };
+    headers: never;
+    pathItems: never;
 }
-export type $defs = Record<string, never>
-export type operations = Record<string, never>
+export type $defs = Record<string, never>;
+export type operations = Record<string, never>;
