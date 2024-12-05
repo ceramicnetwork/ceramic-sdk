@@ -1,6 +1,6 @@
 import { CeramicClient } from '@ceramic-sdk/http-client'
+import { jest } from '@jest/globals'
 import { DID } from 'dids'
-
 import { StreamClient } from '../src/index.js'
 
 describe('StreamClient', () => {
@@ -36,6 +36,62 @@ describe('StreamClient', () => {
         did: new DID(),
       })
       expect(client.getDID(did)).toBe(did)
+    })
+  })
+  describe('getStreamState() method', () => {
+    test('fetches the state of a stream by its ID', async () => {
+      const streamId = 'streamId123'
+      const mockStreamState = {
+        id: streamId,
+        controller: 'did:example:123',
+        data: 'someEncodedData',
+        event_cid: 'someCid',
+        dimensions: {},
+      }
+
+      // Mock CeramicClient and its API
+      const mockGet = jest.fn(() =>
+        Promise.resolve({
+          data: mockStreamState,
+          error: null,
+        }),
+      )
+      const mockCeramicClient = {
+        api: { GET: mockGet },
+      } as unknown as CeramicClient
+
+      const client = new StreamClient({ ceramic: mockCeramicClient })
+      const state = await client.getStreamState(streamId)
+
+      expect(state).toEqual(mockStreamState)
+      expect(mockGet).toHaveBeenCalledWith('/streams/{stream_id}', {
+        params: { path: { stream_id: streamId } },
+      })
+    })
+
+    test('throws an error if the stream is not found', async () => {
+      const streamId = 'invalidStreamId'
+      const mockError = { message: 'Stream not found' }
+
+      // Mock CeramicClient and its API
+      const mockGet = jest.fn(() =>
+        Promise.resolve({
+          data: null,
+          error: mockError,
+        }),
+      )
+      const mockCeramicClient = {
+        api: { GET: mockGet },
+      } as unknown as CeramicClient
+
+      const client = new StreamClient({ ceramic: mockCeramicClient })
+
+      await expect(client.getStreamState(streamId)).rejects.toThrow(
+        'Stream not found',
+      )
+      expect(mockGet).toHaveBeenCalledWith('/streams/{stream_id}', {
+        params: { path: { stream_id: streamId } },
+      })
     })
   })
 })

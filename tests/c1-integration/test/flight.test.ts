@@ -65,15 +65,14 @@ describe('flight sql', () => {
     expect(withSchema).not.toBe(noSchema)
   })
 
-  // disabled until server support is implemented
-  test.skip('prepared stmt', async () => {
+  test('prepared stmt', async () => {
     const client = await createFlightSqlClient(OPTIONS)
     const buffer = await client.preparedStatement(
       'SELECT * from conclusion_events where stream_type = $1',
       new Array(['$1', '3']),
     )
     const data = tableFromIPC(buffer)
-    console.log(JSON.stringify(data))
+    expect(data).toBeDefined()
   })
 
   afterAll(async () => {
