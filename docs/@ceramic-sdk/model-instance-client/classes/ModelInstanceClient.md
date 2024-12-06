@@ -2,9 +2,9 @@
 
 ***
 
-[Ceramic SDK](../../../README.md) / [@ceramic-sdk/model-instance-client](../README.md) / DocumentClient
+[Ceramic SDK](../../../README.md) / [@ceramic-sdk/model-instance-client](../README.md) / ModelInstanceClient
 
-# Class: DocumentClient
+# Class: ModelInstanceClient
 
 ## Extends
 
@@ -12,9 +12,9 @@
 
 ## Constructors
 
-### new DocumentClient()
+### new ModelInstanceClient()
 
-> **new DocumentClient**(`params`): [`DocumentClient`](DocumentClient.md)
+> **new ModelInstanceClient**(`params`): [`ModelInstanceClient`](ModelInstanceClient.md)
 
 #### Parameters
 
@@ -22,7 +22,7 @@
 
 #### Returns
 
-[`DocumentClient`](DocumentClient.md)
+[`ModelInstanceClient`](ModelInstanceClient.md)
 
 #### Inherited from
 

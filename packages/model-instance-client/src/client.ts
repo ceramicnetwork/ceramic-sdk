@@ -35,7 +35,7 @@ export type PostDataParams<T extends UnknownContent = UnknownContent> = Omit<
   controller?: DID
 }
 
-export class DocumentClient extends StreamClient {
+export class ModelInstanceClient extends StreamClient {
   /** Get a DocumentEvent based on its commit ID */
   async getEvent(commitID: CommitID | string): Promise<DocumentEvent> {
     const id =

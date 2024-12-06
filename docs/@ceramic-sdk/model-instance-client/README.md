@@ -8,7 +8,7 @@
 
 ## Classes
 
-- [DocumentClient](classes/DocumentClient.md)
+- [ModelInstanceClient](classes/ModelInstanceClient.md)
 
 ## Type Aliases
 
