@@ -17,6 +17,7 @@ import {
 import type { DIDString } from '@didtools/codecs'
 import type { DID } from 'dids'
 
+import type { StreamState } from '@ceramic-sdk/stream-client'
 import type { UnknownContent } from './types.js'
 import { createInitHeader, getPatchOperations } from './utils.js'
 
@@ -118,6 +119,17 @@ export type CreateDataEventParams<T extends UnknownContent = UnknownContent> = {
   currentContent?: T
   /** New JSON object content for the ModelInstanceDocument stream, used with `currentContent` to create the JSON patch */
   newContent?: T
+  /** Flag notifying indexers if they should index the ModelInstanceDocument stream or not */
+  shouldIndex?: boolean
+}
+
+export type PostDataEventParams<T extends UnknownContent = UnknownContent> = {
+  /** String representation of the StreamID to update */
+  streamID: string
+  /** New JSON object content for the ModelInstanceDocument stream, used with `currentContent` to create the JSON patch */
+  newContent: T
+  /** Current JSON object containing the stream's current state */
+  currentState?: StreamState
   /** Flag notifying indexers if they should index the ModelInstanceDocument stream or not */
   shouldIndex?: boolean
 }
