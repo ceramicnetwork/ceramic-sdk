@@ -81,12 +81,5 @@ describe('utils', () => {
       const result = decodeMultibaseToStreamID(input)
       expect(result.toString()).toEqual(stream)
     })
-    it('should decode a valid multibase-encoded string to StreamID', () => {
-      const input = 'uzgEAAXESIA8og02Dnbwed_besT8M0YOnaZ-hrmMZaa7mnpdUL8jE'
-      const stream =
-        'k2t6wyfsu4pfx2cbha7xh9fsjvqr8b7g3w7365w627bup0l5qo020e2id4txvo'
-      const result = decodeMultibaseToStreamID(input)
-      expect(result.toString()).toEqual(stream)
-    })
   })
 })
