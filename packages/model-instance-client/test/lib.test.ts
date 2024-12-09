@@ -213,7 +213,6 @@ describe('ModelInstanceClient', () => {
 
   describe('getDocumentState() method', () => {
     test('gets the document state by stream ID', async () => {
-      const streamID = randomStreamID()
       const mockStreamState = {
         id: 'k2t6wyfsu4pfy7r1jdd6jex9oxbqyp4gr2a5kxs8ioxwtisg8nzj3anbckji8g',
         event_cid:
@@ -239,7 +238,6 @@ describe('ModelInstanceClient', () => {
       }
       const streamId =
         'k2t6wyfsu4pfy7r1jdd6jex9oxbqyp4gr2a5kxs8ioxwtisg8nzj3anbckji8g'
-      const getDocumentState = jest.fn(() => docState)
       // Mock CeramicClient and its API
       const mockGet = jest.fn(() =>
         Promise.resolve({
