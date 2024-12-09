@@ -2,7 +2,7 @@ import { DocumentDataEventPayload } from '@ceramic-sdk/model-instance-protocol'
 import type { ModelDefinition } from '@ceramic-sdk/model-protocol'
 import { fromString as bytesFromString } from 'uint8arrays'
 
-import type { DocumentState, UnknowContent } from './types.js'
+import type { DocumentState, UnknownContent } from './types.js'
 
 export function getImmutableFieldsToCheck(
   definition: ModelDefinition,
@@ -37,7 +37,7 @@ export function encodeUniqueFieldsValue(values: Array<string>): Uint8Array {
 
 export function getUniqueFieldsValue(
   fields: Array<string>,
-  content: UnknowContent,
+  content: UnknownContent,
 ): Uint8Array {
   const values = fields.map((field) => {
     const value = content[field]

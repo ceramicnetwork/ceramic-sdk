@@ -210,4 +210,51 @@ describe('ModelInstanceClient', () => {
       expect(dataCommitID.baseID.equals(initCommitID.baseID)).toBe(true)
     })
   })
+
+  describe('getDocumentState() method', () => {
+    test('gets the document state by stream ID', async () => {
+      const mockStreamState = {
+        id: 'k2t6wyfsu4pfy7r1jdd6jex9oxbqyp4gr2a5kxs8ioxwtisg8nzj3anbckji8g',
+        event_cid:
+          'bafyreib5j4def5a4w4j6sg4upm6nb4cfn752wdjwqtwdzejfladyyymxca',
+        controller: 'did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp',
+        dimensions: {
+          context: 'u',
+          controller:
+            'uZGlkOmtleTp6Nk1raVRCejF5bXVlcEFRNEhFSFlTRjFIOHF1RzVHTFZWUVIzZGpkWDNtRG9vV3A',
+          model: 'uzgEAAXESIA8og02Dnbwed_besT8M0YOnaZ-hrmMZaa7mnpdUL8jE',
+        },
+        data: 'ueyJtZXRhZGF0YSI6eyJzaG91bGRJbmRleCI6dHJ1ZX0sImNvbnRlbnQiOnsiYm9keSI6IlRoaXMgaXMgYSBzaW1wbGUgbWVzc2FnZSJ9fQ',
+      }
+      const docState = {
+        content: { body: 'This is a simple message' },
+        metadata: {
+          shouldIndex: true,
+          controller:
+            'did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp',
+          model:
+            'k2t6wyfsu4pfx2cbha7xh9fsjvqr8b7g3w7365w627bup0l5qo020e2id4txvo',
+        },
+      }
+      const streamId =
+        'k2t6wyfsu4pfy7r1jdd6jex9oxbqyp4gr2a5kxs8ioxwtisg8nzj3anbckji8g'
+      // Mock CeramicClient and its API
+      const mockGet = jest.fn(() =>
+        Promise.resolve({
+          data: mockStreamState,
+          error: null,
+        }),
+      )
+      const ceramic = {
+        api: { GET: mockGet },
+      } as unknown as CeramicClient
+      const client = new ModelInstanceClient({ ceramic, did: authenticatedDID })
+
+      const documentState = await client.getDocumentState(streamId)
+      expect(documentState.content).toEqual(docState.content)
+      expect(documentState.metadata.model.toString()).toEqual(
+        docState.metadata.model,
+      )
+    })
+  })
 })

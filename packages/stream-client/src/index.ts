@@ -9,7 +9,7 @@ export type StreamState = {
   /** Controller of the stream */
   controller: string
   /** Dimensions of the stream, each value is multibase encoded */
-  dimensions: Record<string, Uint8Array>
+  dimensions: Record<string, string>
   /** Multibase encoding of the data of the stream. Content is stream type specific */
   data: string
 }

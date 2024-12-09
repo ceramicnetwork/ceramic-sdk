@@ -1,3 +1,5 @@
+import { StreamID } from '@ceramic-sdk/identifiers'
+import { bases } from 'multiformats/basics'
 import type { CID } from 'multiformats/cid'
 import { toString as bytesToString, fromString } from 'uint8arrays'
 
@@ -7,6 +9,27 @@ export const MAX_BLOCK_SIZE = 256000 // 256 KB
 /** @internal */
 export function base64urlToJSON<T = Record<string, unknown>>(value: string): T {
   return JSON.parse(bytesToString(fromString(value, 'base64url')))
+}
+
+export function decodeMultibase(multibaseString: string): Uint8Array {
+  const prefix = multibaseString[0]
+  const baseEntry = Object.values(bases).find((base) => base.prefix === prefix)
+  if (!baseEntry) {
+    throw new Error(`Unsupported multibase prefix: ${prefix}`)
+  }
+
+  return baseEntry.decode(multibaseString) // Remove prefix and decode
+}
+
+export function decodeMultibaseToJSON<T = Record<string, unknown>>(
+  value: string,
+): T {
+  const data = decodeMultibase(value)
+  return JSON.parse(new TextDecoder().decode(data))
+}
+
+export function decodeMultibaseToStreamID(value: string): StreamID {
+  return StreamID.fromBytes(decodeMultibase(value))
 }
 
 /**

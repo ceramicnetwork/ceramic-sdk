@@ -10,7 +10,7 @@ import addFormats from 'ajv-formats'
 import Ajv from 'ajv/dist/2020.js'
 import { equals } from 'uint8arrays'
 
-import type { DocumentState, UnknowContent } from './types.js'
+import type { DocumentState, UnknownContent } from './types.js'
 import { getUniqueFieldsValue } from './utils.js'
 
 const validator = new Ajv({
@@ -41,7 +41,7 @@ export function assertNoImmutableFieldChange(
   }
 }
 
-export function assertValidContent<T extends UnknowContent>(
+export function assertValidContent<T extends UnknownContent>(
   modelID: string,
   modelSchema: JSONSchema.Object,
   content: unknown,
@@ -112,7 +112,7 @@ export function assertValidInitHeader(
 export function assertValidUniqueValue(
   definition: ModelDefinition,
   metadata: DocumentMetadata,
-  content: UnknowContent | null,
+  content: UnknownContent | null,
 ): void {
   // Unique field validation only applies to the SET account relation
   if (definition.accountRelation.type !== 'set') {

@@ -33,3 +33,4 @@ export {
   getSignedEventPayload,
   signEvent,
 } from './signing.js'
+export { decodeMultibaseToJSON, decodeMultibaseToStreamID } from './utils.js'
