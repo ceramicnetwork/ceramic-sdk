@@ -1,7 +1,7 @@
 import { StreamID } from '@ceramic-sdk/identifiers'
 import type { ModelDefinition } from '@ceramic-sdk/model-protocol'
 
-import type { Context, UnknowContent } from './types.js'
+import type { Context, UnknownContent } from './types.js'
 
 export async function validateRelation(
   context: Context,
@@ -32,7 +32,7 @@ export async function validateRelation(
 export async function validateRelationsContent(
   context: Context,
   definition: ModelDefinition,
-  content: UnknowContent,
+  content: UnknownContent,
 ): Promise<void> {
   if (!definition.relations) {
     return

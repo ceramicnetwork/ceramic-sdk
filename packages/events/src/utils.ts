@@ -1,3 +1,5 @@
+import { StreamID } from '@ceramic-sdk/identifiers'
+import { bases } from 'multiformats/basics'
 import type { CID } from 'multiformats/cid'
 import { toString as bytesToString, fromString } from 'uint8arrays'
 
@@ -7,6 +9,17 @@ export const MAX_BLOCK_SIZE = 256000 // 256 KB
 /** @internal */
 export function base64urlToJSON<T = Record<string, unknown>>(value: string): T {
   return JSON.parse(bytesToString(fromString(value, 'base64url')))
+}
+
+export function decodeBase64urlToJSON<T = Record<string, unknown>>(
+  value: string,
+): T {
+  const data = bases.base64url.decode(value)
+  return JSON.parse(new TextDecoder().decode(data))
+}
+
+export function decodeBase64urlToStreamID(value: string): StreamID {
+  return StreamID.fromBytes(bases.base64url.decode(value))
 }
 
 /**

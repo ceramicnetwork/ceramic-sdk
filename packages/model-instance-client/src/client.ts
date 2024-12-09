@@ -1,4 +1,9 @@
-import { InitEventPayload, SignedEvent } from '@ceramic-sdk/events'
+import {
+  InitEventPayload,
+  SignedEvent,
+  decodeBase64urlToJSON,
+  decodeBase64urlToStreamID,
+} from '@ceramic-sdk/events'
 import { CommitID, type StreamID } from '@ceramic-sdk/identifiers'
 import {
   DocumentEvent,
@@ -7,7 +12,6 @@ import {
 import { StreamClient } from '@ceramic-sdk/stream-client'
 import type { DIDString } from '@didtools/codecs'
 import type { DID } from 'dids'
-
 import {
   type CreateDataEventParams,
   type CreateInitEventParams,
@@ -15,7 +19,7 @@ import {
   createInitEvent,
   getDeterministicInitEventPayload,
 } from './events.js'
-import type { UnknownContent } from './types.js'
+import type { DocumentState, UnknownContent } from './types.js'
 
 export type PostDeterministicInitParams = {
   model: StreamID
@@ -83,5 +87,25 @@ export class ModelInstanceClient extends StreamClient {
     })
     const cid = await this.ceramic.postEventType(SignedEvent, event)
     return CommitID.fromStream(params.currentID.baseID, cid)
+  }
+
+  /** Retrieve and return document state */
+  async getDocumentState(streamID: string): Promise<DocumentState> {
+    const streamState = await this.getStreamState(streamID)
+    const encodedData = streamState.data
+
+    const decodedData = decodeBase64urlToJSON(encodedData)
+    const controller = streamState.controller
+    const modelID = decodeBase64urlToStreamID(streamState.dimensions.model)
+    return {
+      content: decodedData.content as UnknownContent | null,
+      metadata: {
+        model: modelID,
+        controller: controller as DIDString,
+        ...(typeof decodedData.metadata === 'object'
+          ? decodedData.metadata
+          : {}),
+      },
+    }
   }
 }
