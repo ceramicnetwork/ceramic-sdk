@@ -47,5 +47,3 @@ export function restrictBlockSize(block: Uint8Array, cid: CID): void {
     )
   }
 }
-
-
