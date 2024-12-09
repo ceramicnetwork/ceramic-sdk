@@ -1,8 +1,8 @@
 import {
   InitEventPayload,
   SignedEvent,
-  decodeBase64urlToJSON,
-  decodeBase64urlToStreamID,
+  decodeMultibaseToJSON,
+  decodeMultibaseToStreamID,
 } from '@ceramic-sdk/events'
 import { CommitID, type StreamID } from '@ceramic-sdk/identifiers'
 import {
@@ -94,9 +94,9 @@ export class ModelInstanceClient extends StreamClient {
     const streamState = await this.getStreamState(streamID)
     const encodedData = streamState.data
 
-    const decodedData = decodeBase64urlToJSON(encodedData)
+    const decodedData = decodeMultibaseToJSON(encodedData)
     const controller = streamState.controller
-    const modelID = decodeBase64urlToStreamID(streamState.dimensions.model)
+    const modelID = decodeMultibaseToStreamID(streamState.dimensions.model)
     return {
       content: decodedData.content as UnknownContent | null,
       metadata: {
