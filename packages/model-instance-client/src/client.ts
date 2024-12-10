@@ -134,7 +134,6 @@ export class ModelInstanceClient extends StreamClient {
       ? this.streamStateToDocumentState(params.currentState)
       : await this.getDocumentState(params.streamID)
 
-
     const { currentID, content } = currentState
     const { controller, newContent, shouldIndex } = params
     // Use existing postData utility to access the ceramic api
