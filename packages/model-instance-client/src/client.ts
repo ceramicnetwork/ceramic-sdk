@@ -134,16 +134,13 @@ export class ModelInstanceClient extends StreamClient {
       ? this.streamStateToDocumentState(params.currentState)
       : await this.getDocumentState(params.streamID)
 
-    // If currentContent does not exist, throw an error
-    if (!currentState.content) {
-      throw new Error('Current content is required to update a document')
-    }
+
     const { currentID, content } = currentState
     const { controller, newContent, shouldIndex } = params
     // Use existing postData utility to access the ceramic api
     await this.postData({
       controller: this.getDID(controller),
-      currentContent: content,
+      currentContent: content ?? undefined,
       newContent: newContent,
       currentID: currentID,
       shouldIndex: shouldIndex,
