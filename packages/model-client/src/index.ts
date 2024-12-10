@@ -2,6 +2,7 @@ import {
   type PartialInitEventHeader,
   SignedEvent,
   createSignedInitEvent,
+  decodeMultibaseToJSON,
   eventToContainer,
 } from '@ceramic-sdk/events'
 import { StreamID } from '@ceramic-sdk/identifiers'
@@ -66,5 +67,16 @@ export class ModelClient extends StreamClient {
     const event = await createInitEvent(did, definition)
     const cid = await this.ceramic.postEventType(SignedEvent, event)
     return getModelStreamID(cid)
+  }
+
+  /** Retrieve a model's JSON definition */
+  async getModelDefinition(
+    streamID: StreamID | string,
+  ): Promise<ModelDefinition> {
+    const id = typeof streamID === 'string' ? streamID : streamID.toString() // Convert StreamID to string
+    const streamState = await this.getStreamState(id)
+    const decodedData = decodeMultibaseToJSON(streamState.data)
+      .content as ModelDefinition
+    return decodedData
   }
 }
