@@ -10,9 +10,9 @@ const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
 const testModel: ModelDefinition = {
   version: '2.0',
-  name: 'ListTestModel',
+  name: 'SingleTestModel',
   description: 'Test model',
-  accountRelation: { type: 'list' },
+  accountRelation: { type: 'single' },
   interface: false,
   implements: [],
   schema: {
@@ -62,26 +62,25 @@ describe('model integration test for list model and MID', () => {
     expect(definition).toEqual(testModel)
   })
   test('posts signed init event and obtains correct state', async () => {
-    documentStream = await modelInstanceClient.postSignedInit({
+    documentStream = await modelInstanceClient.postDeterministicInit({
       model: modelStream,
-      content: { test: 'hello' },
-      shouldIndex: true,
+      controller: authenticatedDID.id,
     })
     // wait 1 seconds
     await new Promise((resolve) => setTimeout(resolve, 1000))
     const currentState = await modelInstanceClient.getDocumentState(
       documentStream.toString(),
     )
-    expect(currentState.content).toEqual({ test: 'hello' })
+    expect(currentState.content).toEqual(null)
   })
   test('updates document and obtains correct state', async () => {
     // update the document
     const updatedState = await modelInstanceClient.updateDocument({
       streamID: documentStream.toString(),
-      newContent: { test: 'world' },
+      newContent: { test: 'hello' },
       shouldIndex: true,
     })
-    expect(updatedState.content).toEqual({ test: 'world' })
+    expect(updatedState.content).toEqual({ test: 'hello' })
   })
   afterAll(async () => {
     await c1Container.teardown()

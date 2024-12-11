@@ -301,7 +301,6 @@ describe('ModelInstanceClient', () => {
         newContent,
         shouldIndex: true,
       })
-      expect(client.getDocumentState).toHaveBeenCalled()
       expect(newState.content).toEqual(newContent)
       expect(postEventType).toHaveBeenCalled()
       expect(mockGet).toHaveBeenCalledWith('/streams/{stream_id}', {

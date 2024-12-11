@@ -97,15 +97,19 @@ export class ModelInstanceClient extends StreamClient {
     return CommitID.fromStream(params.currentID.baseID, cid)
   }
 
+   /** Gets currentID */
+  getCurrentID(streamID: string): CommitID {
+    return new CommitID(3, streamID)
+  }
+
   /** Transform StreamState into DocumentState */
   streamStateToDocumentState(
     streamState: StreamState,
-  ): DocumentState & { currentID: CommitID } {
+  ): DocumentState  {
     const decodedData = decodeMultibaseToJSON(streamState.data)
     const controller = streamState.controller
     const modelID = decodeMultibaseToStreamID(streamState.dimensions.model)
     return {
-      currentID: new CommitID(3, streamState.event_cid),
       content: decodedData.content as UnknownContent | null,
       metadata: {
         model: modelID,
@@ -120,7 +124,7 @@ export class ModelInstanceClient extends StreamClient {
   /** Retrieve and return document state */
   async getDocumentState(
     streamID: string,
-  ): Promise<DocumentState & { currentID: CommitID }> {
+  ): Promise<DocumentState> {
     const streamState = await this.getStreamState(streamID)
     return this.streamStateToDocumentState(streamState)
   }
@@ -129,19 +133,25 @@ export class ModelInstanceClient extends StreamClient {
   async updateDocument<T extends UnknownContent = UnknownContent>(
     params: UpdateDataParams<T>,
   ): Promise<DocumentState> {
+    let currentState: DocumentState;
+    let currentId: CommitID;
     // If currentState is not provided, fetch the current state
-    const currentState = params.currentState
-      ? this.streamStateToDocumentState(params.currentState)
-      : await this.getDocumentState(params.streamID)
-
-    const { currentID, content } = currentState
+    if(!params.currentState) {
+      const streamState = await this.getStreamState(params.streamID)
+      currentState = this.streamStateToDocumentState(streamState)
+      currentId = this.getCurrentID(streamState.event_cid)
+    } else {
+      currentState = this.streamStateToDocumentState(params.currentState)
+      currentId = this.getCurrentID(params.currentState.event_cid)
+    }
+    const { content } = currentState
     const { controller, newContent, shouldIndex } = params
     // Use existing postData utility to access the ceramic api
     await this.postData({
       controller: this.getDID(controller),
       currentContent: content ?? undefined,
       newContent: newContent,
-      currentID: currentID,
+      currentID: currentId,
       shouldIndex: shouldIndex,
     })
     return {
