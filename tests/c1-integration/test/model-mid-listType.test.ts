@@ -11,7 +11,7 @@ const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 const testModel: ModelDefinition = {
   version: '2.0',
   name: 'ListTestModel',
-  description: 'Test model',
+  description: 'List Test model',
   accountRelation: { type: 'list' },
   interface: false,
   implements: [],

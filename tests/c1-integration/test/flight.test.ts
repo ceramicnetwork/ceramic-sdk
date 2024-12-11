@@ -6,6 +6,11 @@ import {
 import { tableFromIPC } from 'apache-arrow'
 import CeramicOneContainer from '../src'
 import type { EnvironmentOptions } from '../src'
+import { getAuthenticatedDID } from '@didtools/key-did'
+import { StreamID } from '@ceramic-sdk/identifiers'
+import { InitEventPayload, SignedEvent, signEvent } from '@ceramic-sdk/events'
+import { asDIDString } from "@didtools/codecs";
+import { CeramicClient } from '@ceramic-sdk/http-client'
 
 const CONTAINER_OPTS: EnvironmentOptions = {
   containerName: 'ceramic-test-flight',
@@ -30,38 +35,63 @@ async function getClient(): Promise<FlightSqlClient> {
 
 describe('flight sql', () => {
   let c1Container: CeramicOneContainer
+  const ceramicClient = new CeramicClient({
+    url: `http://127.0.0.1:${CONTAINER_OPTS.apiPort}`,
+  });
 
   beforeAll(async () => {
     c1Container = await CeramicOneContainer.startContainer(CONTAINER_OPTS)
+    const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32));
+    c1Container =
+      await CeramicOneContainer.startContainer(CONTAINER_OPTS);
+
+    // create a new event
+    const model = StreamID.fromString(
+      "kjzl6hvfrbw6c5he7fxl3oakeckm2kchkqboqug08inkh1tmfqpd8v3oceriml2"
+    );
+    const eventPayload: InitEventPayload = {
+      data: {
+        body: "This is a simple message",
+      },
+      header: {
+        controllers: [asDIDString(authenticatedDID.id)],
+        model,
+        sep: "test",
+      },
+    };
+    const encodedPayload = InitEventPayload.encode(eventPayload);
+    const signedEvent = await signEvent(authenticatedDID, encodedPayload);
+    await ceramicClient.postEventType(SignedEvent, signedEvent);
   }, 10000)
 
   test('makes query', async () => {
     const client = await getClient()
     const buffer = await client.query('SELECT * FROM conclusion_events')
     const data = tableFromIPC(buffer)
-    console.log(JSON.stringify(data))
+    const row = data.get(0);
+    expect(row).toBeDefined();
   })
 
   test('catalogs', async () => {
     const client = await getClient()
     const buffer = await client.getCatalogs()
     const data = tableFromIPC(buffer)
-    console.log(JSON.stringify(data))
+    const row = data.get(0);
+    expect(row).toBeDefined();
   })
 
   test('schemas', async () => {
     const client = await getClient()
     const buffer = await client.getDbSchemas({})
     const data = tableFromIPC(buffer)
-    console.log(JSON.stringify(data))
+    const row = data.get(0);
+    expect(row).toBeDefined();
   })
 
   test('tables', async () => {
     const client = await getClient()
     const withSchema = await client.getTables({ includeSchema: true })
     const noSchema = await client.getTables({ includeSchema: false })
-    console.log(JSON.stringify(tableFromIPC(withSchema)))
-    console.log(JSON.stringify(tableFromIPC(noSchema)))
     expect(withSchema).not.toBe(noSchema)
   })
 
@@ -72,6 +102,9 @@ describe('flight sql', () => {
       new Array(['$1', '3']),
     )
     const data = tableFromIPC(buffer)
+    const row = data.get(0);
+    const streamType = row?.stream_type;
+    expect(streamType).toBe(3);
     expect(data).toBeDefined()
   })
 
