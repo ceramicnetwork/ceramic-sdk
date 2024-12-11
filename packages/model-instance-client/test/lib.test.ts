@@ -1,6 +1,11 @@
 import { assertSignedEvent, getSignedEventPayload } from '@ceramic-sdk/events'
 import type { CeramicClient } from '@ceramic-sdk/http-client'
-import { CommitID, randomCID, randomStreamID } from '@ceramic-sdk/identifiers'
+import {
+  CommitID,
+  StreamID,
+  randomCID,
+  randomStreamID,
+} from '@ceramic-sdk/identifiers'
 import {
   DataInitEventPayload,
   DocumentDataEventPayload,
@@ -250,7 +255,9 @@ describe('ModelInstanceClient', () => {
       } as unknown as CeramicClient
       const client = new ModelInstanceClient({ ceramic, did: authenticatedDID })
 
-      const documentState = await client.getDocumentState(streamId)
+      const documentState = await client.getDocumentState(
+        StreamID.fromString(streamId),
+      )
       expect(documentState.content).toEqual(docState.content)
       expect(documentState.metadata.model.toString()).toEqual(
         docState.metadata.model,

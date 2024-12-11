@@ -1,5 +1,6 @@
 import { CeramicClient } from '@ceramic-sdk/http-client'
-import type { CommitID, StreamID } from '@ceramic-sdk/identifiers'
+import type { CommitID } from '@ceramic-sdk/identifiers'
+import { StreamID } from '@ceramic-sdk/identifiers'
 import { ModelClient } from '@ceramic-sdk/model-client'
 import { ModelInstanceClient } from '@ceramic-sdk/model-instance-client'
 import type { ModelDefinition } from '@ceramic-sdk/model-protocol'
@@ -70,14 +71,14 @@ describe('model integration test for list model and MID', () => {
     // wait 1 seconds
     await new Promise((resolve) => setTimeout(resolve, 1000))
     const currentState = await modelInstanceClient.getDocumentState(
-      documentStream.toString(),
+      new StreamID(3, documentStream.commit.toString()),
     )
     expect(currentState.content).toEqual({ test: 'hello' })
   })
   test('updates document and obtains correct state', async () => {
     // update the document
     const updatedState = await modelInstanceClient.updateDocument({
-      streamID: documentStream.toString(),
+      streamID: new StreamID(3, documentStream.commit.toString()).toString(),
       newContent: { test: 'world' },
       shouldIndex: true,
     })

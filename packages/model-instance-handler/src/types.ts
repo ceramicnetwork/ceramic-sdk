@@ -7,7 +7,6 @@ export type UnknownContent = Record<string, unknown>
 export type DocumentState = {
   content: UnknownContent | null
   metadata: DocumentMetadata
-  log: [string, ...Array<string>]
 }
 
 export type Context = {

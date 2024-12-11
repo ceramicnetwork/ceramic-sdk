@@ -9,7 +9,6 @@ import {
 } from '@ceramic-sdk/model-protocol'
 import { getAuthenticatedDID } from '@didtools/key-did'
 import CeramicOneContainer, { type EnvironmentOptions } from '../src'
-import type ContainerWrapper from '../src/withContainer'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
