@@ -7,6 +7,7 @@ import {
 } from '@ceramic-sdk/model-handler'
 import { ModelInstanceClient } from '@ceramic-sdk/model-instance-client'
 import {
+  type Context,
   type DocumentState,
   handleEvent as handleDocument,
 } from '@ceramic-sdk/model-instance-handler'
@@ -60,7 +61,7 @@ describe('stream classes', () => {
     const modelsStore: Record<string, ModelState> = {}
     const contextDocumentModel = modelID.baseID.toString()
     let docState: DocumentState
-    const context = {
+    const context: Context = {
       getDocumentModel: async () => contextDocumentModel,
       getDocumentState: async () => docState,
       getModelDefinition: async (id) => {
@@ -90,11 +91,7 @@ describe('stream classes', () => {
       model: modelID,
     })
     const initEvent = await docClient.getEvent(initCommitID)
-    docState = await handleDocument(
-      initCommitID.commit.toString(),
-      initEvent,
-      context,
-    )
+    docState = await handleDocument(initEvent, context)
     expect(docState.content).toBeNull()
 
     const updateCommitID = await docClient.postData({
@@ -102,11 +99,7 @@ describe('stream classes', () => {
       newContent: { test: 'set' },
     })
     const updateEvent = await docClient.getEvent(updateCommitID)
-    docState = await handleDocument(
-      updateCommitID.commit.toString(),
-      updateEvent,
-      context,
-    )
+    docState = await handleDocument(updateEvent, context)
     expect(docState.content).toEqual({ test: 'set' })
 
     const finalCommitID = await docClient.postData({
@@ -114,11 +107,7 @@ describe('stream classes', () => {
       newContent: { test: 'changed' },
     })
     const finalEvent = await docClient.getEvent(finalCommitID)
-    docState = await handleDocument(
-      finalCommitID.commit.toString(),
-      finalEvent,
-      context,
-    )
+    docState = await handleDocument(finalEvent, context)
     expect(docState.content).toEqual({ test: 'changed' })
   })
 
@@ -179,11 +168,7 @@ describe('stream classes', () => {
       model: modelID,
     })
     const initEvent = await docClient.getEvent(initCommitID)
-    docState = await handleDocument(
-      initCommitID.commit.toString(),
-      initEvent,
-      context,
-    )
+    docState = await handleDocument(initEvent, context)
     expect(docState.content).toEqual({ test: 'one' })
 
     const updateCommitID = await docClient.postData({
@@ -191,11 +176,7 @@ describe('stream classes', () => {
       newContent: { test: 'two' },
     })
     const updateEvent = await docClient.getEvent(updateCommitID)
-    docState = await handleDocument(
-      updateCommitID.commit.toString(),
-      updateEvent,
-      context,
-    )
+    docState = await handleDocument(updateEvent, context)
     expect(docState.content).toEqual({ test: 'two' })
 
     const finalCommitID = await docClient.postData({
@@ -203,11 +184,7 @@ describe('stream classes', () => {
       newContent: { test: 'three' },
     })
     const finalEvent = await docClient.getEvent(finalCommitID)
-    docState = await handleDocument(
-      finalCommitID.commit.toString(),
-      finalEvent,
-      context,
-    )
+    docState = await handleDocument(finalEvent, context)
     expect(docState.content).toEqual({ test: 'three' })
   })
 

@@ -30,7 +30,6 @@ import { encodeUniqueFieldsValue } from '../src/utils.js'
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
 describe('handleDeterministicInitPayload()', () => {
-  const cid = randomCID().toString()
   const modelID = randomStreamID()
 
   test('throws if content is provided', async () => {
@@ -38,7 +37,7 @@ describe('handleDeterministicInitPayload()', () => {
     // @ts-expect-error data should be null
     event.data = { some: 'content' }
     await expect(async () => {
-      await handleDeterministicInitPayload(cid, event, {} as unknown as Context)
+      await handleDeterministicInitPayload(event, {} as unknown as Context)
     }).rejects.toThrow(
       'Deterministic init events for ModelInstanceDocuments must not have content',
     )
@@ -62,7 +61,7 @@ describe('handleDeterministicInitPayload()', () => {
     event.header.unique = new Uint8Array()
 
     await expect(async () => {
-      await handleDeterministicInitPayload(cid, event, context)
+      await handleDeterministicInitPayload(event, context)
     }).rejects.toThrow(
       'ModelInstanceDocuments for models with SINGLE accountRelations must be created deterministically',
     )
@@ -82,12 +81,11 @@ describe('handleDeterministicInitPayload()', () => {
     const context = { getModelDefinition } as unknown as Context
 
     const event = getDeterministicInitEventPayload(modelID, 'did:key:123')
-    const handled = await handleDeterministicInitPayload(cid, event, context)
+    const handled = await handleDeterministicInitPayload(event, context)
 
     expect(handled.content).toBeNull()
     expect(handled.metadata.controller).toBe('did:key:123')
     expect(handled.metadata.model.equals(modelID)).toBe(true)
-    expect(handled.log).toEqual([cid])
   })
 })
 
@@ -98,7 +96,6 @@ describe('handleInitPayload()', () => {
   test('throws if no content is provided', async () => {
     await expect(async () => {
       await handleInitPayload(
-        cid,
         { data: null } as unknown as DocumentInitEventPayload,
         {} as unknown as Context,
       )
@@ -111,7 +108,6 @@ describe('handleInitPayload()', () => {
     const value = 'a'.repeat(MAX_DOCUMENT_SIZE)
     await expect(async () => {
       await handleInitPayload(
-        cid,
         { data: { value } } as unknown as DocumentInitEventPayload,
         {} as unknown as Context,
       )
@@ -144,7 +140,7 @@ describe('handleInitPayload()', () => {
     payload.header.unique = undefined
 
     await expect(async () => {
-      await handleInitPayload(cid, payload, context)
+      await handleInitPayload(payload, context)
     }).rejects.toThrow(
       'ModelInstanceDocuments for models with LIST accountRelations must be created with a unique field',
     )
@@ -171,7 +167,7 @@ describe('handleInitPayload()', () => {
       }),
     }
     await expect(async () => {
-      await handleInitPayload(cid, payload, context)
+      await handleInitPayload(payload, context)
     }).rejects.toThrow(
       "Validation Error: data must have required property 'hello'",
     )
@@ -212,7 +208,7 @@ describe('handleInitPayload()', () => {
       }),
     }
     await expect(async () => {
-      await handleInitPayload(cid, payload, context)
+      await handleInitPayload(payload, context)
     }).rejects.toThrow(
       `Relation on field foo points to Stream ${docID}, which belongs to Model ${docRefModelID}, but this Stream's Model (TestModel) specifies that this relation must be to a Stream in the Model ${expectedRefModelID}`,
     )
@@ -238,12 +234,11 @@ describe('handleInitPayload()', () => {
         model: modelID,
       }),
     }
-    const handled = await handleInitPayload(cid, payload, context)
+    const handled = await handleInitPayload(payload, context)
     expect(handled.content).toStrictEqual({ hello: 'world' })
     expect(handled.metadata.controller).toBe(authenticatedDID.id)
     expect(handled.metadata.model.equals(modelID)).toBe(true)
     expect(handled.metadata.unique).toBeInstanceOf(Uint8Array)
-    expect(handled.log).toEqual([cid])
   })
 })
 
@@ -251,21 +246,6 @@ describe('handleDataPayload()', () => {
   const eventID = randomCID().toString()
   const initID = randomCID()
   const modelID = randomStreamID()
-
-  test('throws if the event cannot be linked to the state', async () => {
-    const getDocumentState = jest.fn(() => {
-      return { log: [] }
-    })
-    const context = { getDocumentState } as unknown as Context
-
-    await expect(async () => {
-      await handleDataPayload(
-        eventID,
-        { id: initID } as unknown as DocumentDataEventPayload,
-        context,
-      )
-    }).rejects.toThrow('Invalid document state: log is empty')
-  })
 
   test('throws if the event header contains other fields than "shouldIndex"', async () => {
     const getDocumentState = jest.fn(() => {
@@ -278,7 +258,6 @@ describe('handleDataPayload()', () => {
 
     await expect(async () => {
       await handleDataPayload(
-        eventID,
         {
           id: initID,
           prev: initID,
@@ -301,7 +280,6 @@ describe('handleDataPayload()', () => {
 
     await expect(async () => {
       await handleDataPayload(
-        eventID,
         {
           id: initID,
           prev: initID,
@@ -339,7 +317,6 @@ describe('handleDataPayload()', () => {
 
     await expect(async () => {
       await handleDataPayload(
-        eventID,
         {
           id: initID,
           prev: initID,
@@ -384,7 +361,6 @@ describe('handleDataPayload()', () => {
 
     await expect(async () => {
       await handleDataPayload(
-        eventID,
         {
           id: initID,
           prev: initID,
@@ -423,7 +399,6 @@ describe('handleDataPayload()', () => {
 
     await expect(async () => {
       await handleDataPayload(
-        eventID,
         {
           id: initID,
           prev: initID,
@@ -471,7 +446,6 @@ describe('handleDataPayload()', () => {
 
     await expect(async () => {
       await handleDataPayload(
-        eventID,
         {
           id: initID,
           prev: initID,
@@ -514,31 +488,14 @@ describe('handleDataPayload()', () => {
       header: { shouldIndex: true },
     } as unknown as DocumentDataEventPayload
 
-    const newState = await handleDataPayload(eventID, payload, context)
+    const newState = await handleDataPayload(payload, context)
     expect(newState.content).toEqual({ hello: 'test' })
-    expect(newState.log).toEqual([initID.toString(), eventID])
     expect(newState.metadata.shouldIndex).toBe(true)
   })
 })
 
 describe('handleTimeEvent()', () => {
-  const eventID = randomCID().toString()
   const initID = randomCID()
-
-  test('throws if the event cannot be linked to the state', async () => {
-    const getDocumentState = jest.fn(() => {
-      return { log: [] }
-    })
-    const context = { getDocumentState } as unknown as Context
-
-    await expect(async () => {
-      await handleTimeEvent(
-        eventID,
-        { id: initID } as unknown as TimeEvent,
-        context,
-      )
-    }).rejects.toThrow('Invalid document state: log is empty')
-  })
 
   test('returns the updated DocumentState', async () => {
     const getDocumentState = jest.fn(() => {
@@ -546,9 +503,8 @@ describe('handleTimeEvent()', () => {
     })
     const context = { getDocumentState } as unknown as Context
     const event = { id: initID, prev: initID } as unknown as TimeEvent
-    const newState = await handleTimeEvent(eventID, event, context)
+    const newState = await handleTimeEvent(event, context)
     expect(newState.content).toEqual({ test: true })
-    expect(newState.log).toEqual([initID.toString(), eventID])
   })
 })
 
@@ -587,7 +543,7 @@ describe('handleEvent()', () => {
       authenticatedDID.id,
       unique,
     )
-    state = await handleEvent(initCID.toString(), initEvent, context)
+    state = await handleEvent(initEvent, context)
     const streamID = getStreamID(initCID)
 
     const timeCID = randomCID().toString()
@@ -597,7 +553,7 @@ describe('handleEvent()', () => {
       proof: randomCID(),
       path: '/',
     }
-    state = await handleEvent(timeCID, timeEvent, context)
+    state = await handleEvent(timeEvent, context)
 
     const dataCID = randomCID().toString()
     const dataEvent = await createDataEvent({
@@ -606,14 +562,13 @@ describe('handleEvent()', () => {
       newContent: { hello: 'world', foo: 'one', bar: 'two' },
       shouldIndex: true,
     })
-    state = await handleEvent(dataCID, dataEvent, context)
+    state = await handleEvent(dataEvent, context)
 
     expect(state.content).toEqual({ hello: 'world', foo: 'one', bar: 'two' })
     expect(state.metadata.controller).toBe(authenticatedDID.id)
     expect(state.metadata.model.equals(modelID)).toBe(true)
     expect(state.metadata.shouldIndex).toBe(true)
     expect(state.metadata.unique).toBe(unique)
-    expect(state.log).toEqual([initCID.toString(), timeCID, dataCID])
   })
 
   test('with non-deterministic init event', async () => {
@@ -645,7 +600,7 @@ describe('handleEvent()', () => {
       content: { hello: 'world' },
       model: modelID,
     })
-    state = await handleEvent(initCID.toString(), initEvent, context)
+    state = await handleEvent(initEvent, context)
     const streamID = getStreamID(initCID)
 
     const dataCID = randomCID()
@@ -655,7 +610,7 @@ describe('handleEvent()', () => {
       newContent: { hello: 'test' },
       shouldIndex: true,
     })
-    state = await handleEvent(dataCID.toString(), dataEvent, context)
+    state = await handleEvent(dataEvent, context)
 
     const timeCID = randomCID().toString()
     const timeEvent: TimeEvent = {
@@ -664,13 +619,12 @@ describe('handleEvent()', () => {
       proof: randomCID(),
       path: '/',
     }
-    state = await handleEvent(timeCID, timeEvent, context)
+    state = await handleEvent(timeEvent, context)
 
     expect(state.content).toEqual({ hello: 'test' })
     expect(state.metadata.controller).toBe(authenticatedDID.id)
     expect(state.metadata.model.equals(modelID)).toBe(true)
     expect(state.metadata.shouldIndex).toBe(true)
     expect(state.metadata.unique).toBeInstanceOf(Uint8Array)
-    expect(state.log).toEqual([initCID.toString(), dataCID.toString(), timeCID])
   })
 })

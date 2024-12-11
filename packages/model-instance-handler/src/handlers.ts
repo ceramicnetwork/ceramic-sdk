@@ -10,7 +10,6 @@ import {
 import jsonpatch from 'fast-json-patch'
 
 import {
-  assertEventLinksToState,
   assertNoImmutableFieldChange,
   assertValidContent,
   assertValidInitHeader,
@@ -22,7 +21,6 @@ import { getImmutableFieldsToCheck } from './utils.js'
 import { validateRelationsContent } from './validation.js'
 
 function createInitState(
-  cid: string,
   header: DocumentInitEventHeader,
   content: Record<string, unknown> | null,
 ): DocumentState {
@@ -35,12 +33,10 @@ function createInitState(
       context: header.context,
       shouldIndex: header.shouldIndex,
     },
-    log: [cid],
   }
 }
 
 export async function handleDeterministicInitPayload(
-  cid: string,
   payload: DeterministicInitEventPayload,
   context: Context,
 ): Promise<DocumentState> {
@@ -55,11 +51,10 @@ export async function handleDeterministicInitPayload(
   const definition = await context.getModelDefinition(modelID)
   assertValidInitHeader(definition, header)
 
-  return createInitState(cid, header, null)
+  return createInitState(header, null)
 }
 
 export async function handleInitPayload(
-  cid: string,
   payload: DocumentInitEventPayload,
   context: Context,
 ): Promise<DocumentState> {
@@ -78,17 +73,15 @@ export async function handleInitPayload(
   assertValidContent(modelID, definition.schema, data)
   await validateRelationsContent(context, definition, data)
 
-  return createInitState(cid, header, data)
+  return createInitState(header, data)
 }
 
 export async function handleDataPayload(
-  cid: string,
   payload: DocumentDataEventPayload,
   context: Context,
 ): Promise<DocumentState> {
   const streamID = getStreamID(payload.id).toString()
   const state = await context.getDocumentState(streamID)
-  assertEventLinksToState(payload, state)
 
   const metadata = { ...state.metadata }
 
@@ -131,22 +124,19 @@ export async function handleDataPayload(
   // Validate relations
   await validateRelationsContent(context, definition, content)
 
-  return { content, metadata, log: [...state.log, cid] }
+  return { content, metadata }
 }
 
 export async function handleTimeEvent(
-  cid: string,
   event: TimeEvent,
   context: Context,
 ): Promise<DocumentState> {
   const streamID = getStreamID(event.id).toString()
   const state = await context.getDocumentState(streamID)
-  assertEventLinksToState(event, state)
-  return { ...state, log: [...state.log, cid] }
+  return { ...state }
 }
 
 export async function handleEvent(
-  cid: string,
   event: DocumentEvent,
   context: Context,
 ): Promise<DocumentState> {
@@ -158,15 +148,15 @@ export async function handleEvent(
   if (container.signed) {
     // Signed event is either non-deterministic init or data
     if (DocumentDataEventPayload.is(container.payload)) {
-      return await handleDataPayload(cid, container.payload, context)
+      return await handleDataPayload(container.payload, context)
     }
     if (DocumentInitEventPayload.is(container.payload)) {
-      return await handleInitPayload(cid, container.payload, context)
+      return await handleInitPayload(container.payload, context)
     }
   }
   // Unsigned event is either deterministic init or time
   if (TimeEvent.is(container.payload)) {
-    return await handleTimeEvent(cid, container.payload as TimeEvent, context)
+    return await handleTimeEvent(container.payload as TimeEvent, context)
   }
-  return await handleDeterministicInitPayload(cid, container.payload, context)
+  return await handleDeterministicInitPayload(container.payload, context)
 }

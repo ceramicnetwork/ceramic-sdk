@@ -40,7 +40,8 @@
     "modern-spawn": "^1.0.0"
   },
   "devDependencies": {
-    "multiformats": "^13.3.0"
+    "multiformats": "^13.3.0",
+    "dids": "^5.0.2"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

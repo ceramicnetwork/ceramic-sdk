@@ -3,6 +3,7 @@ import {
   SignedEvent,
   createSignedInitEvent,
   decodeMultibaseToJSON,
+  decodeMultibaseToStreamID,
   eventToContainer,
 } from '@ceramic-sdk/events'
 import { StreamID } from '@ceramic-sdk/identifiers'
@@ -69,11 +70,21 @@ export class ModelClient extends StreamClient {
     return getModelStreamID(cid)
   }
 
+  /** Retrieve the stringified model stream ID from a stream */
+  async getDocumentModel(streamID: StreamID | string): Promise<string> {
+    const id =
+      typeof streamID === 'string' ? StreamID.fromString(streamID) : streamID
+    const streamState = await this.getStreamState(id)
+    const stream = decodeMultibaseToStreamID(streamState.dimensions.model)
+    return stream.toString()
+  }
+
   /** Retrieve a model's JSON definition */
   async getModelDefinition(
     streamID: StreamID | string,
   ): Promise<ModelDefinition> {
-    const id = typeof streamID === 'string' ? streamID : streamID.toString() // Convert StreamID to string
+    const id =
+      typeof streamID === 'string' ? StreamID.fromString(streamID) : streamID
     const streamState = await this.getStreamState(id)
     const decodedData = decodeMultibaseToJSON(streamState.data)
       .content as ModelDefinition

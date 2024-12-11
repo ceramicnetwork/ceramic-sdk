@@ -1,4 +1,5 @@
 import { type CeramicClient, getCeramicClient } from '@ceramic-sdk/http-client'
+import type { StreamID } from '@ceramic-sdk/identifiers'
 import type { DID } from 'dids'
 
 export type StreamState = {
@@ -40,11 +41,16 @@ export class StreamClient {
    * @param streamId - Multibase encoded stream ID
    * @returns The state of the stream
    */
-  async getStreamState(streamId: string): Promise<StreamState> {
+  async getStreamState(streamId: StreamID | string): Promise<StreamState> {
     const { data, error } = await this.#ceramic.api.GET(
       '/streams/{stream_id}',
       {
-        params: { path: { stream_id: streamId } },
+        params: {
+          path: {
+            stream_id:
+              typeof streamId === 'string' ? streamId : streamId.toString(),
+          },
+        },
       },
     )
 

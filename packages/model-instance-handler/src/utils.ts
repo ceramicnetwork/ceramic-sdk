@@ -1,4 +1,3 @@
-import { DocumentDataEventPayload } from '@ceramic-sdk/model-instance-protocol'
 import type { ModelDefinition } from '@ceramic-sdk/model-protocol'
 import { fromString as bytesFromString } from 'uint8arrays'
 
@@ -22,9 +21,7 @@ export function getImmutableFieldsToCheck(
   // Check if the stream is deterministic
   if (['set', 'single'].includes(definition.accountRelation.type)) {
     // Should check immutable fields if there is already a data event present, otherwise it is the first data event that sets the content of the deterministic stream
-    return state.log.some(DocumentDataEventPayload.is)
-      ? definition.immutableFields
-      : []
+    return state.content != null ? definition.immutableFields : []
   }
 
   // Should check immutable fields for all data events on non-deterministic streams
