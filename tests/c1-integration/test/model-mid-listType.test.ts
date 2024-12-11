@@ -1,4 +1,5 @@
 import { CeramicClient } from '@ceramic-sdk/http-client'
+import type { CommitID, StreamID } from '@ceramic-sdk/identifiers'
 import { ModelClient } from '@ceramic-sdk/model-client'
 import { ModelInstanceClient } from '@ceramic-sdk/model-instance-client'
 import type { ModelDefinition } from '@ceramic-sdk/model-protocol'
@@ -30,50 +31,56 @@ const CONTAINER_OPTS: EnvironmentOptions = {
   testPort: 5223,
 }
 
-describe('model integration test', () => {
+const client = new CeramicClient({
+  url: `http://127.0.0.1:${CONTAINER_OPTS.apiPort}`,
+})
+
+const modelInstanceClient = new ModelInstanceClient({
+  ceramic: client,
+  did: authenticatedDID,
+})
+
+const modelClient = new ModelClient({
+  ceramic: client,
+  did: authenticatedDID,
+})
+
+describe('model integration test for list model and MID', () => {
   let c1Container: CeramicOneContainer
-  const client = new CeramicClient({
-    url: `http://127.0.0.1:${CONTAINER_OPTS.apiPort}`,
-  })
+  let modelStream: StreamID
+  let documentStream: CommitID
 
   beforeAll(async () => {
     c1Container = await CeramicOneContainer.startContainer(CONTAINER_OPTS)
+    modelStream = await modelClient.postDefinition(testModel)
   }, 10000)
 
-  test('create LIST model, model instance, and updates to instance using the model', async () => {
-    const modelInstanceClient = new ModelInstanceClient({
-      ceramic: client,
-      did: authenticatedDID,
-    })
-    const modelClient = new ModelClient({
-      ceramic: client,
-      did: authenticatedDID,
-    })
-    const modelStream = await modelClient.postDefinition(testModel)
+  test('gets correct model definition', async () => {
+    // wait one second
+    await new Promise((resolve) => setTimeout(resolve, 1000))
     const definition = await modelClient.getModelDefinition(modelStream)
     expect(definition).toEqual(testModel)
-
-    const documentStream = await modelInstanceClient.postSignedInit({
+  })
+  test('posts signed init event and obtains correct state', async () => {
+    documentStream = await modelInstanceClient.postSignedInit({
       model: modelStream,
       content: { test: 'hello' },
       shouldIndex: true,
     })
-
     // wait 1 seconds
     await new Promise((resolve) => setTimeout(resolve, 1000))
     const currentState = await modelInstanceClient.getDocumentState(
       documentStream.toString(),
     )
-
-    // wait 1 seconds
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    expect(currentState.content).toEqual({ test: 'hello' })
+  })
+  test('updates document and obtains correct state', async () => {
     // update the document
     const updatedState = await modelInstanceClient.updateDocument({
       streamID: documentStream.toString(),
       newContent: { test: 'world' },
       shouldIndex: true,
     })
-    expect(currentState.content).toEqual({ test: 'hello' })
     expect(updatedState.content).toEqual({ test: 'world' })
   })
   afterAll(async () => {
