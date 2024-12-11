@@ -97,15 +97,13 @@ export class ModelInstanceClient extends StreamClient {
     return CommitID.fromStream(params.currentID.baseID, cid)
   }
 
-   /** Gets currentID */
+  /** Gets currentID */
   getCurrentID(streamID: string): CommitID {
     return new CommitID(3, streamID)
   }
 
   /** Transform StreamState into DocumentState */
-  streamStateToDocumentState(
-    streamState: StreamState,
-  ): DocumentState  {
+  streamStateToDocumentState(streamState: StreamState): DocumentState {
     const decodedData = decodeMultibaseToJSON(streamState.data)
     const controller = streamState.controller
     const modelID = decodeMultibaseToStreamID(streamState.dimensions.model)
@@ -122,9 +120,7 @@ export class ModelInstanceClient extends StreamClient {
   }
 
   /** Retrieve and return document state */
-  async getDocumentState(
-    streamID: string,
-  ): Promise<DocumentState> {
+  async getDocumentState(streamID: string): Promise<DocumentState> {
     const streamState = await this.getStreamState(streamID)
     return this.streamStateToDocumentState(streamState)
   }
@@ -133,10 +129,10 @@ export class ModelInstanceClient extends StreamClient {
   async updateDocument<T extends UnknownContent = UnknownContent>(
     params: UpdateDataParams<T>,
   ): Promise<DocumentState> {
-    let currentState: DocumentState;
-    let currentId: CommitID;
+    let currentState: DocumentState
+    let currentId: CommitID
     // If currentState is not provided, fetch the current state
-    if(!params.currentState) {
+    if (!params.currentState) {
       const streamState = await this.getStreamState(params.streamID)
       currentState = this.streamStateToDocumentState(streamState)
       currentId = this.getCurrentID(streamState.event_cid)
