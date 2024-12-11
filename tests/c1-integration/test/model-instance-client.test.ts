@@ -24,7 +24,7 @@ const testModel: ModelDefinition = {
 }
 
 const CONTAINER_OPTS: EnvironmentOptions = {
-  containerName: 'ceramic-test-document',
+  containerName: 'ceramic-test-model-MID-list',
   apiPort: 5222,
   flightSqlPort: 5223,
   testPort: 5223,
@@ -75,5 +75,8 @@ describe('model integration test', () => {
     })
     expect(currentState.content).toEqual({ test: 'hello' })
     expect(updatedState.content).toEqual({ test: 'world' })
+  })
+  afterAll(async () => {
+    await c1Container.teardown()
   })
 })

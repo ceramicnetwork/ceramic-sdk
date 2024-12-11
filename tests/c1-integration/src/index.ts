@@ -10,7 +10,6 @@ const DEFAULT_ENVIRONMENT = {
   CERAMIC_ONE_S3_BUCKET: 'sdkintegrationtests.new',
   CERAMIC_ONE_LOG_FORMAT: 'single-line',
   CERAMIC_ONE_NETWORK: 'in-memory',
-  CERAMIC_ONE_STORE_DIR: '/',
   CERAMIC_ONE_AGGREGATOR: 'true',
   CERAMIC_ONE_OBJECT_STORE_URL: 'file://./generated',
 }
