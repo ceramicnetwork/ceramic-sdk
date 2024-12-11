@@ -257,4 +257,84 @@ describe('ModelInstanceClient', () => {
       )
     })
   })
+  describe('updateDocument() method', () => {
+    const mockStreamState = {
+      id: 'k2t6wyfsu4pfy7r1jdd6jex9oxbqyp4gr2a5kxs8ioxwtisg8nzj3anbckji8g',
+      event_cid: 'bafyreib5j4def5a4w4j6sg4upm6nb4cfn752wdjwqtwdzejfladyyymxca',
+      controller: 'did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp',
+      dimensions: {
+        context: 'u',
+        controller:
+          'uZGlkOmtleTp6Nk1raVRCejF5bXVlcEFRNEhFSFlTRjFIOHF1RzVHTFZWUVIzZGpkWDNtRG9vV3A',
+        model: 'uzgEAAXESIA8og02Dnbwed_besT8M0YOnaZ-hrmMZaa7mnpdUL8jE',
+      },
+      data: 'ueyJtZXRhZGF0YSI6eyJzaG91bGRJbmRleCI6dHJ1ZX0sImNvbnRlbnQiOnsiYm9keSI6IlRoaXMgaXMgYSBzaW1wbGUgbWVzc2FnZSJ9fQ',
+    }
+    test('updates a document with new content when current is not provided', async () => {
+      const newContent = { body: 'This is a new message' }
+      const streamId =
+        'k2t6wyfsu4pfy7r1jdd6jex9oxbqyp4gr2a5kxs8ioxwtisg8nzj3anbckji8g'
+      // Mock CeramicClient and its API
+      const postEventType = jest.fn(() => randomCID())
+      const mockGet = jest.fn(() =>
+        Promise.resolve({
+          data: mockStreamState,
+          error: null,
+        }),
+      )
+      const ceramic = {
+        api: { GET: mockGet },
+        postEventType,
+      } as unknown as CeramicClient
+      const client = new ModelInstanceClient({ ceramic, did: authenticatedDID })
+      jest.spyOn(client, 'getDocumentState')
+      jest.spyOn(client, 'postData')
+      const newState = await client.updateDocument({
+        streamID: streamId,
+        newContent,
+        shouldIndex: true,
+      })
+      expect(client.postData).toHaveBeenCalledWith({
+        controller: authenticatedDID,
+        currentID: new CommitID(3, mockStreamState.event_cid),
+        currentContent: { body: 'This is a simple message' },
+        newContent,
+        shouldIndex: true,
+      })
+      expect(newState.content).toEqual(newContent)
+      expect(postEventType).toHaveBeenCalled()
+      expect(mockGet).toHaveBeenCalledWith('/streams/{stream_id}', {
+        params: { path: { stream_id: streamId } },
+      })
+    })
+    test('updates a document with new content when current is provided', async () => {
+      const newContent = { body: 'This is a new message' }
+      const streamId =
+        'k2t6wyfsu4pfy7r1jdd6jex9oxbqyp4gr2a5kxs8ioxwtisg8nzj3anbckji8g'
+      // Mock CeramicClient and its API
+      const postEventType = jest.fn(() => randomCID())
+      const mockGet = jest.fn(() =>
+        Promise.resolve({
+          data: mockStreamState,
+          error: null,
+        }),
+      )
+
+      const ceramic = {
+        api: { GET: mockGet },
+        postEventType,
+      } as unknown as CeramicClient
+      const client = new ModelInstanceClient({ ceramic, did: authenticatedDID })
+      jest.spyOn(client, 'streamStateToDocumentState')
+      const newState = await client.updateDocument({
+        streamID: streamId,
+        newContent,
+        currentState: mockStreamState,
+      })
+      expect(client.streamStateToDocumentState).toHaveBeenCalled()
+      expect(newState.content).toEqual(newContent)
+      expect(postEventType).toHaveBeenCalled()
+      expect(mockGet).not.toHaveBeenCalled()
+    })
+  })
 })

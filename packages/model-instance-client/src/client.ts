@@ -9,12 +9,13 @@ import {
   DocumentEvent,
   getStreamID,
 } from '@ceramic-sdk/model-instance-protocol'
-import { StreamClient } from '@ceramic-sdk/stream-client'
+import { StreamClient, type StreamState } from '@ceramic-sdk/stream-client'
 import type { DIDString } from '@didtools/codecs'
 import type { DID } from 'dids'
 import {
   type CreateDataEventParams,
   type CreateInitEventParams,
+  type PostDataEventParams,
   createDataEvent,
   createInitEvent,
   getDeterministicInitEventPayload,
@@ -34,6 +35,13 @@ export type PostSignedInitParams<T extends UnknownContent = UnknownContent> =
 
 export type PostDataParams<T extends UnknownContent = UnknownContent> = Omit<
   CreateDataEventParams<T>,
+  'controller'
+> & {
+  controller?: DID
+}
+
+export type UpdateDataParams<T extends UnknownContent = UnknownContent> = Omit<
+  PostDataEventParams<T>,
   'controller'
 > & {
   controller?: DID
@@ -89,12 +97,14 @@ export class ModelInstanceClient extends StreamClient {
     return CommitID.fromStream(params.currentID.baseID, cid)
   }
 
-  /** Retrieve and return document state */
-  async getDocumentState(streamID: string): Promise<DocumentState> {
-    const streamState = await this.getStreamState(streamID)
-    const encodedData = streamState.data
+  /** Gets currentID */
+  getCurrentID(streamID: string): CommitID {
+    return new CommitID(3, streamID)
+  }
 
-    const decodedData = decodeMultibaseToJSON(encodedData)
+  /** Transform StreamState into DocumentState */
+  streamStateToDocumentState(streamState: StreamState): DocumentState {
+    const decodedData = decodeMultibaseToJSON(streamState.data)
     const controller = streamState.controller
     const modelID = decodeMultibaseToStreamID(streamState.dimensions.model)
     return {
@@ -104,6 +114,49 @@ export class ModelInstanceClient extends StreamClient {
         controller: controller as DIDString,
         ...(typeof decodedData.metadata === 'object'
           ? decodedData.metadata
+          : {}),
+      },
+    }
+  }
+
+  /** Retrieve and return document state */
+  async getDocumentState(streamID: string): Promise<DocumentState> {
+    const streamState = await this.getStreamState(streamID)
+    return this.streamStateToDocumentState(streamState)
+  }
+
+  /** Post an update to a document that optionally obtains docstate first */
+  async updateDocument<T extends UnknownContent = UnknownContent>(
+    params: UpdateDataParams<T>,
+  ): Promise<DocumentState> {
+    let currentState: DocumentState
+    let currentId: CommitID
+    // If currentState is not provided, fetch the current state
+    if (!params.currentState) {
+      const streamState = await this.getStreamState(params.streamID)
+      currentState = this.streamStateToDocumentState(streamState)
+      currentId = this.getCurrentID(streamState.event_cid)
+    } else {
+      currentState = this.streamStateToDocumentState(params.currentState)
+      currentId = this.getCurrentID(params.currentState.event_cid)
+    }
+    const { content } = currentState
+    const { controller, newContent, shouldIndex } = params
+    // Use existing postData utility to access the ceramic api
+    await this.postData({
+      controller: this.getDID(controller),
+      currentContent: content ?? undefined,
+      newContent: newContent,
+      currentID: currentId,
+      shouldIndex: shouldIndex,
+    })
+    return {
+      content: params.newContent,
+      metadata: {
+        model: currentState.metadata.model,
+        controller: currentState.metadata.controller,
+        ...(typeof currentState.metadata === 'object'
+          ? currentState.metadata
           : {}),
       },
     }
