@@ -133,39 +133,3 @@ export function assertValidUniqueValue(
     )
   }
 }
-
-/**
- * Asserts that the 'id' and 'prev' properties of the given event properly link to the tip of
- * the given document state.
- *
- * By the time the code gets into a StreamtypeHandler's applyCommit function the link to the state
- * should already have been established by the stream loading and conflict resolution code, so
- * if this check were to fail as part of a StreamtypeHandler's applyCommit function, that would
- * indicate a programming error.
- */
-// export function assertEventLinksToState(
-//   payload: DocumentDataEventPayload | TimeEvent,
-//   state: DocumentState,
-// ) {
-//   if (state.log.length === 0) {
-//     throw new Error('Invalid document state: log is empty')
-//   }
-
-//   const initCID = state.log[0]
-
-//   // Older versions of the CAS created time events without an 'id' field, so only check
-//   // the event payload 'id' field if it is present.
-//   if (payload.id != null && payload.id.toString() !== initCID) {
-//     throw new Error(
-//       `Invalid init CID in event payload for document, expected ${initCID} but got ${payload.id}`,
-//     )
-//   }
-
-//   const prev = payload.prev.toString()
-//   const expectedPrev = state.log[state.log.length - 1]
-//   if (prev !== expectedPrev) {
-//     throw new Error(
-//       `Commit doesn't properly point to previous event payload in log for document ${initCID}. Expected ${expectedPrev}, found 'prev' ${prev}`,
-//     )
-//   }
-// }
