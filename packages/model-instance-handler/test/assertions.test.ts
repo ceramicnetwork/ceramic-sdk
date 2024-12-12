@@ -7,7 +7,6 @@ import type {
 import type { ModelDefinitionV2 } from '@ceramic-sdk/model-protocol'
 
 import {
-  assertEventLinksToState,
   assertNoImmutableFieldChange,
   assertValidContent,
   assertValidInitHeader,
@@ -15,47 +14,6 @@ import {
 } from '../src/assertions.js'
 import type { DocumentState } from '../src/types.js'
 import { encodeUniqueFieldsValue } from '../src/utils.js'
-
-describe('assertEventLinksToState()', () => {
-  test('throws if the state log is empty', () => {
-    const cid = randomCID()
-    expect(() => {
-      assertEventLinksToState(
-        { id: cid } as unknown as DocumentDataEventPayload,
-        { log: [] } as unknown as DocumentState,
-      )
-    }).toThrow('Invalid document state: log is empty')
-  })
-
-  test('throws if the event id does not match the init event cid', () => {
-    const expectedID = randomCID().toString()
-    const invalidID = randomCID()
-    expect(() => {
-      assertEventLinksToState(
-        { id: invalidID } as unknown as DocumentDataEventPayload,
-        { log: [expectedID] } as unknown as DocumentState,
-      )
-    }).toThrow(
-      `Invalid init CID in event payload for document, expected ${expectedID} but got ${invalidID}`,
-    )
-  })
-
-  test('throws if the event prev does not match the previous event cid', () => {
-    const initID = randomCID()
-    const expectedID = randomCID()
-    const invalidID = randomCID()
-    expect(() => {
-      assertEventLinksToState(
-        { id: initID, prev: invalidID } as unknown as DocumentDataEventPayload,
-        {
-          log: [initID.toString(), expectedID.toString()],
-        } as unknown as DocumentState,
-      )
-    }).toThrow(
-      `Commit doesn't properly point to previous event payload in log for document ${initID}. Expected ${expectedID}, found 'prev' ${invalidID}`,
-    )
-  })
-})
 
 describe('assertNoImmutableFieldChange()', () => {
   test('throws if an immutable field is changed', () => {

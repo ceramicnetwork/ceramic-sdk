@@ -76,8 +76,7 @@ describe('stream client', () => {
 
   test('gets a stream', async () => {
     const client = new StreamClient({ ceramic: ceramicClient })
-    console.log(streamId.toString())
-    const streamState = await client.getStreamState(streamId.toString())
+    const streamState = await client.getStreamState(streamId)
     expect(streamState).toBeDefined()
     expect(streamState.id.toString()).toEqual(streamId.toString())
   }, 10000)

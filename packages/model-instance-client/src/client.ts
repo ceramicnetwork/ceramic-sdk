@@ -4,7 +4,7 @@ import {
   decodeMultibaseToJSON,
   decodeMultibaseToStreamID,
 } from '@ceramic-sdk/events'
-import { CommitID, type StreamID } from '@ceramic-sdk/identifiers'
+import { CommitID, StreamID } from '@ceramic-sdk/identifiers'
 import {
   DocumentEvent,
   getStreamID,
@@ -120,8 +120,10 @@ export class ModelInstanceClient extends StreamClient {
   }
 
   /** Retrieve and return document state */
-  async getDocumentState(streamID: string): Promise<DocumentState> {
-    const streamState = await this.getStreamState(streamID)
+  async getDocumentState(streamID: StreamID | string): Promise<DocumentState> {
+    const id =
+      typeof streamID === 'string' ? StreamID.fromString(streamID) : streamID
+    const streamState = await this.getStreamState(id)
     return this.streamStateToDocumentState(streamState)
   }
 
@@ -133,7 +135,9 @@ export class ModelInstanceClient extends StreamClient {
     let currentId: CommitID
     // If currentState is not provided, fetch the current state
     if (!params.currentState) {
-      const streamState = await this.getStreamState(params.streamID)
+      const streamState = await this.getStreamState(
+        StreamID.fromString(params.streamID),
+      )
       currentState = this.streamStateToDocumentState(streamState)
       currentId = this.getCurrentID(streamState.event_cid)
     } else {
