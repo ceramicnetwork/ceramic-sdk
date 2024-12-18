@@ -1,6 +1,6 @@
 {
   "name": "@ceramic-sdk/flight-sql-client-darwin-arm64",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "os": ["darwin"],
   "cpu": ["arm64"],
   "main": "flight-sql-client.darwin-arm64.node",

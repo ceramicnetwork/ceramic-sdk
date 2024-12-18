@@ -1,6 +1,6 @@
 {
   "name": "@ceramic-sdk/flight-sql-client",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "A FlightSQL client. Currently only supports Node.js",
   "main": "index.js",
   "types": "index.d.ts",
