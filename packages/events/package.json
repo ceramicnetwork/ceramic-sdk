@@ -41,7 +41,8 @@
     "dag-jose": "^5.1.1",
     "multiformats": "^13.3.0",
     "multihashes-sync": "^2.0.0",
-    "uint8arrays": "^5.1.0"
+    "uint8arrays": "^5.1.0",
+    "ts-essentials": "^10.0.2"
   },
   "devDependencies": {
     "@didtools/key-did": "^1.0.0",

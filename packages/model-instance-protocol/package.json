@@ -35,7 +35,8 @@
     "@ceramic-sdk/identifiers": "workspace:^",
     "@didtools/codecs": "^3.0.0",
     "codeco": "^1.4.3",
-    "object-sizeof": "^2.6.4"
+    "object-sizeof": "^2.6.4",
+    "ts-essentials": "^10.0.2"
   },
   "devDependencies": {
     "multiformats": "^13.3.0"

@@ -38,7 +38,8 @@
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "codeco": "^1.4.3",
-    "json-ptr": "^3.1.1"
+    "json-ptr": "^3.1.1",
+    "ts-essentials": "^10.0.2"
   },
   "devDependencies": {
     "@ceramic-sdk/test-utils": "workspace:^",
