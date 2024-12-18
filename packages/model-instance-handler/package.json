@@ -39,7 +39,8 @@
     "ajv-formats": "^3.0.1",
     "codeco": "^1.4.3",
     "fast-json-patch": "^3.1.1",
-    "uint8arrays": "^5.1.0"
+    "uint8arrays": "^5.1.0",
+    "ts-essentials": "^10.0.2"
   },
   "devDependencies": {
     "@ceramic-sdk/model-instance-client": "workspace:^",

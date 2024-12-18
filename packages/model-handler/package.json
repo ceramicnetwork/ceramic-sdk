@@ -45,7 +45,8 @@
     "@didtools/key-did": "^1.0.0",
     "@types/lodash.ismatch": "^4.4.9",
     "json-schema-typed": "^8.0.1",
-    "multiformats": "^13.3.0"
+    "multiformats": "^13.3.0",
+    "ts-essentials": "^10.0.2"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

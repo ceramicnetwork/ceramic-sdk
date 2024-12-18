@@ -41,9 +41,6 @@ importers:
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.7.0)
-      ts-essentials:
-        specifier: ^10.0.2
-        version: 10.0.2(typescript@5.6.2)
       tsx:
         specifier: ^4.19.1
         version: 4.19.1
@@ -141,6 +138,9 @@ importers:
       postcss-simple-vars:
         specifier: ^7.0.1
         version: 7.0.1(postcss@8.4.47)
+      ts-essentials:
+        specifier: 10.0.2
+        version: 10.0.2(typescript@5.6.2)
       typescript:
         specifier: ^5.6.2
         version: 5.6.2
@@ -177,6 +177,9 @@ importers:
       multihashes-sync:
         specifier: ^2.0.0
         version: 2.0.0
+      ts-essentials:
+        specifier: ^10.0.2
+        version: 10.0.2(typescript@5.6.2)
       uint8arrays:
         specifier: ^5.1.0
         version: 5.1.0
@@ -277,6 +280,9 @@ importers:
       dids:
         specifier: ^5.0.2
         version: 5.0.2(typescript@5.6.2)(zod@3.23.8)
+      ts-essentials:
+        specifier: ^10.0.2
+        version: 10.0.2(typescript@5.6.2)
 
   packages/model-handler:
     dependencies:
@@ -317,6 +323,9 @@ importers:
       multiformats:
         specifier: ^13.3.0
         version: 13.3.0
+      ts-essentials:
+        specifier: ^10.0.2
+        version: 10.0.2(typescript@5.6.2)
 
   packages/model-instance-client:
     dependencies:
@@ -348,6 +357,9 @@ importers:
       dids:
         specifier: ^5.0.2
         version: 5.0.2(typescript@5.6.2)(zod@3.23.8)
+      ts-essentials:
+        specifier: ^10.0.2
+        version: 10.0.2(typescript@5.6.2)
       uint8arrays:
         specifier: ^5.1.0
         version: 5.1.0
@@ -375,6 +387,9 @@ importers:
       fast-json-patch:
         specifier: ^3.1.1
         version: 3.1.1
+      ts-essentials:
+        specifier: ^10.0.2
+        version: 10.0.2(typescript@5.6.2)
       uint8arrays:
         specifier: ^5.1.0
         version: 5.1.0
@@ -412,6 +427,9 @@ importers:
       object-sizeof:
         specifier: ^2.6.4
         version: 2.6.5
+      ts-essentials:
+        specifier: ^10.0.2
+        version: 10.0.2(typescript@5.6.2)
     devDependencies:
       multiformats:
         specifier: ^13.3.0
@@ -443,6 +461,9 @@ importers:
       json-ptr:
         specifier: ^3.1.1
         version: 3.1.1
+      ts-essentials:
+        specifier: ^10.0.2
+        version: 10.0.2(typescript@5.6.2)
     devDependencies:
       '@ceramic-sdk/test-utils':
         specifier: workspace:^
