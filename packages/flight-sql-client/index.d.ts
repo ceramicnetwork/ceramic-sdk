@@ -79,8 +79,12 @@ export interface GetTablesOptions {
   /** Specifies if the Arrow schema should be returned for found tables. */
   includeSchema?: boolean
 }
+export declare class StreamQuery {
+  next(): Promise<Buffer | null>
+}
 export declare class FlightSqlClient {
   query(query: string): Promise<Buffer>
+  streamQuery(query: string): Promise<StreamQuery>
   preparedStatement(query: string, params: Array<[string, string]>): Promise<Buffer>
   getCatalogs(): Promise<Buffer>
   getDbSchemas(options: GetDbSchemasOptions): Promise<Buffer>

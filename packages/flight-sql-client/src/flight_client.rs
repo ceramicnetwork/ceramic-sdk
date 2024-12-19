@@ -2,9 +2,11 @@ use std::{sync::Arc, time::Duration};
 
 use arrow_array::{ArrayRef, Datum, RecordBatch, StringArray};
 use arrow_cast::{cast_with_options, CastOptions};
-use arrow_flight::{sql::client::FlightSqlServiceClient, FlightInfo};
+use arrow_flight::{
+    decode::FlightRecordBatchStream, sql::client::FlightSqlServiceClient, FlightInfo,
+};
 use arrow_schema::{ArrowError, Schema};
-use futures::TryStreamExt;
+use futures::{stream::BoxStream, TryStreamExt};
 use napi_derive::napi;
 use snafu::ResultExt;
 use tonic::transport::{Channel, ClientTlsConfig, Endpoint};
@@ -79,6 +81,27 @@ pub(crate) async fn execute_flight(
     debug!("received data");
 
     Ok(batches)
+}
+
+type RecordBatchStream = BoxStream<'static, Result<RecordBatch, ArrowError>>;
+
+pub(crate) async fn execute_flight_stream(
+    client: &mut FlightSqlServiceClient<Channel>,
+    info: FlightInfo,
+) -> Result<Vec<FlightRecordBatchStream>> {
+    let mut streams = Vec::with_capacity(info.endpoint.len());
+
+    for endpoint in info.endpoint {
+        let Some(ticket) = &endpoint.ticket else {
+            panic!("did not get ticket");
+        };
+        let flight_data = client.do_get(ticket.clone()).await.context(ArrowSnafu {
+            message: "do_get_request",
+        })?;
+        streams.push(flight_data);
+    }
+
+    Ok(streams)
 }
 
 #[allow(unused)]

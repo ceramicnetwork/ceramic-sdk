@@ -1,7 +1,7 @@
 [package]
 authors = [
-  "Robert Pack <robstar.pack@gmail.com>",
-  "David Estes <david@3box.io>",
+    "Robert Pack <robstar.pack@gmail.com>",
+    "David Estes <david@3box.io>",
 ]
 edition = "2021"
 name = "flight-sql-client"
@@ -18,11 +18,12 @@ arrow-cast = "53"
 arrow-flight = { version = "53", features = ["flight-sql-experimental"] }
 arrow-ipc = "53"
 arrow-schema = "53"
+async-stream = "0.3"
 futures = "0.3"
 napi = { version = "2.12.2", default-features = false, features = [
-  "napi8",
-  "tokio_rt",
-  "async",
+    "napi8",
+    "tokio_rt",
+    "async",
 ] }
 napi-derive = "2"
 snafu = "0.8"

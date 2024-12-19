@@ -3,18 +3,21 @@
 mod conversion;
 mod error;
 mod flight_client;
+mod stream_query;
 
 use arrow_array::{ArrayRef, Datum as _, RecordBatch, StringArray};
 use arrow_cast::CastOptions;
 use arrow_flight::sql::{client::FlightSqlServiceClient, CommandGetDbSchemas, CommandGetTables};
 use arrow_schema::Schema;
+use flight_client::execute_flight_stream;
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
 use snafu::prelude::*;
+use stream_query::StreamQuery;
 use tokio::sync::Mutex;
 use tonic::transport::Channel;
 
-use crate::conversion::record_batch_to_buffer;
+use crate::conversion::record_batches_to_buffer;
 use crate::error::{ArrowSnafu, Result};
 use crate::flight_client::{execute_flight, setup_client, ClientOptions};
 
@@ -34,7 +37,18 @@ impl FlightSqlClient {
         })?;
 
         let batches = execute_flight(&mut client, flight_info).await?;
-        Ok(record_batch_to_buffer(batches)?.into())
+        Ok(record_batches_to_buffer(batches)?.into())
+    }
+    #[napi]
+    pub async fn stream_query(&self, query: String) -> napi::Result<StreamQuery> {
+        let mut client = self.client.lock().await;
+
+        let flight_info = client.execute(query, None).await.context(ArrowSnafu {
+            message: "failed to execute query",
+        })?;
+
+        let streams = execute_flight_stream(&mut client, flight_info).await?;
+        Ok(StreamQuery::new(streams))
     }
 
     #[napi]
@@ -59,7 +73,7 @@ impl FlightSqlClient {
             message: "failed to execute prepared statement",
         })?;
         let batches = execute_flight(&mut client, flight_info).await?;
-        Ok(record_batch_to_buffer(batches)?.into())
+        Ok(record_batches_to_buffer(batches)?.into())
     }
 
     #[napi]
@@ -69,7 +83,7 @@ impl FlightSqlClient {
             message: "failed to execute get catalogs",
         })?;
         let batches = execute_flight(&mut client, flight_info).await?;
-        Ok(record_batch_to_buffer(batches)?.into())
+        Ok(record_batches_to_buffer(batches)?.into())
     }
 
     #[napi]
@@ -83,7 +97,7 @@ impl FlightSqlClient {
             message: "failed to execute get schemas",
         })?;
         let batches = execute_flight(&mut client, flight_info).await?;
-        Ok(record_batch_to_buffer(batches)?.into())
+        Ok(record_batches_to_buffer(batches)?.into())
     }
 
     #[napi]
@@ -100,7 +114,7 @@ impl FlightSqlClient {
             message: "failed to execute get tables",
         })?;
         let batches = execute_flight(&mut client, flight_info).await?;
-        Ok(record_batch_to_buffer(batches)?.into())
+        Ok(record_batches_to_buffer(batches)?.into())
     }
 }
 
