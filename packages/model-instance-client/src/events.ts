@@ -21,6 +21,9 @@ import type { StreamState } from '@ceramic-sdk/stream-client'
 import type { UnknownContent } from './types.js'
 import { createInitHeader, getPatchOperations } from './utils.js'
 
+/**
+ * Parameters required to create a non-deterministic initialization event for a ModelInstanceDocument stream.
+ */
 export type CreateInitEventParams<T extends UnknownContent = UnknownContent> = {
   /** Initial JSON object content for the ModelInstanceDocument stream */
   content: T
@@ -30,13 +33,21 @@ export type CreateInitEventParams<T extends UnknownContent = UnknownContent> = {
   model: StreamID
   /** Optional context */
   context?: StreamID
-  /** Flag notifying indexers if they should index the ModelInstanceDocument stream or not, defaults to `true` */
+  /** Flag indicating if indexers should index the ModelInstanceDocument stream (defaults to `true`) */
   shouldIndex?: boolean
 }
 
 /**
- * Create a non-deterministic init event for a ModelInstanceDocument stream.
- * @see {@link getDeterministicInitEventPayload} for deterministic events.
+ * Creates a non-deterministic initialization event for a ModelInstanceDocument stream.
+ *
+ * @param params - The parameters required to create the initialization event.
+ * @returns A promise that resolves to a signed initialization event.
+ *
+ * @remarks
+ * This method creates a non-deterministic initialization event for use with streams where
+ * the stream ID is not derived from a unique value.
+ *
+ * @see {@link getDeterministicInitEventPayload} for deterministic initialization events.
  */
 export async function createInitEvent<
   T extends UnknownContent = UnknownContent,
@@ -52,8 +63,16 @@ export async function createInitEvent<
 }
 
 /**
- * Get a deterministic init event payload for a ModelInstanceDocument stream.
- * @see {@link createInitEvent} for creating non-deterministic events.
+ * Retrieves the payload for a deterministic initialization event for a ModelInstanceDocument stream.
+ *
+ * @param model - The stream ID of the model associated with the stream.
+ * @param controller - The DID string or literal string for the stream's controller.
+ * @param uniqueValue - Optional unique value to ensure determinism.
+ * @returns The deterministic initialization event payload.
+ *
+ * @remarks
+ * Deterministic initialization events ensure the resulting stream ID is derived
+ * from the provided unique value.
  */
 export function getDeterministicInitEventPayload(
   model: StreamID,
@@ -71,7 +90,12 @@ export function getDeterministicInitEventPayload(
 }
 
 /**
- * Get an encoded deterministic init event for a ModelInstanceDocument stream
+ * Encodes a deterministic initialization event for a ModelInstanceDocument stream.
+ *
+ * @param model - The stream ID of the model associated with the stream.
+ * @param controller - The DID string or literal string for the stream's controller.
+ * @param uniqueValue - Optional unique value to ensure determinism.
+ * @returns The encoded deterministic initialization event payload.
  */
 export function getDeterministicInitEvent(
   model: StreamID,
@@ -88,7 +112,14 @@ export function getDeterministicInitEvent(
 }
 
 /**
- * Create a data event payload for a ModelInstanceDocument stream
+ * Creates a data event payload for a ModelInstanceDocument stream.
+ *
+ * @param current - The current commit ID of the stream.
+ * @param data - The JSON patch operations to apply to the stream content.
+ * @param header - Optional header information for the data event.
+ * @returns A valid data event payload.
+ *
+ * @throws Will throw an error if the JSON patch operations are invalid.
  */
 export function createDataEventPayload(
   current: CommitID,
@@ -110,32 +141,45 @@ export function createDataEventPayload(
   return payload
 }
 
+/**
+ * Parameters required to create a signed data event for a ModelInstanceDocument stream.
+ */
 export type CreateDataEventParams<T extends UnknownContent = UnknownContent> = {
   /** DID controlling the ModelInstanceDocument stream */
   controller: DID
   /** Commit ID of the current tip of the ModelInstanceDocument stream */
   currentID: CommitID
-  /** Current JSON object content for the ModelInstanceDocument stream, used with `newContent` to create the JSON patch */
+  /** Current JSON object content for the stream, used with `newContent` to create a JSON patch */
   currentContent?: T
-  /** New JSON object content for the ModelInstanceDocument stream, used with `currentContent` to create the JSON patch */
+  /** New JSON object content for the stream, used with `currentContent` to create a JSON patch */
   newContent?: T
-  /** Flag notifying indexers if they should index the ModelInstanceDocument stream or not */
-  shouldIndex?: boolean
-}
-
-export type PostDataEventParams<T extends UnknownContent = UnknownContent> = {
-  /** String representation of the StreamID to update */
-  streamID: string
-  /** New JSON object content for the ModelInstanceDocument stream, used with `currentContent` to create the JSON patch */
-  newContent: T
-  /** Current JSON object containing the stream's current state */
-  currentState?: StreamState
-  /** Flag notifying indexers if they should index the ModelInstanceDocument stream or not */
+  /** Flag indicating if indexers should index the stream */
   shouldIndex?: boolean
 }
 
 /**
- * Create a signed data event for a ModelInstanceDocument stream
+ * Parameters required to post a data event for a ModelInstanceDocument stream.
+ */
+export type PostDataEventParams<T extends UnknownContent = UnknownContent> = {
+  /** String representation of the StreamID to update */
+  streamID: string
+  /** New JSON object content for the stream, used with `currentContent` to create a JSON patch */
+  newContent: T
+  /** Current JSON object containing the stream's current state */
+  currentState?: StreamState
+  /** Flag indicating if indexers should index the stream */
+  shouldIndex?: boolean
+}
+
+/**
+ * Creates a signed data event for a ModelInstanceDocument stream.
+ *
+ * @param params - Parameters required to create the data event.
+ * @returns A promise that resolves to the signed data event.
+ *
+ * @remarks
+ * The data event updates the content of the stream by applying JSON patch operations
+ * to the existing content. The resulting event is signed by the controlling DID.
  */
 export async function createDataEvent<
   T extends UnknownContent = UnknownContent,

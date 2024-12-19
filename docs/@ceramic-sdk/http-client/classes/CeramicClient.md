@@ -1,4 +1,4 @@
-[**@ceramic-sdk/http-client v0.1.0**](../README.md) • **Docs**
+[**@ceramic-sdk/http-client v0.2.1**](../README.md) • **Docs**
 
 ***
 
@@ -6,15 +6,24 @@
 
 # Class: CeramicClient
 
+Represents an HTTP client for interacting with the Ceramic One server.
+
+This class provides methods for working with Ceramic events, including fetching, decoding, and posting events.
+It also supports retrieving server metadata and managing stream interests.
+
 ## Constructors
 
 ### new CeramicClient()
 
 > **new CeramicClient**(`params`): [`CeramicClient`](CeramicClient.md)
 
+Creates a new instance of `CeramicClient`.
+
 #### Parameters
 
 • **params**: [`ClientParams`](../type-aliases/ClientParams.md)
+
+Configuration options for initializing the client.
 
 #### Returns
 
@@ -26,11 +35,13 @@
 
 > `get` **api**(): `Client`\<`paths`, \`$\{string\}/$\{string\}\`\>
 
-OpenAPI client used internally, provides low-level access to the HTTP APIs exposed by the Ceramic One server
+Retrieves the OpenAPI client instance.
 
 #### Returns
 
 `Client`\<`paths`, \`$\{string\}/$\{string\}\`\>
+
+The internal OpenAPI client used for making HTTP requests.
 
 #### Defined in
 
@@ -40,21 +51,23 @@ OpenAPI client used internally, provides low-level access to the HTTP APIs expos
 
 > **getEvent**(`id`): `Promise`\<`object`\>
 
-Get the raw event response for the given event CID
+Fetches a raw event response by its unique event CID.
 
 #### Parameters
 
 • **id**: `string`
 
+The unique identifier (CID) of the event to fetch.
+
 #### Returns
 
 `Promise`\<`object`\>
 
+A Promise that resolves to the event schema.
+
 ##### data?
 
 > `optional` **data**: `string`
-
-###### Description
 
 Multibase encoding of event data.
 
@@ -62,9 +75,11 @@ Multibase encoding of event data.
 
 > **id**: `string`
 
-###### Description
-
 Multibase encoding of event root CID bytes.
+
+#### Throws
+
+Will throw an error if the request fails or the server returns an error.
 
 ***
 
@@ -72,15 +87,19 @@ Multibase encoding of event root CID bytes.
 
 > **getEventCAR**(`id`): `Promise`\<`CAR`\>
 
-Get the CAR-encoded event for the given event CID
+Fetches the CAR-encoded event for a given event CID.
 
 #### Parameters
 
 • **id**: `string`
 
+The unique identifier (CID) of the event.
+
 #### Returns
 
 `Promise`\<`CAR`\>
+
+A Promise that resolves to a CAR object representing the event.
 
 ***
 
@@ -88,15 +107,23 @@ Get the CAR-encoded event for the given event CID
 
 > **getEventData**(`id`): `Promise`\<`string`\>
 
-Get the string-encoded event for the given event CID
+Fetches the string-encoded event data for a given event CID.
 
 #### Parameters
 
 • **id**: `string`
 
+The unique identifier (CID) of the event to fetch.
+
 #### Returns
 
 `Promise`\<`string`\>
+
+A Promise that resolves to the event's string data.
+
+#### Throws
+
+Will throw an error if the event data is missing.
 
 ***
 
@@ -104,29 +131,29 @@ Get the string-encoded event for the given event CID
 
 > **getEventsFeed**(`params`): `Promise`\<`object`\>
 
-Get the events feed based on the given parameters
+Retrieves the events feed based on provided parameters.
 
 #### Parameters
 
 • **params**: [`EventsFeedParams`](../type-aliases/EventsFeedParams.md) = `{}`
 
+Options for paginated feeds, including resume tokens and limits.
+
 #### Returns
 
 `Promise`\<`object`\>
 
+A Promise that resolves to the events feed schema.
+
 ##### events
 
 > **events**: `object`[]
-
-###### Description
 
 An array of events. For now, the event data payload is empty.
 
 ##### resumeToken
 
 > **resumeToken**: `string`
-
-###### Description
 
 The token/highwater mark to used as resumeAt on a future request
 
@@ -136,7 +163,7 @@ The token/highwater mark to used as resumeAt on a future request
 
 > **getEventType**\<`Payload`\>(`decoder`, `id`): `Promise`\<`Payload` \| `MapIn`\<`RequiredProps`\<`object`\>, `$TypeOf`\> & `MapIn`\<`OptionalProps`\<`object`\>, `$TypeOf`\>\>
 
-Get the decoded event for the given decoder and event CID
+Decodes and retrieves a specific event type using the provided decoder.
 
 #### Type Parameters
 
@@ -146,11 +173,17 @@ Get the decoded event for the given decoder and event CID
 
 • **decoder**: `Decoder`\<`unknown`, `Payload`\>
 
+The decoder used to interpret the event data.
+
 • **id**: `string`
+
+The unique identifier (CID) of the event.
 
 #### Returns
 
 `Promise`\<`Payload` \| `MapIn`\<`RequiredProps`\<`object`\>, `$TypeOf`\> & `MapIn`\<`OptionalProps`\<`object`\>, `$TypeOf`\>\>
+
+A Promise that resolves to the decoded event payload or a signed event.
 
 ***
 
@@ -158,17 +191,17 @@ Get the decoded event for the given decoder and event CID
 
 > **getVersion**(): `Promise`\<`object`\>
 
-Get information about the Ceramic One server version
+Retrieves the version information of the Ceramic One server.
 
 #### Returns
 
 `Promise`\<`object`\>
 
+A Promise that resolves to the server version schema.
+
 ##### version?
 
 > `optional` **version**: `string`
-
-###### Description
 
 Version of the Ceramic node
 
@@ -178,15 +211,23 @@ Version of the Ceramic node
 
 > **postEvent**(`data`): `Promise`\<`void`\>
 
-Post a string-encoded event to the server
+Posts a string-encoded event to the server.
 
 #### Parameters
 
 • **data**: `string`
 
+The string-encoded event data to post.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A Promise that resolves when the request completes.
+
+#### Throws
+
+Will throw an error if the request fails.
 
 ***
 
@@ -194,15 +235,19 @@ Post a string-encoded event to the server
 
 > **postEventCAR**(`car`): `Promise`\<`CID`\<`unknown`, `number`, `number`, `Version`\>\>
 
-Post a CAR-encoded event to the server
+Posts a CAR-encoded event to the server.
 
 #### Parameters
 
 • **car**: `CAR`
 
+The CAR object representing the event.
+
 #### Returns
 
 `Promise`\<`CID`\<`unknown`, `number`, `number`, `Version`\>\>
+
+A Promise that resolves to the CID of the posted event.
 
 ***
 
@@ -210,17 +255,23 @@ Post a CAR-encoded event to the server
 
 > **postEventType**(`codec`, `event`): `Promise`\<`CID`\<`unknown`, `number`, `number`, `Version`\>\>
 
-Encode and post an event to the server
+Encodes and posts an event using a specified codec.
 
 #### Parameters
 
 • **codec**: `Codec`\<`unknown`, `unknown`, `unknown`\>
 
+The codec used to encode the event.
+
 • **event**: `unknown`
+
+The event data to encode and post (must be compatible with the codec).
 
 #### Returns
 
 `Promise`\<`CID`\<`unknown`, `number`, `number`, `Version`\>\>
+
+A Promise that resolves to the CID of the posted event.
 
 ***
 
@@ -228,12 +279,20 @@ Encode and post an event to the server
 
 > **registerInterestModel**(`model`): `Promise`\<`void`\>
 
-Register interest in streams using the given model stream ID
+Registers interest in a model stream using its model stream ID.
 
 #### Parameters
 
 • **model**: `string`
 
+The stream ID of the model to register interest in.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A Promise that resolves when the request completes.
+
+#### Throws
+
+Will throw an error if the request fails.

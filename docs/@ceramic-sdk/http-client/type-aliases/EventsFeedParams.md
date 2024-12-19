@@ -1,4 +1,4 @@
-[**@ceramic-sdk/http-client v0.1.0**](../README.md) • **Docs**
+[**@ceramic-sdk/http-client v0.2.1**](../README.md) • **Docs**
 
 ***
 
@@ -20,4 +20,4 @@ Maximum number of events to return in response
 
 > `optional` **resumeAt**: `string`
 
-Resume token
+Resume token for paginated feeds

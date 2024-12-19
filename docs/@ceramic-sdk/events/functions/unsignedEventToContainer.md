@@ -1,4 +1,4 @@
-[**@ceramic-sdk/events v0.1.0**](../README.md) • **Docs**
+[**@ceramic-sdk/events v0.2.1**](../README.md) • **Docs**
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **unsignedEventToContainer**\<`Payload`\>(`codec`, `event`): [`UnsignedEventContainer`](../type-aliases/UnsignedEventContainer.md)\<`Payload`\>
 
-Decode an unsigned Ceramic event into a container using the provided payload decoder
+Decodes an unsigned Ceramic event into a container.
 
 ## Type Parameters
 
@@ -18,8 +18,19 @@ Decode an unsigned Ceramic event into a container using the provided payload dec
 
 • **codec**: `Decoder`\<`unknown`, `Payload`\>
 
+The codec used to decode the event's payload.
+
 • **event**: `unknown`
+
+The unsigned Ceramic event to decode.
 
 ## Returns
 
 [`UnsignedEventContainer`](../type-aliases/UnsignedEventContainer.md)\<`Payload`\>
+
+An `UnsignedEventContainer` containing the decoded payload.
+
+## Remarks
+
+- This function assumes that the event is unsigned and decodes it accordingly.
+- Use `eventToContainer` if the event type (signed or unsigned) is unknown.

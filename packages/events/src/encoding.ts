@@ -10,6 +10,7 @@ import { sha256 } from 'multihashes-sync/sha2'
 import { SignedEvent } from './codecs.js'
 import { base64urlToJSON, restrictBlockSize } from './utils.js'
 
+// Initialize a CAR factory with support for DAG-JOSE and DAG-JSON codecs.
 const carFactory = new CARFactory()
 carFactory.codecs.add(dagJose)
 carFactory.codecs.add(dagJson)
@@ -18,15 +19,31 @@ carFactory.hashers.add(sha256)
 /** @internal */
 export type Base = keyof typeof bases
 
-/** @internal */
+/** Default base encoding for CAR files (Base64) */
 export const DEFAULT_BASE: Base = 'base64'
 
-/** Encode a CAR into a string, using the given base (defaults to base64) */
+/**
+ * Encodes a CAR into a string using the specified base encoding.
+ *
+ * @param car - The CAR to encode.
+ * @param base - The base encoding to use (defaults to Base64).
+ * @returns The string-encoded CAR.
+ *
+ * @throws Will throw an error if the base encoding is not supported.
+ */
 export function carToString(car: CAR, base: Base = DEFAULT_BASE): string {
   return car.toString(base)
 }
 
-/** Decode a CAR from a string, using the given base (defaults to base64) */
+/**
+ * Decodes a CAR from a string using the specified base encoding.
+ *
+ * @param value - The string-encoded CAR.
+ * @param base - The base encoding used to decode the CAR (defaults to Base64).
+ * @returns The decoded CAR object.
+ *
+ * @throws Will throw an error if the base encoding is not supported.
+ */
 export function carFromString(value: string, base: Base = DEFAULT_BASE): CAR {
   const codec = bases[base]
   if (codec == null) {
@@ -35,7 +52,16 @@ export function carFromString(value: string, base: Base = DEFAULT_BASE): CAR {
   return carFactory.fromBytes(codec.decode(value))
 }
 
-/** Encode a signed event into a CAR */
+/**
+ * Encodes a signed event into a CAR format.
+ *
+ * @param event - The signed event to encode.
+ * @returns A CAR object representing the signed event.
+ *
+ * @remarks
+ * - Encodes the JWS, linked block, and optional `cacaoBlock` into the CAR.
+ * - Validates block sizes using `restrictBlockSize` to ensure consistency.
+ */
 export function signedEventToCAR(event: SignedEvent): CAR {
   const { jws, linkedBlock, cacaoBlock } = event
   const car = carFactory.build()
@@ -68,7 +94,16 @@ export function signedEventToCAR(event: SignedEvent): CAR {
   return car
 }
 
-/** Encode an unsigned event into a CAR using the provided codec */
+/**
+ * Encodes an unsigned event into a CAR using the provided codec.
+ *
+ * @param codec - The codec used to encode the event.
+ * @param event - The unsigned event to encode.
+ * @returns A CAR object representing the unsigned event.
+ *
+ * @remarks
+ * Encodes the event as the root of the CAR file using the specified codec.
+ */
 export function encodeEventToCAR(codec: Codec<unknown>, event: unknown): CAR {
   const car = carFactory.build()
   const cid = car.put(codec.encode(event), { isRoot: true })
@@ -78,14 +113,30 @@ export function encodeEventToCAR(codec: Codec<unknown>, event: unknown): CAR {
   return car
 }
 
-/** Encode an event into a CAR using the provided codec for unsigned events */
+/**
+ * Encodes an event into a CAR. Supports both signed and unsigned events.
+ *
+ * @param codec - The codec used for unsigned events.
+ * @param event - The event to encode (signed or unsigned).
+ * @returns A CAR object representing the event.
+ *
+ * @remarks
+ * Uses `signedEventToCAR` for signed events and `encodeEventToCAR` for unsigned events.
+ */
 export function eventToCAR(codec: Codec<unknown>, event: unknown): CAR {
   return SignedEvent.is(event)
     ? signedEventToCAR(event)
     : encodeEventToCAR(codec, event)
 }
 
-/** Encode an event into a string using the provided codec for unsigned events and the given base (defaults to base64) */
+/**
+ * Encodes an event into a string using the specified codec and base encoding.
+ *
+ * @param codec - The codec used for unsigned events.
+ * @param event - The event to encode (signed or unsigned).
+ * @param base - The base encoding to use (defaults to Base64).
+ * @returns The string-encoded CAR representing the event.
+ */
 export function eventToString(
   codec: Codec<unknown>,
   event: unknown,
@@ -94,7 +145,16 @@ export function eventToString(
   return carToString(eventToCAR(codec, event), base)
 }
 
-/** Decode an event from a string using the provided codec for unsigned events */
+/**
+ * Decodes an event from a CAR object using the specified decoder.
+ *
+ * @param decoder - The decoder to use for unsigned events.
+ * @param car - The CAR object containing the event.
+ * @param eventCID - (Optional) The CID of the event to decode.
+ * @returns The decoded event, either a `SignedEvent` or a custom payload.
+ *
+ * @throws Will throw an error if the linked block is missing or decoding fails.
+ */
 export function eventFromCAR<Payload = unknown>(
   decoder: Decoder<unknown, Payload>,
   car: CAR,
@@ -124,7 +184,14 @@ export function eventFromCAR<Payload = unknown>(
   return decode(decoder, root)
 }
 
-/** Decode an event from a string using the provided codec for unsigned events and the given base (defaults to base64) */
+/**
+ * Decodes an event from a string using the specified decoder and base encoding.
+ *
+ * @param decoder - The decoder to use for unsigned events.
+ * @param value - The string-encoded CAR containing the event.
+ * @param base - The base encoding used (defaults to Base64).
+ * @returns The decoded event, either a `SignedEvent` or a custom payload.
+ */
 export function eventFromString<Payload = unknown>(
   decoder: Decoder<unknown, Payload>,
   value: string,

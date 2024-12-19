@@ -1,4 +1,4 @@
-**@ceramic-sdk/http-client v0.1.0** • **Docs**
+**@ceramic-sdk/http-client v0.2.1** • **Docs**
 
 ***
 
@@ -17,3 +17,7 @@
 - [EventsFeedParams](type-aliases/EventsFeedParams.md)
 - [Schema](type-aliases/Schema.md)
 - [Schemas](type-aliases/Schemas.md)
+
+## Functions
+
+- [getCeramicClient](functions/getCeramicClient.md)

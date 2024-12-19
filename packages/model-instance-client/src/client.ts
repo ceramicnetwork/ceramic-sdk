@@ -22,17 +22,29 @@ import {
 } from './events.js'
 import type { DocumentState, UnknownContent } from './types.js'
 
+/**
+ * Parameters for posting a deterministic initialization event.
+ */
 export type PostDeterministicInitParams = {
+  /** The model's stream ID */
   model: StreamID
+  /** The controller of the stream (DID string or literal string) */
   controller: DIDString | string
+  /** A unique value to ensure determinism of the event */
   uniqueValue?: Uint8Array
 }
 
+/**
+ * Parameters for posting a signed initialization event.
+ */
 export type PostSignedInitParams<T extends UnknownContent = UnknownContent> =
   Omit<CreateInitEventParams<T>, 'controller'> & {
     controller?: DID
   }
 
+/**
+ * Parameters for posting a data event.
+ */
 export type PostDataParams<T extends UnknownContent = UnknownContent> = Omit<
   CreateDataEventParams<T>,
   'controller'
@@ -40,6 +52,9 @@ export type PostDataParams<T extends UnknownContent = UnknownContent> = Omit<
   controller?: DID
 }
 
+/**
+ * Parameters for updating a document with new content.
+ */
 export type UpdateDataParams<T extends UnknownContent = UnknownContent> = Omit<
   PostDataEventParams<T>,
   'controller'
@@ -47,8 +62,23 @@ export type UpdateDataParams<T extends UnknownContent = UnknownContent> = Omit<
   controller?: DID
 }
 
+/**
+ * Extends the StreamClient to add functionality for interacting with Ceramic model instance documents.
+ *
+ * The `ModelInstanceClient` class provides methods to:
+ * - Retrieve events and document states
+ * - Post deterministic and signed initialization events
+ * - Update existing documents with new content
+ */
 export class ModelInstanceClient extends StreamClient {
-  /** Get a DocumentEvent based on its commit ID */
+  /**
+   * Retrieves a `DocumentEvent` based on its commit ID.
+   *
+   * @param commitID - The commit ID of the event, either as a `CommitID` object or string.
+   * @returns A promise that resolves to the `DocumentEvent` for the specified commit ID.
+   *
+   * @throws Will throw an error if the commit ID is invalid or the request fails.
+   */
   async getEvent(commitID: CommitID | string): Promise<DocumentEvent> {
     const id =
       typeof commitID === 'string' ? CommitID.fromString(commitID) : commitID
@@ -58,7 +88,17 @@ export class ModelInstanceClient extends StreamClient {
     )) as DocumentEvent
   }
 
-  /** Post a deterministic init event and return its commit ID */
+  /**
+   * Posts a deterministic initialization event and returns its commit ID.
+   *
+   * @param params - Parameters for posting the deterministic init event.
+   * @returns A promise that resolves to the `CommitID` of the posted event.
+   *
+   * @remarks
+   * This method ensures that the resulting stream ID is deterministic, derived
+   * from the `uniqueValue` parameter. Commonly used for model instance documents
+   * of type `set` and `single`.
+   */
   async postDeterministicInit(
     params: PostDeterministicInitParams,
   ): Promise<CommitID> {
@@ -71,7 +111,16 @@ export class ModelInstanceClient extends StreamClient {
     return CommitID.fromStream(getStreamID(cid))
   }
 
-  /** Post a signed (non-deterministic) init event and return its commit ID */
+  /**
+   * Posts a signed initialization event and returns its commit ID.
+   *
+   * @param params - Parameters for posting the signed init event.
+   * @returns A promise that resolves to the `CommitID` of the posted event.
+   *
+   * @remarks
+   * This method results in a non-deterministic stream ID, typically used for
+   * model instance documents of type `list`.
+   */
   async postSignedInit<T extends UnknownContent = UnknownContent>(
     params: PostSignedInitParams<T>,
   ): Promise<CommitID> {
@@ -84,7 +133,16 @@ export class ModelInstanceClient extends StreamClient {
     return CommitID.fromStream(getStreamID(cid))
   }
 
-  /** Post a data event and return its commit ID */
+  /**
+   * Posts a data event and returns its commit ID.
+   *
+   * @param params - Parameters for posting the data event.
+   * @returns A promise that resolves to the `CommitID` of the posted event.
+   *
+   * @remarks
+   * The data event updates the content of a stream and is associated with the
+   * current state of the stream.
+   */
   async postData<T extends UnknownContent = UnknownContent>(
     params: PostDataParams<T>,
   ): Promise<CommitID> {
@@ -97,12 +155,22 @@ export class ModelInstanceClient extends StreamClient {
     return CommitID.fromStream(params.currentID.baseID, cid)
   }
 
-  /** Gets currentID */
+  /**
+   * Retrieves the `CommitID` for the provided stream ID.
+   *
+   * @param streamID - The stream ID string.
+   * @returns The `CommitID` for the stream.
+   */
   getCurrentID(streamID: string): CommitID {
     return new CommitID(3, streamID)
   }
 
-  /** Transform StreamState into DocumentState */
+  /**
+   * Transforms a `StreamState` into a `DocumentState`.
+   *
+   * @param streamState - The stream state to transform.
+   * @returns The `DocumentState` derived from the stream state.
+   */
   streamStateToDocumentState(streamState: StreamState): DocumentState {
     const decodedData = decodeMultibaseToJSON(streamState.data)
     const controller = streamState.controller
@@ -119,7 +187,16 @@ export class ModelInstanceClient extends StreamClient {
     }
   }
 
-  /** Retrieve and return document state */
+  /**
+   * Retrieves the document state for a given stream ID.
+   *
+   * @param streamID - The stream ID, either as a `StreamID` object or string.
+   * @returns A promise that resolves to the `DocumentState`.
+   *
+   * @throws Will throw an error if the stream ID is invalid or the request fails.
+   *
+   * @remarks This method fetches the stream state using the extended StreamClient's `getStreamState` method.
+   */
   async getDocumentState(streamID: StreamID | string): Promise<DocumentState> {
     const id =
       typeof streamID === 'string' ? StreamID.fromString(streamID) : streamID
@@ -127,13 +204,22 @@ export class ModelInstanceClient extends StreamClient {
     return this.streamStateToDocumentState(streamState)
   }
 
-  /** Post an update to a document that optionally obtains docstate first */
+  /**
+   * Updates a document with new content and returns the updated document state.
+   *
+   * @param params - Parameters for updating the document.
+   * @returns A promise that resolves to the updated `DocumentState`.
+   *
+   * @remarks
+   * This method posts the new content as a data event, updating the document.
+   * It can optionally take the current document state to avoid re-fetching it.
+   */
   async updateDocument<T extends UnknownContent = UnknownContent>(
     params: UpdateDataParams<T>,
   ): Promise<DocumentState> {
     let currentState: DocumentState
     let currentId: CommitID
-    // If currentState is not provided, fetch the current state
+
     if (!params.currentState) {
       const streamState = await this.getStreamState(
         StreamID.fromString(params.streamID),
@@ -144,18 +230,20 @@ export class ModelInstanceClient extends StreamClient {
       currentState = this.streamStateToDocumentState(params.currentState)
       currentId = this.getCurrentID(params.currentState.event_cid)
     }
+
     const { content } = currentState
     const { controller, newContent, shouldIndex } = params
-    // Use existing postData utility to access the ceramic api
+
     await this.postData({
       controller: this.getDID(controller),
       currentContent: content ?? undefined,
-      newContent: newContent,
+      newContent,
       currentID: currentId,
-      shouldIndex: shouldIndex,
+      shouldIndex,
     })
+
     return {
-      content: params.newContent,
+      content: newContent,
       metadata: {
         model: currentState.metadata.model,
         controller: currentState.metadata.controller,
