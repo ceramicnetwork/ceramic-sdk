@@ -39,7 +39,7 @@ export class StreamClient {
   /**
    * Get the state of a stream by its ID
    * @param streamId - Multibase encoded stream ID
-   * @returns The state of the stream
+   * @returns The StreamState object of the stream
    */
   async getStreamState(streamId: StreamID | string): Promise<StreamState> {
     const { data, error } = await this.#ceramic.api.GET(

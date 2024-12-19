@@ -58,7 +58,17 @@ export class ModelInstanceClient extends StreamClient {
     )) as DocumentEvent
   }
 
-  /** Post a deterministic init event and return its commit ID */
+  /**
+   * Post a deterministic init event and return its commit ID
+   *
+   * @remarks This method is used to post an init event that is deterministic, meaning that the
+   * resulting stream ID is derived from the uniqueValue parameter. This is used when creating
+   * model instance documents of type `set` and `single`.
+   *
+   * @param params - Parameters for posting a deterministic init event
+   * @returns Commit ID of the posted event
+   *
+   */
   async postDeterministicInit(
     params: PostDeterministicInitParams,
   ): Promise<CommitID> {
@@ -71,7 +81,16 @@ export class ModelInstanceClient extends StreamClient {
     return CommitID.fromStream(getStreamID(cid))
   }
 
-  /** Post a signed (non-deterministic) init event and return its commit ID */
+  /**
+   * Post a signed init event and return its commit ID
+   *
+   * @remarks This method is used to post an init event that is non-deterministic, meaning that the
+   * resulting stream ID is not derived from the uniqueValue parameter. This is used when creating
+   * model instance documents of type `list`.
+   *
+   * @param params - Parameters for posting a signed init event
+   * @returns Commit ID of the posted event
+   */
   async postSignedInit<T extends UnknownContent = UnknownContent>(
     params: PostSignedInitParams<T>,
   ): Promise<CommitID> {
@@ -127,7 +146,17 @@ export class ModelInstanceClient extends StreamClient {
     return this.streamStateToDocumentState(streamState)
   }
 
-  /** Post an update to a document that optionally obtains docstate first */
+  /**
+   * Update a document with new content and return the updated document state
+   *
+   * @remarks This method is used to update the content of a document. The new content is
+   * posted as a data event and the document state is returned with the updated content. The
+   * document's current state can be provided as a parameter to avoid fetching it from the
+   * Ceramic node.
+   *
+   * @param params - Parameters for updating a document
+   * @returns Updated document state
+   */
   async updateDocument<T extends UnknownContent = UnknownContent>(
     params: UpdateDataParams<T>,
   ): Promise<DocumentState> {

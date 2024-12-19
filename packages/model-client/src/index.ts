@@ -70,7 +70,7 @@ export class ModelClient extends StreamClient {
     return getModelStreamID(cid)
   }
 
-  /** Retrieve the stringified model stream ID from a stream */
+  /** Retrieve the stringified model stream ID from a model instance document stream ID */
   async getDocumentModel(streamID: StreamID | string): Promise<string> {
     const id =
       typeof streamID === 'string' ? StreamID.fromString(streamID) : streamID
@@ -79,7 +79,7 @@ export class ModelClient extends StreamClient {
     return stream.toString()
   }
 
-  /** Retrieve a model's JSON definition */
+  /** Retrieve a model's JSON definition based on the model's stream ID*/
   async getModelDefinition(
     streamID: StreamID | string,
   ): Promise<ModelDefinition> {
