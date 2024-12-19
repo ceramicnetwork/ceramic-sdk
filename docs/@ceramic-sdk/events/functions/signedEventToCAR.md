@@ -1,4 +1,4 @@
-[**@ceramic-sdk/events v0.1.0**](../README.md) • **Docs**
+[**@ceramic-sdk/events v0.2.1**](../README.md) • **Docs**
 
 ***
 
@@ -8,12 +8,21 @@
 
 > **signedEventToCAR**(`event`): `CAR`
 
-Encode a signed event into a CAR
+Encodes a signed event into a CAR format.
 
 ## Parameters
 
 • **event**: `MapIn`\<`RequiredProps`\<`object`\>, `$TypeOf`\> & `MapIn`\<`OptionalProps`\<`object`\>, `$TypeOf`\>
 
+The signed event to encode.
+
 ## Returns
 
 `CAR`
+
+A CAR object representing the signed event.
+
+## Remarks
+
+- Encodes the JWS, linked block, and optional `cacaoBlock` into the CAR.
+- Validates block sizes using `restrictBlockSize` to ensure consistency.

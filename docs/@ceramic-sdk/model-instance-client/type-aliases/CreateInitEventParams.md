@@ -1,4 +1,4 @@
-[**@ceramic-sdk/model-instance-client v0.1.0**](../README.md) • **Docs**
+[**@ceramic-sdk/model-instance-client v0.2.1**](../README.md) • **Docs**
 
 ***
 
@@ -7,6 +7,8 @@
 # Type Alias: CreateInitEventParams\<T\>
 
 > **CreateInitEventParams**\<`T`\>: `object`
+
+Parameters required to create a non-deterministic initialization event for a ModelInstanceDocument stream.
 
 ## Type Parameters
 
@@ -42,4 +44,4 @@ Stream ID of the Model used by the ModelInstanceDocument stream
 
 > `optional` **shouldIndex**: `boolean`
 
-Flag notifying indexers if they should index the ModelInstanceDocument stream or not, defaults to `true`
+Flag indicating if indexers should index the ModelInstanceDocument stream (defaults to `true`)

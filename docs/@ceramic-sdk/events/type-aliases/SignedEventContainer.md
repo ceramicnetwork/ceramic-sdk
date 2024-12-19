@@ -1,4 +1,4 @@
-[**@ceramic-sdk/events v0.1.0**](../README.md) • **Docs**
+[**@ceramic-sdk/events v0.2.1**](../README.md) • **Docs**
 
 ***
 
@@ -8,11 +8,13 @@
 
 > **SignedEventContainer**\<`Payload`\>: `object`
 
-Container for a signed Ceramic event
+A container for a signed Ceramic event.
 
 ## Type Parameters
 
 • **Payload**
+
+The type of the event's payload.
 
 ## Type declaration
 

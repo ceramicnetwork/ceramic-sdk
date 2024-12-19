@@ -1,4 +1,4 @@
-[**@ceramic-sdk/model-instance-client v0.1.0**](../README.md) • **Docs**
+[**@ceramic-sdk/model-instance-client v0.2.1**](../README.md) • **Docs**
 
 ***
 
@@ -7,6 +7,8 @@
 # Type Alias: PostDataParams\<T\>
 
 > **PostDataParams**\<`T`\>: `Omit`\<[`CreateDataEventParams`](CreateDataEventParams.md)\<`T`\>, `"controller"`\> & `object`
+
+Parameters for posting a data event.
 
 ## Type declaration
 

@@ -1,4 +1,4 @@
-[**@ceramic-sdk/model-instance-client v0.1.0**](../README.md) • **Docs**
+[**@ceramic-sdk/model-instance-client v0.2.1**](../README.md) • **Docs**
 
 ***
 
@@ -7,6 +7,8 @@
 # Type Alias: CreateDataEventParams\<T\>
 
 > **CreateDataEventParams**\<`T`\>: `object`
+
+Parameters required to create a signed data event for a ModelInstanceDocument stream.
 
 ## Type Parameters
 
@@ -24,7 +26,7 @@ DID controlling the ModelInstanceDocument stream
 
 > `optional` **currentContent**: `T`
 
-Current JSON object content for the ModelInstanceDocument stream, used with `newContent` to create the JSON patch
+Current JSON object content for the stream, used with `newContent` to create a JSON patch
 
 ### currentID
 
@@ -36,10 +38,10 @@ Commit ID of the current tip of the ModelInstanceDocument stream
 
 > `optional` **newContent**: `T`
 
-New JSON object content for the ModelInstanceDocument stream, used with `currentContent` to create the JSON patch
+New JSON object content for the stream, used with `currentContent` to create a JSON patch
 
 ### shouldIndex?
 
 > `optional` **shouldIndex**: `boolean`
 
-Flag notifying indexers if they should index the ModelInstanceDocument stream or not
+Flag indicating if indexers should index the stream

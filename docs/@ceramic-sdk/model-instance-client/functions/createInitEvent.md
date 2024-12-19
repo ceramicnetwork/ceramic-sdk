@@ -1,4 +1,4 @@
-[**@ceramic-sdk/model-instance-client v0.1.0**](../README.md) • **Docs**
+[**@ceramic-sdk/model-instance-client v0.2.1**](../README.md) • **Docs**
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **createInitEvent**\<`T`\>(`params`): `Promise`\<[`SignedEvent`](../../events/type-aliases/SignedEvent.md)\>
 
-Create a non-deterministic init event for a ModelInstanceDocument stream.
+Creates a non-deterministic initialization event for a ModelInstanceDocument stream.
 
 ## Type Parameters
 
@@ -18,10 +18,19 @@ Create a non-deterministic init event for a ModelInstanceDocument stream.
 
 • **params**: [`CreateInitEventParams`](../type-aliases/CreateInitEventParams.md)\<`T`\>
 
+The parameters required to create the initialization event.
+
 ## Returns
 
 `Promise`\<[`SignedEvent`](../../events/type-aliases/SignedEvent.md)\>
 
+A promise that resolves to a signed initialization event.
+
+## Remarks
+
+This method creates a non-deterministic initialization event for use with streams where
+the stream ID is not derived from a unique value.
+
 ## See
 
-[getDeterministicInitEventPayload](getDeterministicInitEventPayload.md) for deterministic events.
+[getDeterministicInitEventPayload](getDeterministicInitEventPayload.md) for deterministic initialization events.

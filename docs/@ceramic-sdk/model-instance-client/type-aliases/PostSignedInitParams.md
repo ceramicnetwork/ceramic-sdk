@@ -1,4 +1,4 @@
-[**@ceramic-sdk/model-instance-client v0.1.0**](../README.md) • **Docs**
+[**@ceramic-sdk/model-instance-client v0.2.1**](../README.md) • **Docs**
 
 ***
 
@@ -7,6 +7,8 @@
 # Type Alias: PostSignedInitParams\<T\>
 
 > **PostSignedInitParams**\<`T`\>: `Omit`\<[`CreateInitEventParams`](CreateInitEventParams.md)\<`T`\>, `"controller"`\> & `object`
+
+Parameters for posting a signed initialization event.
 
 ## Type declaration
 
