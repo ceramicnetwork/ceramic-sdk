@@ -1,4 +1,4 @@
-**@ceramic-sdk/events v0.1.0** • **Docs**
+**@ceramic-sdk/events v0.2.1** • **Docs**
 
 ***
 
@@ -31,6 +31,8 @@
 - [carFromString](functions/carFromString.md)
 - [carToString](functions/carToString.md)
 - [createSignedInitEvent](functions/createSignedInitEvent.md)
+- [decodeMultibaseToJSON](functions/decodeMultibaseToJSON.md)
+- [decodeMultibaseToStreamID](functions/decodeMultibaseToStreamID.md)
 - [decodeSignedEvent](functions/decodeSignedEvent.md)
 - [decodeTimeEvent](functions/decodeTimeEvent.md)
 - [encodeEventToCAR](functions/encodeEventToCAR.md)

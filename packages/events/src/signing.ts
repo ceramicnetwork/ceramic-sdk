@@ -11,7 +11,20 @@ import {
   type SignedEvent,
 } from './codecs.js'
 
-/** Sign an event payload using the provided DID */
+/**
+ * Signs an event payload using the provided DID.
+ *
+ * @param did - The DID instance used to sign the payload.
+ * @param payload - The data to be signed, provided as a key-value map.
+ * @param options - (Optional) Additional options for creating the JWS.
+ * @returns A promise that resolves to a `SignedEvent` containing the JWS and linked block.
+ *
+ * @throws Will throw an error if the DID is not authenticated.
+ *
+ * @remarks
+ * This function uses the DID's `createDagJWS` method to sign the payload and
+ * returns the signed event, including the linked block as a `Uint8Array`.
+ */
 export async function signEvent(
   did: DID,
   payload: Record<string, unknown>,
@@ -24,12 +37,33 @@ export async function signEvent(
   return { ...rest, linkedBlock: new Uint8Array(linkedBlock) }
 }
 
-// Make controllers optional in the event header as createSignedEvent() will inject it as needed
+/**
+ * A partial version of the initialization event header, with optional controllers.
+ *
+ * @remarks
+ * This type is used to allow the creation of initialization events without requiring
+ * the `controllers` field, as it will be injected automatically during the signing process.
+ */
 export type PartialInitEventHeader = Omit<InitEventHeader, 'controllers'> & {
   controllers?: [DIDString]
 }
 
-/** Create a signed init event using the provided DID, data and header */
+/**
+ * Creates a signed initialization event using the provided DID, data, and header.
+ *
+ * @param did - The DID instance used to sign the initialization event.
+ * @param data - The initialization data to be included in the event.
+ * @param header - The header for the initialization event, with optional controllers.
+ * @param options - (Optional) Additional options for creating the JWS.
+ * @returns A promise that resolves to a `SignedEvent` representing the initialization event.
+ *
+ * @throws Will throw an error if the DID is not authenticated.
+ *
+ * @remarks
+ * - If `controllers` are not provided in the header, they will be automatically set
+ *   based on the DID's parent (if available) or the DID itself.
+ * - The payload is encoded as an `InitEventPayload` before signing.
+ */
 export async function createSignedInitEvent<T>(
   did: DID,
   data: T,
@@ -49,7 +83,20 @@ export async function createSignedInitEvent<T>(
   return await signEvent(did, payload, options)
 }
 
-/** Decode the payload of a signed event using the provided decoder */
+/**
+ * Decodes the payload of a signed event using the provided decoder.
+ *
+ * @param decoder - The decoder used to interpret the event's payload.
+ * @param event - The signed event containing the payload to decode.
+ * @returns A promise that resolves to the decoded payload.
+ *
+ * @throws Will throw an error if the linked block CID is missing or if decoding fails.
+ *
+ * @remarks
+ * - The function reconstructs the block from the event's linked block and CID,
+ *   using the DAG-CBOR codec and SHA-256 hasher.
+ * - The payload is decoded using the provided decoder to ensure its validity and type safety.
+ */
 export async function getSignedEventPayload<Payload = Record<string, unknown>>(
   decoder: Decoder<unknown, Payload>,
   event: SignedEvent,

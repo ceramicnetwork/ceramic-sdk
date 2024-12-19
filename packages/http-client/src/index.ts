@@ -13,11 +13,12 @@ import type { SimplifyDeep } from 'type-fest'
 
 import type { components, paths } from './__generated__/api'
 
+// Type definitions for Ceramic API and schemas
 export type CeramicAPI = ReturnType<typeof createAPIClient<paths>>
-
 export type Schemas = SimplifyDeep<components['schemas']>
 export type Schema<Name extends keyof Schemas> = SimplifyDeep<Schemas[Name]>
 
+// Parameters for initializing the Ceramic client
 export type ClientParams = {
   /** Ceramic One server URL */
   url: string
@@ -27,16 +28,35 @@ export type ClientParams = {
   headers?: HeadersOptions
 }
 
+// Parameters for fetching the events feed
 export type EventsFeedParams = {
-  /** Resume token */
+  /** Resume token for paginated feeds */
   resumeAt?: string
   /** Maximum number of events to return in response */
   limit?: number
 }
 
+/**
+ * Represents an HTTP client for interacting with the Ceramic One server.
+ *
+ * This class provides methods for working with Ceramic events, including fetching, decoding, and posting events.
+ * It also supports retrieving server metadata and managing stream interests.
+ */
 export class CeramicClient {
+  /**
+   * Internal OpenAPI client used for all HTTP requests to the Ceramic server.
+   * This client provides a low-level interface for interacting with the server APIs.
+   */
   #api: CeramicAPI
 
+  /**
+   * Creates a new instance of `CeramicClient`.
+   *
+   * @param params - Configuration options for initializing the client.
+   * @param params.url - Base URL of the Ceramic One server.
+   * @param params.fetch - (Optional) Custom fetch function to override default behavior.
+   * @param params.headers - (Optional) Additional headers to include in HTTP requests.
+   */
   constructor(params: ClientParams) {
     const { url, ...options } = params
     this.#api = createAPIClient<paths>({
@@ -45,23 +65,41 @@ export class CeramicClient {
     })
   }
 
-  /** OpenAPI client used internally, provides low-level access to the HTTP APIs exposed by the Ceramic One server */
+  /**
+   * Retrieves the OpenAPI client instance.
+   *
+   * @returns The internal OpenAPI client used for making HTTP requests.
+   */
   get api(): CeramicAPI {
     return this.#api
   }
 
-  /** Get the raw event response for the given event CID */
+  /**
+   * Fetches a raw event response by its unique event CID.
+   *
+   * @param id - The unique identifier (CID) of the event to fetch.
+   * @returns A Promise that resolves to the event schema.
+   *
+   * @throws Will throw an error if the request fails or the server returns an error.
+   */
   async getEvent(id: string): Promise<Schema<'Event'>> {
     const { data, error } = await this.#api.GET('/events/{event_id}', {
       params: { path: { event_id: id } },
     })
     if (error != null) {
-      throw new Error(error.message)
+      throw new Error(`Failed to fetch event: ${error.message}`)
     }
     return data
   }
 
-  /** Get the string-encoded event for the given event CID */
+  /**
+   * Fetches the string-encoded event data for a given event CID.
+   *
+   * @param id - The unique identifier (CID) of the event to fetch.
+   * @returns A Promise that resolves to the event's string data.
+   *
+   * @throws Will throw an error if the event data is missing.
+   */
   async getEventData(id: string): Promise<string> {
     const event = await this.getEvent(id)
     if (event.data == null) {
@@ -70,13 +108,24 @@ export class CeramicClient {
     return event.data
   }
 
-  /** Get the CAR-encoded event for the given event CID */
+  /**
+   * Fetches the CAR-encoded event for a given event CID.
+   *
+   * @param id - The unique identifier (CID) of the event.
+   * @returns A Promise that resolves to a CAR object representing the event.
+   */
   async getEventCAR(id: string): Promise<CAR> {
     const data = await this.getEventData(id)
     return carFromString(data)
   }
 
-  /** Get the decoded event for the given decoder and event CID */
+  /**
+   * Decodes and retrieves a specific event type using the provided decoder.
+   *
+   * @param decoder - The decoder used to interpret the event data.
+   * @param id - The unique identifier (CID) of the event.
+   * @returns A Promise that resolves to the decoded event payload or a signed event.
+   */
   async getEventType<Payload>(
     decoder: Decoder<unknown, Payload>,
     id: string,
@@ -85,7 +134,12 @@ export class CeramicClient {
     return eventFromString(decoder, data)
   }
 
-  /** Get the events feed based on the given parameters */
+  /**
+   * Retrieves the events feed based on provided parameters.
+   *
+   * @param params - Options for paginated feeds, including resume tokens and limits.
+   * @returns A Promise that resolves to the events feed schema.
+   */
   async getEventsFeed(
     params: EventsFeedParams = {},
   ): Promise<Schema<'EventFeed'>> {
@@ -93,52 +147,86 @@ export class CeramicClient {
       query: params,
     })
     if (error != null) {
-      throw new Error(error.message)
+      throw new Error(`Failed to fetch events feed: ${error.message}`)
     }
     return data
   }
 
-  /** Get information about the Ceramic One server version */
+  /**
+   * Retrieves the version information of the Ceramic One server.
+   *
+   * @returns A Promise that resolves to the server version schema.
+   */
   async getVersion(): Promise<Schema<'Version'>> {
     const { data, error } = await this.#api.GET('/version')
     if (error != null) {
-      throw new Error(error.message)
+      throw new Error(`Failed to fetch server version: ${error.message}`)
     }
     return data
   }
 
-  /** Post a string-encoded event to the server */
+  /**
+   * Posts a string-encoded event to the server.
+   *
+   * @param data - The string-encoded event data to post.
+   * @returns A Promise that resolves when the request completes.
+   *
+   * @throws Will throw an error if the request fails.
+   */
   async postEvent(data: string): Promise<void> {
     const { error } = await this.#api.POST('/events', { body: { data } })
     if (error != null) {
-      throw new Error(error.message)
+      throw new Error(`Failed to post event: ${error.message}`)
     }
   }
 
-  /** Post a CAR-encoded event to the server */
+  /**
+   * Posts a CAR-encoded event to the server.
+   *
+   * @param car - The CAR object representing the event.
+   * @returns A Promise that resolves to the CID of the posted event.
+   */
   async postEventCAR(car: CAR): Promise<CID> {
     await this.postEvent(carToString(car))
     return car.roots[0]
   }
 
-  /** Encode and post an event to the server */
+  /**
+   * Encodes and posts an event using a specified codec.
+   *
+   * @param codec - The codec used to encode the event.
+   * @param event - The event data to encode and post (must be compatible with the codec).
+   * @returns A Promise that resolves to the CID of the posted event.
+   */
   async postEventType(codec: Codec<unknown>, event: unknown): Promise<CID> {
     const car = eventToCAR(codec, event)
     return await this.postEventCAR(car)
   }
 
-  /** Register interest in streams using the given model stream ID */
+  /**
+   * Registers interest in a model stream using its model stream ID.
+   *
+   * @param model - The stream ID of the model to register interest in.
+   * @returns A Promise that resolves when the request completes.
+   *
+   * @throws Will throw an error if the request fails.
+   */
   async registerInterestModel(model: string): Promise<void> {
     const { error } = await this.#api.POST('/interests', {
       body: { sep: 'model', sepValue: model },
     })
     if (error != null) {
-      throw new Error(error.message)
+      throw new Error(`Failed to register interest in model: ${error.message}`)
     }
   }
 }
 
-/** @internal */
+/**
+ * Internal utility function to retrieve or initialize a Ceramic client.
+ *
+ * @param ceramic - Either a Ceramic client instance or a Ceramic server URL.
+ * @returns A Ceramic client instance.
+ */
 export function getCeramicClient(
   ceramic: CeramicClient | string,
 ): CeramicClient {

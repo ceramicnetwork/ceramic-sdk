@@ -1,4 +1,4 @@
-[**@ceramic-sdk/model-instance-client v0.1.0**](../README.md) • **Docs**
+[**@ceramic-sdk/model-instance-client v0.2.1**](../README.md) • **Docs**
 
 ***
 
@@ -8,20 +8,29 @@
 
 > **getDeterministicInitEventPayload**(`model`, `controller`, `uniqueValue`?): [`DeterministicInitEventPayload`](../../model-instance-protocol/type-aliases/DeterministicInitEventPayload.md)
 
-Get a deterministic init event payload for a ModelInstanceDocument stream.
+Retrieves the payload for a deterministic initialization event for a ModelInstanceDocument stream.
 
 ## Parameters
 
 • **model**: [`StreamID`](../../identifiers/classes/StreamID.md)
 
+The stream ID of the model associated with the stream.
+
 • **controller**: `string` \| `string` & `WithOpaque`\<`"DIDString"`\>
 
+The DID string or literal string for the stream's controller.
+
 • **uniqueValue?**: `Uint8Array`
+
+Optional unique value to ensure determinism.
 
 ## Returns
 
 [`DeterministicInitEventPayload`](../../model-instance-protocol/type-aliases/DeterministicInitEventPayload.md)
 
-## See
+The deterministic initialization event payload.
 
-[createInitEvent](createInitEvent.md) for creating non-deterministic events.
+## Remarks
+
+Deterministic initialization events ensure the resulting stream ID is derived
+from the provided unique value.

@@ -1,4 +1,4 @@
-**@ceramic-sdk/stream-client v0.1.0** • **Docs**
+**@ceramic-sdk/stream-client v0.2.1** • **Docs**
 
 ***
 
@@ -13,3 +13,4 @@
 ## Type Aliases
 
 - [StreamClientParams](type-aliases/StreamClientParams.md)
+- [StreamState](type-aliases/StreamState.md)
