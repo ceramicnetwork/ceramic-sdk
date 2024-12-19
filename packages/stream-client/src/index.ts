@@ -32,17 +32,17 @@ export type StreamClientParams = {
  * This class is intended to be extended by other classes for more specific functionalities.
  */
 export class StreamClient {
-  /** 
-   * Instance of the Ceramic HTTP client, used to communicate with the Ceramic node. 
+  /**
+   * Instance of the Ceramic HTTP client, used to communicate with the Ceramic node.
    * It facilitates API interactions such as fetching stream states or publishing updates.
    */
-  #ceramic: CeramicClient;
+  #ceramic: CeramicClient
 
   /**
    * Optional Decentralized Identifier (DID) attached to the instance.
    * The DID is typically used for authentication or signing event payloads.
    */
-  #did?: DID;
+  #did?: DID
 
   /**
    * Creates a new instance of `StreamClient`.
@@ -53,21 +53,21 @@ export class StreamClient {
    */
   constructor(params: StreamClientParams) {
     // Initialize the Ceramic client from the provided parameters
-    this.#ceramic = getCeramicClient(params.ceramic);
+    this.#ceramic = getCeramicClient(params.ceramic)
 
     // Attach the provided DID to the instance (if any)
-    this.#did = params.did;
+    this.#did = params.did
   }
 
   /**
    * Retrieves the Ceramic HTTP client instance used to interact with the Ceramic server.
    *
    * This client is essential for executing API requests to fetch stream data.
-   * 
+   *
    * @returns The `CeramicClient` instance associated with this StreamClient.
    */
   get ceramic(): CeramicClient {
-    return this.#ceramic;
+    return this.#ceramic
   }
 
   /**
@@ -79,12 +79,12 @@ export class StreamClient {
    * @param streamId - The unique identifier of the stream to fetch.
    *   - Can be a multibase-encoded string or a `StreamID` object.
    * @returns A Promise that resolves to the `StreamState` object, representing the current state of the stream.
-   * 
+   *
    * @throws Will throw an error if the API request fails or returns an error response (if stream is not found).
    *
    * @example
    * ```typescript
-   * const streamState = await client.getStreamState('kjzl6cwe1...'); 
+   * const streamState = await client.getStreamState('kjzl6cwe1...');
    * console.log(streamState);
    * ```
    */
@@ -99,16 +99,16 @@ export class StreamClient {
               typeof streamId === 'string' ? streamId : streamId.toString(),
           },
         },
-      }
-    );
+      },
+    )
 
     // Handle errors returned from the API
     if (error != null) {
-      throw new Error(`Failed to fetch stream state: ${error.message}`);
+      throw new Error(`Failed to fetch stream state: ${error.message}`)
     }
 
     // Return the retrieved stream state
-    return data;
+    return data
   }
 
   /**
@@ -119,7 +119,7 @@ export class StreamClient {
    *
    * @param provided - An optional DID object to use. If not supplied, the instance's DID is returned.
    * @returns The DID object, either provided or attached to the instance.
-   * 
+   *
    * @throws Will throw an error if neither a provided DID nor an instance DID is available.
    *
    * @example
@@ -130,12 +130,13 @@ export class StreamClient {
    */
   getDID(provided?: DID): DID {
     if (provided != null) {
-      return provided;
+      return provided
     }
     if (this.#did != null) {
-      return this.#did;
+      return this.#did
     }
-    throw new Error('Missing DID: Neither a provided DID nor an instance DID is available.');
+    throw new Error(
+      'Missing DID: Neither a provided DID nor an instance DID is available.',
+    )
   }
 }
-
