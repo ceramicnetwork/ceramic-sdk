@@ -66,7 +66,9 @@ export function decodeSignedEvent(input: unknown): SignedEvent {
   return decode(SignedEvent, input)
 }
 
-/** Assert the provided `input` is a SignedEvent */
+/**
+ * @ignore
+ */
 export function assertSignedEvent(
   input: unknown,
 ): asserts input is SignedEvent {
@@ -90,7 +92,9 @@ export function decodeTimeEvent(input: unknown): TimeEvent {
   return decode(TimeEvent, input)
 }
 
-/** Assert the provided `input` is a TimeEvent */
+/**
+ * @ignore
+ */
 export function assertTimeEvent(input: unknown): asserts input is TimeEvent {
   decodeTimeEvent(input)
 }
