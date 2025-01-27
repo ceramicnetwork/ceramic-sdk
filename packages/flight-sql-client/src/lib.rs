@@ -2,8 +2,8 @@
 
 mod conversion;
 mod error;
+mod feed_query;
 mod flight_client;
-mod stream_query;
 
 use std::sync::Arc;
 
@@ -13,11 +13,11 @@ use arrow_flight::sql::{client::FlightSqlServiceClient, CommandGetDbSchemas, Com
 use arrow_flight::FlightInfo;
 use arrow_schema::{DataType, Schema};
 use error::MultibaseSnafu;
+use feed_query::FeedQuery;
 use flight_client::execute_flight_stream;
 use napi::{bindgen_prelude::*, JsObject};
 use napi_derive::{module_exports, napi};
 use snafu::prelude::*;
-use stream_query::StreamQuery;
 use tokio::sync::Mutex;
 use tonic::transport::Channel;
 use tracing::info;
@@ -96,13 +96,13 @@ impl FlightSqlClient {
     }
 
     #[napi]
-    pub async fn stream_query(&self, query: String) -> napi::Result<StreamQuery> {
+    pub async fn feed_query(&self, query: String) -> napi::Result<FeedQuery> {
         let mut client = self.client.lock().await;
 
         let flight_info = Self::query_flight_info(&mut client, query).await?;
 
         let streams = execute_flight_stream(&mut client, flight_info).await?;
-        Ok(StreamQuery::new(streams))
+        Ok(FeedQuery::new(streams))
     }
 
     #[napi]
@@ -120,17 +120,17 @@ impl FlightSqlClient {
     }
 
     #[napi]
-    pub async fn prepared_stream_query(
+    pub async fn prepared_feed_query(
         &self,
         query: String,
         params: Vec<(String, String)>,
-    ) -> napi::Result<StreamQuery> {
+    ) -> napi::Result<FeedQuery> {
         let mut client = self.client.lock().await;
 
         let flight_info = Self::prepared_query_flight_info(&mut client, query, params).await?;
 
         let streams = execute_flight_stream(&mut client, flight_info).await?;
-        Ok(StreamQuery::new(streams))
+        Ok(FeedQuery::new(streams))
     }
 
     #[napi]

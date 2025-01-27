@@ -151,10 +151,10 @@ describe('flight sql', () => {
     expect(row?.stream_type).toBe(2)
   })
 
-  test('stream query', async () => {
+  test('feed query', async () => {
     const testModel: ModelDefinition = {
       version: '2.0',
-      name: 'StreamQueryModel',
+      name: 'FeedQueryModel',
       description: 'List Test model',
       accountRelation: { type: 'list' },
       interface: false,
@@ -183,8 +183,8 @@ describe('flight sql', () => {
     const client = await getClient()
     // Intentionally not using prepared query as we are testing query.
     // However we still need to filter the query otherwise writes from other tests may get returned.
-    const query = await client.streamQuery(
-      `SELECT * FROM conclusion_events_stream WHERE array_extract(map_extract(dimensions, 'model'),1) = X'${model_hex}' LIMIT 4`,
+    const query = await client.feedQuery(
+      `SELECT * FROM conclusion_events_feed WHERE array_extract(map_extract(dimensions, 'model'),1) = X'${model_hex}' LIMIT 4`,
     )
 
     let remaining = 4;
@@ -206,10 +206,10 @@ describe('flight sql', () => {
     expect(await query.next()).toBeNull()
   }, 10000)
 
-  test('prepared stream query', async () => {
+  test('prepared feed query', async () => {
     const testModel: ModelDefinition = {
       version: '2.0',
-      name: 'PreparedStreamQueryModel',
+      name: 'PreparedFeedQueryModel',
       description: 'List Test model',
       accountRelation: { type: 'list' },
       interface: false,
@@ -235,8 +235,8 @@ describe('flight sql', () => {
       expect(row?.data).toBeDefined()
     }
     const client = await getClient()
-    const query = await client.preparedStreamQuery(
-      `SELECT * FROM conclusion_events_stream WHERE array_extract(map_extract(dimensions, 'model'),1) = $model LIMIT 4`,
+    const query = await client.preparedFeedQuery(
+      `SELECT * FROM conclusion_events_feed WHERE array_extract(map_extract(dimensions, 'model'),1) = $model LIMIT 4`,
       new Array(['$model', base16.encode(model.bytes)]),
     )
 

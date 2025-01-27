@@ -67,7 +67,7 @@ describe('stream client', () => {
 
     // obtain the stream ID by waiting for the event state to be populated
     const client = await getClient()
-    const buffer = await client.query('SELECT stream_cid FROM event_states_stream LIMIT 1')
+    const buffer = await client.query('SELECT stream_cid FROM event_states_feed LIMIT 1')
     const data = tableFromIPC(buffer)
     const row = data.get(0)
     const streamCid = CID.decode(row?.stream_cid).toString()

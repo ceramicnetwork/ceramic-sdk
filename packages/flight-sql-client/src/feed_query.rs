@@ -8,12 +8,12 @@ use tokio::sync::Mutex;
 use crate::{conversion::record_batch_to_buffer, error::FlightSnafu};
 
 #[napi]
-pub struct StreamQuery {
+pub struct FeedQuery {
     streams: Mutex<Vec<FlightRecordBatchStream>>,
 }
 
 #[napi]
-impl StreamQuery {
+impl FeedQuery {
     pub fn new(streams: Vec<FlightRecordBatchStream>) -> Self {
         Self {
             streams: Mutex::new(streams),
