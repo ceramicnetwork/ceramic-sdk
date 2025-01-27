@@ -1,4 +1,9 @@
 import ContainerWrapper from './withContainer.js'
+import type { CID } from 'multiformats/cid'
+import { base64 } from "multiformats/bases/base64"
+import {
+  type FlightSqlClient,
+} from '@ceramic-sdk/flight-sql-client'
 
 const DEFAULT_PORT = 5101
 const DEFAULT_FLIGHT_SQL_PORT = 5102
@@ -7,7 +12,6 @@ const DEFAULT_ENVIRONMENT = {
   CERAMIC_ONE_BIND_ADDRESS: '0.0.0.0:5101',
   CERAMIC_ONE_EXPERIMENTAL_FEATURES: 'true',
   CERAMIC_ONE_FLIGHT_SQL_BIND_ADDRESS: '0.0.0.0:5102',
-  CERAMIC_ONE_S3_BUCKET: 'sdkintegrationtests.new',
   CERAMIC_ONE_LOG_FORMAT: 'single-line',
   CERAMIC_ONE_NETWORK: 'in-memory',
   CERAMIC_ONE_AGGREGATOR: 'true',
@@ -42,7 +46,7 @@ export default class CeramicOneContainer {
 
   static async healthFn(port: number): Promise<boolean> {
     try {
-      const res = await fetch(`http://localhost:${port}/ceramic/version`)
+      const res = await fetch(`http://localhost:${port}/ceramic/liveness`)
 
       if (res.status === 200) {
         return true
@@ -54,7 +58,7 @@ export default class CeramicOneContainer {
   }
 
   static async isResponding(port: number) {
-    let retries = 5
+    let retries = 10
     while (retries > 0) {
       if (await CeramicOneContainer.healthFn(port)) {
         return
@@ -73,7 +77,7 @@ export default class CeramicOneContainer {
   ): Promise<CeramicOneContainer> {
     const container = await ContainerWrapper.startContainer({
       debug: options.debug ?? false,
-      image: options.image ?? 'public.ecr.aws/r5b3e0r5/3box/ceramic-one:latest',
+      image: options.image ?? 'public.ecr.aws/r5b3e0r5/3box/ceramic-one:latest-debug',
       // TODO: would be nice to have 1 container for all tests rather than 1 each since we get rate errors pulling
       // refreshImage: true, // pull new images
       containerName:
@@ -85,7 +89,7 @@ export default class CeramicOneContainer {
       internalFlightSqlPort:
         options.internalFlightSqlPort || DEFAULT_FLIGHT_SQL_PORT,
       connectTimeoutSeconds: options.connectTimeoutSeconds ?? 10,
-      environment: DEFAULT_ENVIRONMENT,
+      environment: { ...DEFAULT_ENVIRONMENT, ...options.environment },
       detached: true,
     })
 
@@ -98,4 +102,14 @@ export default class CeramicOneContainer {
   async teardown(): Promise<void> {
     await this.#container.kill()
   }
+}
+
+// Wait for count events states
+export async function waitForEventState(flightClient: FlightSqlClient, event_cid: CID) {
+  await flightClient.preparedQuery(
+    'SELECT "index" FROM event_states_stream WHERE event_cid = $event_cid LIMIT 1',
+    new Array([
+      '$event_cid', event_cid.toString(base64.encoder)
+    ])
+  )
 }

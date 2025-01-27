@@ -13,7 +13,12 @@ import { DocumentEvent } from '@ceramic-sdk/model-instance-protocol'
 import type { ModelDefinition } from '@ceramic-sdk/model-protocol'
 import { getAuthenticatedDID } from '@didtools/key-did'
 import type { DID } from 'dids'
-import CeramicOneContainer, { type EnvironmentOptions } from '../src'
+import CeramicOneContainer, { waitForEventState, type EnvironmentOptions } from '../src'
+import {
+  type ClientOptions,
+  createFlightSqlClient,
+} from '@ceramic-sdk/flight-sql-client'
+import { CID } from 'multiformats/cid'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
@@ -38,6 +43,17 @@ const CONTAINER_OPTS: EnvironmentOptions = {
   apiPort: 5222,
   flightSqlPort: 5223,
   testPort: 5223,
+  image: 'ceramic-one:dev',
+}
+
+const FLIGHT_OPTIONS: ClientOptions = {
+  headers: new Array(),
+  username: undefined,
+  password: undefined,
+  token: undefined,
+  tls: false,
+  host: '127.0.0.1',
+  port: CONTAINER_OPTS.flightSqlPort,
 }
 
 describe('model integration test', () => {
@@ -82,26 +98,27 @@ describe('model integration test', () => {
 
     async function createAndPostDocument(
       content: Record<string, unknown>,
-    ): Promise<void> {
+    ): Promise<CID> {
       const event = await createDocument({
         controller: authenticatedDID,
         content,
         model,
       })
-      await client.postEventType(DocumentEvent, event)
+      return await client.postEventType(DocumentEvent, event)
     }
 
-    await createAndPostDocument({ test: 'one' })
-    await createAndPostDocument({ test: 'two' })
+    const eventID1 = await createAndPostDocument({ test: 'one' })
+    const eventID2 = await createAndPostDocument({ test: 'two' })
 
-    const feed = await client.getEventsFeed()
-    expect(feed.events).toHaveLength(3)
-    const eventID1 = feed.events[1].id
-    const eventID2 = feed.events[2].id
+
+    // Use the flightsql stream behavior to ensure the events states have been process before querying their states.
+    const flightClient = await createFlightSqlClient(FLIGHT_OPTIONS)
+    await waitForEventState(flightClient, eventID2);
+
 
     const [event1, event2] = await Promise.all([
-      client.getEventType(DocumentEvent, eventID1),
-      client.getEventType(DocumentEvent, eventID2),
+      client.getEventType(DocumentEvent, eventID1.toString()),
+      client.getEventType(DocumentEvent, eventID2.toString()),
     ])
     const [state1, state2] = await Promise.all([
       handleDocument(event1 as DocumentEvent, context),

@@ -5,7 +5,12 @@ import { ModelClient } from '@ceramic-sdk/model-client'
 import { ModelInstanceClient } from '@ceramic-sdk/model-instance-client'
 import type { ModelDefinition } from '@ceramic-sdk/model-protocol'
 import { getAuthenticatedDID } from '@didtools/key-did'
-import CeramicOneContainer, { type EnvironmentOptions } from '../src'
+import CeramicOneContainer, { waitForEventState, type EnvironmentOptions } from '../src'
+import {
+  type ClientOptions,
+  createFlightSqlClient,
+  FlightSqlClient,
+} from '@ceramic-sdk/flight-sql-client'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
@@ -30,6 +35,17 @@ const CONTAINER_OPTS: EnvironmentOptions = {
   apiPort: 5222,
   flightSqlPort: 5223,
   testPort: 5223,
+  image: 'ceramic-one:dev',
+}
+
+const FLIGHT_OPTIONS: ClientOptions = {
+  headers: new Array(),
+  username: undefined,
+  password: undefined,
+  token: undefined,
+  tls: false,
+  host: '127.0.0.1',
+  port: CONTAINER_OPTS.flightSqlPort,
 }
 
 const client = new CeramicClient({
@@ -50,15 +66,18 @@ describe('model integration test for list model and MID', () => {
   let c1Container: CeramicOneContainer
   let modelStream: StreamID
   let documentStream: CommitID
+  let flightClient: FlightSqlClient
 
   beforeAll(async () => {
     c1Container = await CeramicOneContainer.startContainer(CONTAINER_OPTS)
     modelStream = await modelClient.postDefinition(testModel)
+    flightClient = await createFlightSqlClient(FLIGHT_OPTIONS)
   }, 10000)
 
   test('gets correct model definition', async () => {
-    // wait one second
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    // Use the flightsql stream behavior to ensure the events states have been process before querying their states.
+    await waitForEventState(flightClient, modelStream.cid);
+
     const definition = await modelClient.getModelDefinition(modelStream)
     expect(definition).toEqual(testModel)
   })
@@ -68,10 +87,11 @@ describe('model integration test for list model and MID', () => {
       content: { test: 'hello' },
       shouldIndex: true,
     })
-    // wait 1 seconds
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    // Use the flightsql stream behavior to ensure the events states have been process before querying their states.
+    await waitForEventState(flightClient, documentStream.commit);
+
     const currentState = await modelInstanceClient.getDocumentState(
-      new StreamID(3, documentStream.commit.toString()),
+      documentStream.baseID,
     )
     expect(currentState.content).toEqual({ test: 'hello' })
   })

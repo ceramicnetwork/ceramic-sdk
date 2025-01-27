@@ -25,7 +25,7 @@ pub(crate) fn arrow_buffer_to_record_batch(slice: &[u8]) -> Result<(Vec<RecordBa
     Ok((batches, schema))
 }
 
-pub(crate) fn record_batch_to_buffer(batches: Vec<RecordBatch>) -> Result<Vec<u8>> {
+pub(crate) fn record_batches_to_buffer(batches: Vec<RecordBatch>) -> Result<Vec<u8>> {
     if batches.is_empty() {
         return Ok(Vec::new());
     }
@@ -39,6 +39,22 @@ pub(crate) fn record_batch_to_buffer(batches: Vec<RecordBatch>) -> Result<Vec<u8
             message: "failed to convert to buffer",
         })?
     }
+    fr.finish().context(ArrowSnafu {
+        message: "failed to convert to buffer",
+    })?;
+    fr.into_inner().context(ArrowSnafu {
+        message: "failed to convert to buffer",
+    })
+}
+
+pub(crate) fn record_batch_to_buffer(batch: RecordBatch) -> Result<Vec<u8>> {
+    let schema = batch.schema();
+    let mut fr = FileWriter::try_new(Vec::new(), schema.deref()).context(ArrowSnafu {
+        message: "failed to convert to buffer",
+    })?;
+    fr.write(&batch).context(ArrowSnafu {
+        message: "failed to convert to buffer",
+    })?;
     fr.finish().context(ArrowSnafu {
         message: "failed to convert to buffer",
     })?;
