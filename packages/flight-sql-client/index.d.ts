@@ -85,7 +85,8 @@ export declare class StreamQuery {
 export declare class FlightSqlClient {
   query(query: string): Promise<Buffer>
   streamQuery(query: string): Promise<StreamQuery>
-  preparedStatement(query: string, params: Array<[string, string]>): Promise<Buffer>
+  preparedQuery(query: string, params: Array<[string, string]>): Promise<Buffer>
+  preparedStreamQuery(query: string, params: Array<[string, string]>): Promise<StreamQuery>
   getCatalogs(): Promise<Buffer>
   getDbSchemas(options: GetDbSchemasOptions): Promise<Buffer>
   getTables(options: GetTablesOptions): Promise<Buffer>

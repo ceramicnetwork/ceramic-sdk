@@ -1,16 +1,15 @@
 use std::{sync::Arc, time::Duration};
 
-use arrow_array::{ArrayRef, Datum, RecordBatch, StringArray};
-use arrow_cast::{cast_with_options, CastOptions};
+use arrow_array::RecordBatch;
 use arrow_flight::{
     decode::FlightRecordBatchStream, sql::client::FlightSqlServiceClient, FlightInfo,
 };
 use arrow_schema::{ArrowError, Schema};
-use futures::{stream::BoxStream, TryStreamExt};
+use futures::TryStreamExt as _;
 use napi_derive::napi;
 use snafu::ResultExt;
 use tonic::transport::{Channel, ClientTlsConfig, Endpoint};
-use tracing_log::log::{debug, info};
+use tracing::{debug, info};
 
 use crate::error::{ArrowSnafu, FlightSnafu, Result};
 
@@ -68,13 +67,9 @@ pub(crate) async fn execute_flight(
         let flight_data = client.do_get(ticket.clone()).await.context(ArrowSnafu {
             message: "do_get_request",
         })?;
-        let mut flight_data: Vec<_> = flight_data
-            .try_collect()
-            .await
-            .context(FlightSnafu {
-                message: "collect data stream",
-            })
-            .expect("collect data stream");
+        let mut flight_data: Vec<_> = flight_data.try_collect().await.context(FlightSnafu {
+            message: "collect data stream",
+        })?;
         batches.append(&mut flight_data);
     }
 
@@ -82,8 +77,6 @@ pub(crate) async fn execute_flight(
 
     Ok(batches)
 }
-
-type RecordBatchStream = BoxStream<'static, Result<RecordBatch, ArrowError>>;
 
 pub(crate) async fn execute_flight_stream(
     client: &mut FlightSqlServiceClient<Channel>,
@@ -102,33 +95,6 @@ pub(crate) async fn execute_flight_stream(
     }
 
     Ok(streams)
-}
-
-#[allow(unused)]
-fn construct_record_batch_from_params(
-    params: &[(String, String)],
-    parameter_schema: &Schema,
-) -> Result<RecordBatch, ArrowError> {
-    let mut items = Vec::<(&String, ArrayRef)>::new();
-
-    for (name, value) in params {
-        let field = parameter_schema.field_with_name(name)?;
-        let value_as_array = StringArray::new_scalar(value);
-        let casted = cast_with_options(
-            value_as_array.get().0,
-            field.data_type(),
-            &CastOptions::default(),
-        )?;
-        items.push((name, casted))
-    }
-
-    RecordBatch::try_from_iter(items)
-}
-
-#[allow(unused)]
-fn setup_logging() {
-    tracing_log::LogTracer::init().expect("tracing log init");
-    tracing_subscriber::fmt::init();
 }
 
 pub(crate) async fn setup_client(

@@ -22,8 +22,8 @@
   "sideEffects": false,
   "scripts": {
     "generate": "openapi-typescript https://raw.githubusercontent.com/ceramicnetwork/rust-ceramic/main/api-server/api/openapi.yaml -o ./src/__generated__/api.ts",
-    "build:clean": "rm -rf dist",
-    "build:js": "swc src -d ./dist --config-file ../../.swcrc",
+    "build:clean": "del dist",
+    "build:js": "swc src -d ./dist --config-file ../../.swcrc --strip-leading-paths",
     "build:types": "tsc --project tsconfig.json --emitDeclarationOnly --skipLibCheck",
     "build": "pnpm build:clean && pnpm build:types && pnpm build:js",
     "lint": "eslint src --fix",

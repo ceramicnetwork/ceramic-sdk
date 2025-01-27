@@ -5,59 +5,66 @@ mod error;
 mod flight_client;
 mod stream_query;
 
-use arrow_array::{ArrayRef, Datum as _, RecordBatch, StringArray};
+use std::sync::Arc;
+
+use arrow_array::{ArrayRef, BinaryArray, Datum as _, RecordBatch, StringArray};
 use arrow_cast::CastOptions;
 use arrow_flight::sql::{client::FlightSqlServiceClient, CommandGetDbSchemas, CommandGetTables};
-use arrow_schema::Schema;
+use arrow_flight::FlightInfo;
+use arrow_schema::{DataType, Schema};
+use error::MultibaseSnafu;
 use flight_client::execute_flight_stream;
-use napi::bindgen_prelude::*;
-use napi_derive::napi;
+use napi::{bindgen_prelude::*, JsObject};
+use napi_derive::{module_exports, napi};
 use snafu::prelude::*;
 use stream_query::StreamQuery;
 use tokio::sync::Mutex;
 use tonic::transport::Channel;
+use tracing::info;
+use tracing_subscriber::EnvFilter;
 
 use crate::conversion::record_batches_to_buffer;
 use crate::error::{ArrowSnafu, Result};
 use crate::flight_client::{execute_flight, setup_client, ClientOptions};
 
+fn init_logging() {
+    // Set up a subscriber that logs to stdout
+    let subscriber = tracing_subscriber::FmtSubscriber::builder()
+        .with_env_filter(
+            EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info")),
+        )
+        .finish();
+
+    // Set the global default subscriber
+    tracing::subscriber::set_global_default(subscriber).expect("Failed to set tracing subscriber");
+}
+
+#[module_exports]
+fn init(_exports: JsObject) -> napi::Result<()> {
+    init_logging();
+
+    Ok(())
+}
+
 #[napi]
 pub struct FlightSqlClient {
     client: Mutex<FlightSqlServiceClient<Channel>>,
 }
-
-#[napi]
 impl FlightSqlClient {
-    #[napi]
-    pub async fn query(&self, query: String) -> napi::Result<Buffer> {
-        let mut client = self.client.lock().await;
-
+    async fn query_flight_info(
+        client: &mut FlightSqlServiceClient<Channel>,
+        query: String,
+    ) -> napi::Result<FlightInfo> {
         let flight_info = client.execute(query, None).await.context(ArrowSnafu {
             message: "failed to execute query",
         })?;
-
-        let batches = execute_flight(&mut client, flight_info).await?;
-        Ok(record_batches_to_buffer(batches)?.into())
+        Ok(flight_info)
     }
-    #[napi]
-    pub async fn stream_query(&self, query: String) -> napi::Result<StreamQuery> {
-        let mut client = self.client.lock().await;
-
-        let flight_info = client.execute(query, None).await.context(ArrowSnafu {
-            message: "failed to execute query",
-        })?;
-
-        let streams = execute_flight_stream(&mut client, flight_info).await?;
-        Ok(StreamQuery::new(streams))
-    }
-
-    #[napi]
-    pub async fn prepared_statement(
-        &self,
+    async fn prepared_query_flight_info(
+        client: &mut FlightSqlServiceClient<Channel>,
         query: String,
         params: Vec<(String, String)>,
-    ) -> napi::Result<Buffer> {
-        let mut client = self.client.lock().await;
+    ) -> napi::Result<FlightInfo> {
         let mut prepared_stmt = client.prepare(query, None).await.context(ArrowSnafu {
             message: "failed to prepare statement",
         })?;
@@ -72,8 +79,58 @@ impl FlightSqlClient {
         let flight_info = prepared_stmt.execute().await.context(ArrowSnafu {
             message: "failed to execute prepared statement",
         })?;
+        Ok(flight_info)
+    }
+}
+
+#[napi]
+impl FlightSqlClient {
+    #[napi]
+    pub async fn query(&self, query: String) -> napi::Result<Buffer> {
+        let mut client = self.client.lock().await;
+
+        let flight_info = Self::query_flight_info(&mut client, query).await?;
+
         let batches = execute_flight(&mut client, flight_info).await?;
         Ok(record_batches_to_buffer(batches)?.into())
+    }
+
+    #[napi]
+    pub async fn stream_query(&self, query: String) -> napi::Result<StreamQuery> {
+        let mut client = self.client.lock().await;
+
+        let flight_info = Self::query_flight_info(&mut client, query).await?;
+
+        let streams = execute_flight_stream(&mut client, flight_info).await?;
+        Ok(StreamQuery::new(streams))
+    }
+
+    #[napi]
+    pub async fn prepared_query(
+        &self,
+        query: String,
+        params: Vec<(String, String)>,
+    ) -> napi::Result<Buffer> {
+        let mut client = self.client.lock().await;
+
+        let flight_info = Self::prepared_query_flight_info(&mut client, query, params).await?;
+
+        let batches = execute_flight(&mut client, flight_info).await?;
+        Ok(record_batches_to_buffer(batches)?.into())
+    }
+
+    #[napi]
+    pub async fn prepared_stream_query(
+        &self,
+        query: String,
+        params: Vec<(String, String)>,
+    ) -> napi::Result<StreamQuery> {
+        let mut client = self.client.lock().await;
+
+        let flight_info = Self::prepared_query_flight_info(&mut client, query, params).await?;
+
+        let streams = execute_flight_stream(&mut client, flight_info).await?;
+        Ok(StreamQuery::new(streams))
     }
 
     #[napi]
@@ -190,19 +247,39 @@ fn construct_record_batch_from_params(
         let field = parameter_schema.field_with_name(name).context(ArrowSnafu {
             message: "failed to find field name in parameter schemas",
         })?;
-        let value_as_array = StringArray::new_scalar(value);
-        let casted = arrow_cast::cast_with_options(
-            value_as_array.get().0,
-            field.data_type(),
-            &CastOptions::default(),
-        )
-        .context(ArrowSnafu {
-            message: "failed to cast parameter",
-        })?;
-        items.push((name, casted))
+        info!(name, field_type = ?field.data_type(), "parameter");
+        if is_binary(field.data_type()) {
+            let (_base, value) = multibase::decode(value).context(MultibaseSnafu {
+                message: "binary parameter must be multibase encoded",
+            })?;
+            let value_as_array = BinaryArray::new_scalar(value);
+            items.push((name, Arc::new(value_as_array.into_inner())))
+        } else {
+            let value_as_array = StringArray::new_scalar(value);
+            let casted = arrow_cast::cast_with_options(
+                value_as_array.get().0,
+                field.data_type(),
+                &CastOptions::default(),
+            )
+            .context(ArrowSnafu {
+                message: "failed to cast parameter",
+            })?;
+            items.push((name, casted))
+        }
     }
 
     RecordBatch::try_from_iter(items).context(ArrowSnafu {
         message: "failed to build record batch",
     })
+}
+
+fn is_binary(dt: &DataType) -> bool {
+    match dt {
+        DataType::Binary
+        | DataType::FixedSizeBinary(_)
+        | DataType::LargeBinary
+        | DataType::BinaryView => true,
+        DataType::Dictionary(_, value_type) => is_binary(&value_type),
+        _ => false,
+    }
 }
