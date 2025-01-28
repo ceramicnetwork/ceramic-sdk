@@ -20,7 +20,7 @@ const DEFAULT_ENVIRONMENT = {
 
 export type EnvironmentOptions = {
   debug?: boolean // default to false
-  image?: string // default to "public.ecr.aws/r5b3e0r5/3box/ceramic-one:latest"
+  image?: string // default to "public.ecr.aws/r5b3e0r5/3box/ceramic-one:latest-debug"
   containerName?: string // default to "ceramic-one"
   apiPort: number // default to 5101
   internalApiPort?: number // default to 5101

@@ -45,7 +45,7 @@ describe('stream client', () => {
   let streamId: StreamID
   let cid: CID
   beforeAll(async () => {
-    c1Container = await CeramicOneContainer.startContainer({ ...CONTAINER_OPTS, image: 'ceramic-one:dev' })
+    c1Container = await CeramicOneContainer.startContainer(CONTAINER_OPTS)
 
     // create a new event
     const model = StreamID.fromString(

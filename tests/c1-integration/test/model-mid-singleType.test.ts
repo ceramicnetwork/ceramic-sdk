@@ -34,7 +34,6 @@ const CONTAINER_OPTS: EnvironmentOptions = {
   apiPort: 5222,
   flightSqlPort: 5223,
   testPort: 5223,
-  image: 'ceramic-one:dev',
 }
 
 const FLIGHT_OPTIONS: ClientOptions = {
