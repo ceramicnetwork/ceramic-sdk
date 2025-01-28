@@ -29,6 +29,15 @@ pnpm test # run all tests (unit and integration, requires docker to be running)
 pnpm test:ci # run only unit tests
 ```
 
+The flight-sql-client is written in Rust and has the ability to log to the console. However the jest framework will often overwrite the logs output by the Rust code.
+To avoid this use:
+
+```sh
+CI=true RUST_LOG=debug pnpm test
+```
+
+The `RUST_LOG` env var can be set to change the Rust log level.
+
 ## CI
 
 In order to specify targets for WASM builds on CI, the build script is split into `pnpm build:rust` which allows passing `--target TARGET_TRIPLE` and `pnpm build:js`.

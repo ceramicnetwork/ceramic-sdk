@@ -107,7 +107,7 @@ export default class CeramicOneContainer {
 // Wait for count events states
 export async function waitForEventState(flightClient: FlightSqlClient, event_cid: CID) {
   await flightClient.preparedQuery(
-    'SELECT "index" FROM event_states_stream WHERE event_cid = $event_cid LIMIT 1',
+    'SELECT "index" FROM event_states_feed WHERE event_cid = $event_cid LIMIT 1',
     new Array([
       '$event_cid', event_cid.toString(base64.encoder)
     ])

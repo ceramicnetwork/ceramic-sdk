@@ -65,7 +65,6 @@ const modelClient = new ModelClient({
 describe('model integration test for list model and MID', () => {
   let c1Container: CeramicOneContainer
   let modelStream: StreamID
-  let documentStream: CommitID
   let flightClient: FlightSqlClient
 
   beforeAll(async () => {
@@ -82,7 +81,7 @@ describe('model integration test for list model and MID', () => {
     expect(definition).toEqual(testModel)
   })
   test('posts signed init event and obtains correct state', async () => {
-    documentStream = await modelInstanceClient.postSignedInit({
+    const documentStream = await modelInstanceClient.postSignedInit({
       model: modelStream,
       content: { test: 'hello' },
       shouldIndex: true,
@@ -96,9 +95,16 @@ describe('model integration test for list model and MID', () => {
     expect(currentState.content).toEqual({ test: 'hello' })
   })
   test('updates document and obtains correct state', async () => {
+    const documentStream = await modelInstanceClient.postSignedInit({
+      model: modelStream,
+      content: { test: 'hello' },
+      shouldIndex: true,
+    })
+    // Use the flightsql stream behavior to ensure the events states have been process before querying their states.
+    await waitForEventState(flightClient, documentStream.commit);
     // update the document
     const updatedState = await modelInstanceClient.updateDocument({
-      streamID: new StreamID(3, documentStream.commit.toString()).toString(),
+      streamID: documentStream.baseID.toString(),
       newContent: { test: 'world' },
       shouldIndex: true,
     })
