@@ -1,3 +1,5 @@
+import { DID } from 'dids';
+import { randomBytes } from 'crypto';
 import {
   type ClientOptions,
   type FlightSqlClient,
@@ -14,7 +16,6 @@ import CeramicOneContainer, {
   type EnvironmentOptions,
 } from '../src'
 
-const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
 const testModel: ModelDefinition = {
   version: '2.0',
@@ -53,15 +54,7 @@ const client = new CeramicClient({
   url: `http://127.0.0.1:${CONTAINER_OPTS.apiPort}`,
 })
 
-const modelInstanceClient = new ModelInstanceClient({
-  ceramic: client,
-  did: authenticatedDID,
-})
 
-const modelClient = new ModelClient({
-  ceramic: client,
-  did: authenticatedDID,
-})
 
 describe('model integration test for list model and MID', () => {
   let c1Container: CeramicOneContainer
@@ -70,19 +63,29 @@ describe('model integration test for list model and MID', () => {
 
   beforeAll(async () => {
     c1Container = await CeramicOneContainer.startContainer(CONTAINER_OPTS)
-    modelStream = await modelClient.postDefinition(testModel)
     flightClient = await createFlightSqlClient(FLIGHT_OPTIONS)
+    const authenticatedDID = await randomDID();
+    const modelClient = new ModelClient({
+      ceramic: client,
+      did: authenticatedDID,
+    })
+    modelStream = await modelClient.createDefinition(testModel)
   }, 10000)
 
-  test('gets correct model definition', async () => {
+  test('gets model with account relation single', async () => {
     // Use the flightsql stream behavior to ensure the events states have been process before querying their states.
     await waitForEventState(flightClient, modelStream.cid)
-
+    const modelClient = new ModelClient({ ceramic: client, })
     const definition = await modelClient.getModelDefinition(modelStream)
     expect(definition).toEqual(testModel)
   })
-  test('posts signed init event and obtains correct state', async () => {
-    const documentStream = await modelInstanceClient.postDeterministicInit({
+  test('creates singleton and obtains correct state', async () => {
+    const authenticatedDID = await randomDID();
+    const modelInstanceClient = new ModelInstanceClient({
+      ceramic: client,
+      did: authenticatedDID,
+    })
+    const documentStream = await modelInstanceClient.createSingleton({
       model: modelStream,
       controller: authenticatedDID.id,
     })
@@ -96,7 +99,12 @@ describe('model integration test for list model and MID', () => {
     expect(currentState.content).toEqual(null)
   })
   test('updates document and obtains correct state', async () => {
-    const documentStream = await modelInstanceClient.postDeterministicInit({
+    const authenticatedDID = await randomDID();
+    const modelInstanceClient = new ModelInstanceClient({
+      ceramic: client,
+      did: authenticatedDID,
+    })
+    const documentStream = await modelInstanceClient.createSingleton({
       model: modelStream,
       controller: authenticatedDID.id,
     })
@@ -110,7 +118,48 @@ describe('model integration test for list model and MID', () => {
     })
     expect(updatedState.content).toEqual({ test: 'hello' })
   })
+  test('creates singleton twice and obtains identical correct state', async () => {
+    const authenticatedDID = await randomDID();
+    const modelInstanceClient = new ModelInstanceClient({
+      ceramic: client,
+      did: authenticatedDID,
+    })
+    const documentStream1 = await modelInstanceClient.createSingleton({
+      model: modelStream,
+      controller: authenticatedDID.id,
+    })
+    const documentStream2 = await modelInstanceClient.createSingleton({
+      model: modelStream,
+      controller: authenticatedDID.id,
+    })
+    expect(documentStream1.baseID).toEqual(documentStream2.baseID);
+  })
+  test('creates singleton twice with different controllers and obtains different state', async () => {
+    const authenticatedDID1 = await randomDID();
+    const authenticatedDID2 = await randomDID();
+    const modelInstanceClient1 = new ModelInstanceClient({
+      ceramic: client,
+      did: authenticatedDID1,
+    })
+    const modelInstanceClient2 = new ModelInstanceClient({
+      ceramic: client,
+      did: authenticatedDID2,
+    })
+    const documentStream1 = await modelInstanceClient1.createSingleton({
+      model: modelStream,
+      controller: authenticatedDID1.id,
+    })
+    const documentStream2 = await modelInstanceClient2.createSingleton({
+      model: modelStream,
+      controller: authenticatedDID2.id,
+    })
+    expect(documentStream1.baseID).not.toEqual(documentStream2.baseID);
+  })
   afterAll(async () => {
     await c1Container.teardown()
   })
+
+  async function randomDID(): Promise<DID> {
+    return await getAuthenticatedDID(randomBytes(32))
+  }
 })

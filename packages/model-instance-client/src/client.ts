@@ -23,9 +23,9 @@ import {
 import type { DocumentState, UnknownContent } from './types.js'
 
 /**
- * Parameters for posting a deterministic initialization event.
+ * Parameters for creating a singleton instance of a model.
  */
-export type PostDeterministicInitParams = {
+export type CreateSingletonParams = {
   /** The model's stream ID */
   model: StreamID
   /** The controller of the stream (DID string or literal string) */
@@ -35,9 +35,9 @@ export type PostDeterministicInitParams = {
 }
 
 /**
- * Parameters for posting a signed initialization event.
+ * Parameters for creating an instance of a model.
  */
-export type PostSignedInitParams<T extends UnknownContent = UnknownContent> =
+export type CreateInstanceParams<T extends UnknownContent = UnknownContent> =
   Omit<CreateInitEventParams<T>, 'controller'> & {
     controller?: DID
   }
@@ -67,7 +67,7 @@ export type UpdateDataParams<T extends UnknownContent = UnknownContent> = Omit<
  *
  * The `ModelInstanceClient` class provides methods to:
  * - Retrieve events and document states
- * - Post deterministic and signed initialization events
+ * - Create instances and singleton of models
  * - Update existing documents with new content
  */
 export class ModelInstanceClient extends StreamClient {
@@ -89,18 +89,11 @@ export class ModelInstanceClient extends StreamClient {
   }
 
   /**
-   * Posts a deterministic initialization event and returns its commit ID.
-   *
-   * @param params - Parameters for posting the deterministic init event.
-   * @returns A promise that resolves to the `CommitID` of the posted event.
-   *
-   * @remarks
-   * This method ensures that the resulting stream ID is deterministic, derived
-   * from the `uniqueValue` parameter. Commonly used for model instance documents
-   * of type `set` and `single`.
+   * Creates an instance of a model with account relation single.
+   * By definition this instance will always be a singleton.
    */
-  async postDeterministicInit(
-    params: PostDeterministicInitParams,
+  async createSingleton(
+    params: CreateSingletonParams,
   ): Promise<CommitID> {
     const event = getDeterministicInitEventPayload(
       params.model,
@@ -112,17 +105,10 @@ export class ModelInstanceClient extends StreamClient {
   }
 
   /**
-   * Posts a signed initialization event and returns its commit ID.
-   *
-   * @param params - Parameters for posting the signed init event.
-   * @returns A promise that resolves to the `CommitID` of the posted event.
-   *
-   * @remarks
-   * This method results in a non-deterministic stream ID, typically used for
-   * model instance documents of type `list`.
+   * Creates an instance of a model. The model must have an account relation of list or set.
    */
-  async postSignedInit<T extends UnknownContent = UnknownContent>(
-    params: PostSignedInitParams<T>,
+  async createInstance<T extends UnknownContent = UnknownContent>(
+    params: CreateInstanceParams<T>,
   ): Promise<CommitID> {
     const { controller, ...rest } = params
     const event = await createInitEvent({
@@ -154,6 +140,7 @@ export class ModelInstanceClient extends StreamClient {
     const cid = await this.ceramic.postEventType(SignedEvent, event)
     return CommitID.fromStream(params.currentID.baseID, cid)
   }
+
 
   /**
    * Retrieves the `CommitID` for the provided stream ID.

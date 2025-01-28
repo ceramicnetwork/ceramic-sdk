@@ -11,8 +11,6 @@ import {
   DocumentDataEventPayload,
   type EncodedDeterministicInitEventPayload,
   type JSONPatchOperation,
-  assertValidContentLength,
-  assertValidPatchOperations,
 } from '@ceramic-sdk/model-instance-protocol'
 import type { DIDString } from '@didtools/codecs'
 import type { DID } from 'dids'
@@ -53,7 +51,6 @@ export async function createInitEvent<
   T extends UnknownContent = UnknownContent,
 >(params: CreateInitEventParams<T>): Promise<SignedEvent> {
   const { content, controller, ...headerParams } = params
-  assertValidContentLength(content)
   const header = createInitHeader({
     ...headerParams,
     controller: controller.id,
@@ -126,7 +123,6 @@ export function createDataEventPayload(
   data: Array<JSONPatchOperation>,
   header?: DocumentDataEventHeader,
 ): DocumentDataEventPayload {
-  assertValidPatchOperations(data)
   const payload: DocumentDataEventPayload = {
     data,
     id: current.baseID.cid,

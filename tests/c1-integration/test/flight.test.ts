@@ -70,7 +70,7 @@ describe('flight sql', () => {
       ceramic: ceramicClient,
       did: authenticatedDID,
     })
-    const stream = await modelClient.postDefinition(testModel)
+    const stream = await modelClient.createDefinition(testModel)
     const stream_cid_hex = stream.cid.toString(base16.encoder).substring(1)
 
     // Intentionally not using prepared query as we are testing query.
@@ -133,7 +133,7 @@ describe('flight sql', () => {
       ceramic: ceramicClient,
       did: authenticatedDID,
     })
-    const stream = await modelClient.postDefinition(testModel)
+    const stream = await modelClient.createDefinition(testModel)
     console.log('stream', stream)
     const client = await getClient()
     const buffer = await client.preparedQuery(
@@ -169,7 +169,7 @@ describe('flight sql', () => {
       ceramic: ceramicClient,
       did: authenticatedDID,
     })
-    const model = await modelClient.postDefinition(testModel)
+    const model = await modelClient.createDefinition(testModel)
     console.log('model', model)
     const model_hex = base16.encode(model.bytes).substring(1)
     // biome-ignore lint/suspicious/noExplicitAny: Row type depends on the query, we do not need to construct a type for a one off test query.
@@ -227,7 +227,7 @@ describe('flight sql', () => {
       ceramic: ceramicClient,
       did: authenticatedDID,
     })
-    const model = await modelClient.postDefinition(testModel)
+    const model = await modelClient.createDefinition(testModel)
     console.log('prepared model', model)
     // biome-ignore lint/suspicious/noExplicitAny: Row type depends on the query, we do not need to construct a type for a one off test query.
     const expectEvent = (row: any | null) => {

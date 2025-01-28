@@ -11,9 +11,7 @@ import {
   MODEL,
   type ModelDefinition,
   ModelInitEventPayload,
-  assertValidModelContent,
   getModelStreamID,
-  validateController,
 } from '@ceramic-sdk/model-protocol'
 import { StreamClient } from '@ceramic-sdk/stream-client'
 import type { DID } from 'dids'
@@ -33,13 +31,10 @@ export async function createInitEvent(
   did: DID,
   data: ModelDefinition,
 ): Promise<SignedEvent> {
-  assertValidModelContent(data)
   if (!did.authenticated) {
     await did.authenticate()
   }
-  const controller = did.hasParent ? did.parent : did.id
   const event = await createSignedInitEvent(did, data, header)
-  await validateController(controller, event.cacaoBlock)
   return event
 }
 
@@ -47,7 +42,7 @@ export async function createInitEvent(
  * Represents a client for interacting with Ceramic models.
  *
  * The `ModelClient` class extends the `StreamClient` class to provide additional
- * methods specific to working with Ceramic models, including fetching and posting
+ * methods specific to working with Ceramic models, including fetching and creating
  * model definitions, retrieving initialization events, and decoding stream data.
  */
 export class ModelClient extends StreamClient {
@@ -88,7 +83,7 @@ export class ModelClient extends StreamClient {
   }
 
   /**
-   * Posts a model definition and returns the resulting stream ID.
+   * Creates a model definition and returns the resulting stream ID.
    *
    * @param definition - The model JSON definition to post.
    * @param signer - (Optional) A `DID` instance for signing the model definition.
@@ -96,7 +91,7 @@ export class ModelClient extends StreamClient {
    *
    * @throws Will throw an error if the definition is invalid or the signing process fails.
    */
-  async postDefinition(
+  async createDefinition(
     definition: ModelDefinition,
     signer?: DID,
   ): Promise<StreamID> {

@@ -284,49 +284,6 @@ importers:
         specifier: ^10.0.2
         version: 10.0.2(typescript@5.6.2)
 
-  packages/model-handler:
-    dependencies:
-      '@ceramic-sdk/events':
-        specifier: workspace:^
-        version: link:../events
-      '@ceramic-sdk/model-protocol':
-        specifier: workspace:^
-        version: link:../model-protocol
-      dids:
-        specifier: ^5.0.2
-        version: 5.0.2(typescript@5.6.2)(zod@3.23.8)
-      json-ptr:
-        specifier: ^3.1.1
-        version: 3.1.1
-      lodash.ismatch:
-        specifier: ^4.4.0
-        version: 4.4.0
-    devDependencies:
-      '@ceramic-sdk/identifiers':
-        specifier: workspace:^
-        version: link:../identifiers
-      '@ceramic-sdk/test-utils':
-        specifier: workspace:^
-        version: link:../test-utils
-      '@didtools/codecs':
-        specifier: ^3.0.0
-        version: 3.0.0
-      '@didtools/key-did':
-        specifier: ^1.0.0
-        version: 1.0.0(typescript@5.6.2)(zod@3.23.8)
-      '@types/lodash.ismatch':
-        specifier: ^4.4.9
-        version: 4.4.9
-      json-schema-typed:
-        specifier: ^8.0.1
-        version: 8.0.1
-      multiformats:
-        specifier: ^13.3.0
-        version: 13.3.0
-      ts-essentials:
-        specifier: ^10.0.2
-        version: 10.0.2(typescript@5.6.2)
-
   packages/model-instance-client:
     dependencies:
       '@ceramic-sdk/events':
@@ -363,52 +320,6 @@ importers:
       uint8arrays:
         specifier: ^5.1.0
         version: 5.1.0
-
-  packages/model-instance-handler:
-    dependencies:
-      '@ceramic-sdk/events':
-        specifier: workspace:^
-        version: link:../events
-      '@ceramic-sdk/identifiers':
-        specifier: workspace:^
-        version: link:../identifiers
-      '@ceramic-sdk/model-instance-protocol':
-        specifier: workspace:^
-        version: link:../model-instance-protocol
-      ajv:
-        specifier: ^8.17.1
-        version: 8.17.1
-      ajv-formats:
-        specifier: ^3.0.1
-        version: 3.0.1(ajv@8.17.1)
-      codeco:
-        specifier: ^1.4.3
-        version: 1.4.3
-      fast-json-patch:
-        specifier: ^3.1.1
-        version: 3.1.1
-      ts-essentials:
-        specifier: ^10.0.2
-        version: 10.0.2(typescript@5.6.2)
-      uint8arrays:
-        specifier: ^5.1.0
-        version: 5.1.0
-    devDependencies:
-      '@ceramic-sdk/model-instance-client':
-        specifier: workspace:^
-        version: link:../model-instance-client
-      '@ceramic-sdk/model-protocol':
-        specifier: workspace:^
-        version: link:../model-protocol
-      '@didtools/key-did':
-        specifier: ^1.0.0
-        version: 1.0.0(typescript@5.6.2)(zod@3.23.8)
-      dids:
-        specifier: ^5.0.2
-        version: 5.0.2(typescript@5.6.2)(zod@3.23.8)
-      multiformats:
-        specifier: ^13.3.0
-        version: 13.3.0
 
   packages/model-instance-protocol:
     dependencies:
@@ -609,15 +520,9 @@ importers:
       '@ceramic-sdk/model-client':
         specifier: workspace:^
         version: link:../../packages/model-client
-      '@ceramic-sdk/model-handler':
-        specifier: workspace:^
-        version: link:../../packages/model-handler
       '@ceramic-sdk/model-instance-client':
         specifier: workspace:^
         version: link:../../packages/model-instance-client
-      '@ceramic-sdk/model-instance-handler':
-        specifier: workspace:^
-        version: link:../../packages/model-instance-handler
       '@ceramic-sdk/model-instance-protocol':
         specifier: workspace:^
         version: link:../../packages/model-instance-protocol
@@ -1998,12 +1903,6 @@ packages:
   '@types/keyv@3.1.4':
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
 
-  '@types/lodash.ismatch@4.4.9':
-    resolution: {integrity: sha512-qWihnStOPKH8urljLGm6ZOEdN/5Bt4vxKR81tL3L4ArUNLvcf9RW3QSnPs21eix5BiqioSWq4aAXD4Iep+d0fw==}
-
-  '@types/lodash@4.17.7':
-    resolution: {integrity: sha512-8wTvZawATi/lsmNu10/j2hk1KEP0IvjubqPE3cu1Xz7xfXXt5oCq3SNUz4fMIP4XGF9Ky+Ue2tBA3hcS7LSBlA==}
-
   '@types/mdast@4.0.4':
     resolution: {integrity: sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA==}
 
@@ -3187,9 +3086,6 @@ packages:
 
   lodash.isequal@4.5.0:
     resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
-
-  lodash.ismatch@4.4.0:
-    resolution: {integrity: sha512-fPMfXjGQEV9Xsq/8MTSgUf255gawYRbjwMyDbcvDhXgV7enSZA0hynz6vMPnpAb5iONEzBHBPsT+0zes5Z301g==}
 
   lodash.startcase@4.4.0:
     resolution: {integrity: sha512-+WKqsK294HMSc2jEbNgpHpd0JfIBhp7rEV4aqXWqFr6AlXov+SlcgB1Fv01y2kGe3Gc8nMW7VA0SrGuSkRfIEg==}
@@ -5933,12 +5829,6 @@ snapshots:
     dependencies:
       '@types/node': 22.7.0
 
-  '@types/lodash.ismatch@4.4.9':
-    dependencies:
-      '@types/lodash': 4.17.7
-
-  '@types/lodash@4.17.7': {}
-
   '@types/mdast@4.0.4':
     dependencies:
       '@types/unist': 3.0.3
@@ -7370,8 +7260,6 @@ snapshots:
   lodash.camelcase@4.3.0: {}
 
   lodash.isequal@4.5.0: {}
-
-  lodash.ismatch@4.4.0: {}
 
   lodash.startcase@4.4.0: {}
 
