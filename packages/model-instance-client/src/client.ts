@@ -92,9 +92,7 @@ export class ModelInstanceClient extends StreamClient {
    * Creates an instance of a model with account relation single.
    * By definition this instance will always be a singleton.
    */
-  async createSingleton(
-    params: CreateSingletonParams,
-  ): Promise<CommitID> {
+  async createSingleton(params: CreateSingletonParams): Promise<CommitID> {
     const event = getDeterministicInitEventPayload(
       params.model,
       params.controller,
@@ -140,7 +138,6 @@ export class ModelInstanceClient extends StreamClient {
     const cid = await this.ceramic.postEventType(SignedEvent, event)
     return CommitID.fromStream(params.currentID.baseID, cid)
   }
-
 
   /**
    * Retrieves the `CommitID` for the provided stream ID.
