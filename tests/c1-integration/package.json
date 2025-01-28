@@ -12,7 +12,6 @@
   },
   "sideEffects": false,
   "scripts": {
-    "lint": "eslint src --fix",
     "build:clean": "del dist",
     "build:types": "tsc --project tsconfig.json --emitDeclarationOnly --skipLibCheck",
     "build:js": "swc src -d ./dist --config-file ../../.swcrc --strip-leading-paths",

@@ -1,6 +1,3 @@
-import { DID } from 'dids';
-import { CID } from 'multiformats/cid'
-import { base16 } from 'multiformats/bases/base16'
 import { InitEventPayload, SignedEvent, signEvent } from '@ceramic-sdk/events'
 import {
   type ClientOptions,
@@ -8,12 +5,15 @@ import {
   createFlightSqlClient,
 } from '@ceramic-sdk/flight-sql-client'
 import { CeramicClient } from '@ceramic-sdk/http-client'
-import { StreamID } from '@ceramic-sdk/identifiers'
+import type { StreamID } from '@ceramic-sdk/identifiers'
 import { ModelClient } from '@ceramic-sdk/model-client'
 import type { ModelDefinition } from '@ceramic-sdk/model-protocol'
 import { asDIDString } from '@didtools/codecs'
 import { getAuthenticatedDID } from '@didtools/key-did'
 import { tableFromIPC } from 'apache-arrow'
+import type { DID } from 'dids'
+import { base16 } from 'multiformats/bases/base16'
+import type { CID } from 'multiformats/cid'
 import CeramicOneContainer from '../src'
 import type { EnvironmentOptions } from '../src'
 
@@ -34,7 +34,6 @@ const OPTIONS: ClientOptions = {
   port: CONTAINER_OPTS.flightSqlPort,
 }
 
-
 async function getClient(): Promise<FlightSqlClient> {
   return createFlightSqlClient(OPTIONS)
 }
@@ -49,7 +48,6 @@ describe('flight sql', () => {
   beforeAll(async () => {
     c1Container = await CeramicOneContainer.startContainer(CONTAINER_OPTS)
     authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
-
   }, 20000)
 
   test('makes query', async () => {
@@ -75,11 +73,12 @@ describe('flight sql', () => {
     const stream = await modelClient.postDefinition(testModel)
     const stream_cid_hex = stream.cid.toString(base16.encoder).substring(1)
 
-
     // Intentionally not using prepared query as we are testing query.
     // However we still need to filter the query otherwise writes from other tests may get returned.
     const client = await getClient()
-    const buffer = await client.query(`SELECT * FROM conclusion_events WHERE stream_cid = X'${stream_cid_hex}'`)
+    const buffer = await client.query(
+      `SELECT * FROM conclusion_events WHERE stream_cid = X'${stream_cid_hex}'`,
+    )
 
     const table = tableFromIPC(buffer)
     expect(table.numRows).toBe(1)
@@ -171,11 +170,14 @@ describe('flight sql', () => {
       did: authenticatedDID,
     })
     const model = await modelClient.postDefinition(testModel)
-    console.log('model', model);
+    console.log('model', model)
     const model_hex = base16.encode(model.bytes).substring(1)
+    // biome-ignore lint/suspicious/noExplicitAny: Row type depends on the query, we do not need to construct a type for a one off test query.
     const expectEvent = (row: any | null) => {
       expect(row?.dimensions?.model).toBeDefined()
-      expect(base16.encode(row?.dimensions?.model)).toBe(base16.encode(model.bytes))
+      expect(base16.encode(row?.dimensions?.model)).toBe(
+        base16.encode(model.bytes),
+      )
       expect(row?.stream_type).toBe(3)
       expect(row?.data).toBeDefined()
     }
@@ -186,18 +188,18 @@ describe('flight sql', () => {
       `SELECT * FROM conclusion_events_feed WHERE array_extract(map_extract(dimensions, 'model'),1) = X'${model_hex}' LIMIT 4`,
     )
 
-    let remaining = 4;
+    let remaining = 4
     writeNewEvent(ceramicClient, model, 'event a')
     writeNewEvent(ceramicClient, model, 'event b')
     writeNewEvent(ceramicClient, model, 'event c')
     writeNewEvent(ceramicClient, model, 'event d')
     // Concurrent with the writes expect we get the events back
     while (remaining > 0) {
-      let buffer = await query.next();
+      const buffer = await query.next()
       const table = tableFromIPC(buffer)
       for (const row of table) {
         expectEvent(row)
-        remaining -= 1;
+        remaining -= 1
       }
     }
 
@@ -226,10 +228,13 @@ describe('flight sql', () => {
       did: authenticatedDID,
     })
     const model = await modelClient.postDefinition(testModel)
-    console.log('prepared model', model);
+    console.log('prepared model', model)
+    // biome-ignore lint/suspicious/noExplicitAny: Row type depends on the query, we do not need to construct a type for a one off test query.
     const expectEvent = (row: any | null) => {
       expect(row?.dimensions?.model).toBeDefined()
-      expect(base16.encode(row?.dimensions?.model)).toBe(base16.encode(model.bytes))
+      expect(base16.encode(row?.dimensions?.model)).toBe(
+        base16.encode(model.bytes),
+      )
       expect(row?.stream_type).toBe(3)
       expect(row?.data).toBeDefined()
     }
@@ -239,18 +244,18 @@ describe('flight sql', () => {
       new Array(['$model', base16.encode(model.bytes)]),
     )
 
-    let remaining = 4;
+    let remaining = 4
     writeNewEvent(ceramicClient, model, 'event a')
     writeNewEvent(ceramicClient, model, 'event b')
     writeNewEvent(ceramicClient, model, 'event c')
     writeNewEvent(ceramicClient, model, 'event d')
     // Concurrent with the writes expect we get the events back
     while (remaining > 0) {
-      let buffer = await query.next();
+      const buffer = await query.next()
       const table = tableFromIPC(buffer)
       for (const row of table) {
         expectEvent(row)
-        remaining -= 1;
+        remaining -= 1
       }
     }
 
@@ -262,7 +267,11 @@ describe('flight sql', () => {
     await c1Container.teardown()
   })
 
-  async function writeNewEvent(ceramicClient: CeramicClient, model: StreamID, body: string): Promise<CID> {
+  async function writeNewEvent(
+    ceramicClient: CeramicClient,
+    model: StreamID,
+    body: string,
+  ): Promise<CID> {
     const eventPayload: InitEventPayload = {
       data: { body },
       header: {
@@ -276,4 +285,3 @@ describe('flight sql', () => {
     return await ceramicClient.postEventType(SignedEvent, signedEvent)
   }
 })
-

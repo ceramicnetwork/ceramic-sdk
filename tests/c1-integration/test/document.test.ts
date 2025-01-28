@@ -1,3 +1,7 @@
+import {
+  type ClientOptions,
+  createFlightSqlClient,
+} from '@ceramic-sdk/flight-sql-client'
 import { CeramicClient } from '@ceramic-sdk/http-client'
 import { StreamID } from '@ceramic-sdk/identifiers'
 import { ModelClient } from '@ceramic-sdk/model-client'
@@ -13,12 +17,11 @@ import { DocumentEvent } from '@ceramic-sdk/model-instance-protocol'
 import type { ModelDefinition } from '@ceramic-sdk/model-protocol'
 import { getAuthenticatedDID } from '@didtools/key-did'
 import type { DID } from 'dids'
-import CeramicOneContainer, { waitForEventState, type EnvironmentOptions } from '../src'
-import {
-  type ClientOptions,
-  createFlightSqlClient,
-} from '@ceramic-sdk/flight-sql-client'
-import { CID } from 'multiformats/cid'
+import type { CID } from 'multiformats/cid'
+import CeramicOneContainer, {
+  waitForEventState,
+  type EnvironmentOptions,
+} from '../src'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
@@ -109,11 +112,9 @@ describe('model integration test', () => {
     const eventID1 = await createAndPostDocument({ test: 'one' })
     const eventID2 = await createAndPostDocument({ test: 'two' })
 
-
     // Use the flightsql stream behavior to ensure the events states have been process before querying their states.
     const flightClient = await createFlightSqlClient(FLIGHT_OPTIONS)
-    await waitForEventState(flightClient, eventID2);
-
+    await waitForEventState(flightClient, eventID2)
 
     const [event1, event2] = await Promise.all([
       client.getEventType(DocumentEvent, eventID1.toString()),

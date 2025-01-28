@@ -1,9 +1,7 @@
-import ContainerWrapper from './withContainer.js'
+import type { FlightSqlClient } from '@ceramic-sdk/flight-sql-client'
+import { base64 } from 'multiformats/bases/base64'
 import type { CID } from 'multiformats/cid'
-import { base64 } from "multiformats/bases/base64"
-import {
-  type FlightSqlClient,
-} from '@ceramic-sdk/flight-sql-client'
+import ContainerWrapper from './withContainer.js'
 
 const DEFAULT_PORT = 5101
 const DEFAULT_FLIGHT_SQL_PORT = 5102
@@ -77,7 +75,9 @@ export default class CeramicOneContainer {
   ): Promise<CeramicOneContainer> {
     const container = await ContainerWrapper.startContainer({
       debug: options.debug ?? false,
-      image: options.image ?? 'public.ecr.aws/r5b3e0r5/3box/ceramic-one:latest-debug',
+      image:
+        options.image ??
+        'public.ecr.aws/r5b3e0r5/3box/ceramic-one:latest-debug',
       // TODO: would be nice to have 1 container for all tests rather than 1 each since we get rate errors pulling
       // refreshImage: true, // pull new images
       containerName:
@@ -105,11 +105,12 @@ export default class CeramicOneContainer {
 }
 
 // Wait for count events states
-export async function waitForEventState(flightClient: FlightSqlClient, event_cid: CID) {
+export async function waitForEventState(
+  flightClient: FlightSqlClient,
+  event_cid: CID,
+) {
   await flightClient.preparedQuery(
     'SELECT "index" FROM event_states_feed WHERE event_cid = $event_cid LIMIT 1',
-    new Array([
-      '$event_cid', event_cid.toString(base64.encoder)
-    ])
+    new Array(['$event_cid', event_cid.toString(base64.encoder)]),
   )
 }

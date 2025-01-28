@@ -1,15 +1,18 @@
+import {
+  type ClientOptions,
+  type FlightSqlClient,
+  createFlightSqlClient,
+} from '@ceramic-sdk/flight-sql-client'
 import { CeramicClient } from '@ceramic-sdk/http-client'
-import { type CommitID, StreamID } from '@ceramic-sdk/identifiers'
+import type { CommitID, StreamID } from '@ceramic-sdk/identifiers'
 import { ModelClient } from '@ceramic-sdk/model-client'
 import { ModelInstanceClient } from '@ceramic-sdk/model-instance-client'
 import type { ModelDefinition } from '@ceramic-sdk/model-protocol'
 import { getAuthenticatedDID } from '@didtools/key-did'
-import CeramicOneContainer, { waitForEventState, type EnvironmentOptions } from '../src'
-import {
-  type ClientOptions,
-  createFlightSqlClient,
-  FlightSqlClient,
-} from '@ceramic-sdk/flight-sql-client'
+import CeramicOneContainer, {
+  waitForEventState,
+  type EnvironmentOptions,
+} from '../src'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
@@ -46,7 +49,6 @@ const FLIGHT_OPTIONS: ClientOptions = {
   port: CONTAINER_OPTS.flightSqlPort,
 }
 
-
 const client = new CeramicClient({
   url: `http://127.0.0.1:${CONTAINER_OPTS.apiPort}`,
 })
@@ -74,7 +76,7 @@ describe('model integration test for list model and MID', () => {
 
   test('gets correct model definition', async () => {
     // Use the flightsql stream behavior to ensure the events states have been process before querying their states.
-    await waitForEventState(flightClient, modelStream.cid);
+    await waitForEventState(flightClient, modelStream.cid)
 
     const definition = await modelClient.getModelDefinition(modelStream)
     expect(definition).toEqual(testModel)
@@ -86,10 +88,10 @@ describe('model integration test for list model and MID', () => {
     })
 
     // Use the flightsql stream behavior to ensure the events states have been process before querying their states.
-    await waitForEventState(flightClient, documentStream.commit);
+    await waitForEventState(flightClient, documentStream.commit)
 
     const currentState = await modelInstanceClient.getDocumentState(
-      documentStream.baseID
+      documentStream.baseID,
     )
     expect(currentState.content).toEqual(null)
   })
@@ -99,7 +101,7 @@ describe('model integration test for list model and MID', () => {
       controller: authenticatedDID.id,
     })
     // Use the flightsql stream behavior to ensure the events states have been process before querying their states.
-    await waitForEventState(flightClient, documentStream.commit);
+    await waitForEventState(flightClient, documentStream.commit)
     // update the document
     const updatedState = await modelInstanceClient.updateDocument({
       streamID: documentStream.baseID.toString(),
