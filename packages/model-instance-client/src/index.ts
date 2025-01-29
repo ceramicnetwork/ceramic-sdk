@@ -1,8 +1,8 @@
 export {
   ModelInstanceClient,
   type PostDataParams,
-  type CreateSingletonParams as PostDeterministicInitParams,
-  type CreateInstanceParams as PostSignedInitParams,
+  type CreateSingletonParams,
+  type CreateInstanceParams,
 } from './client.js'
 export {
   type CreateDataEventParams,
