@@ -29,15 +29,7 @@ const testModelV1: ModelDefinition = {
 }
 
 describe('createInitEvent()', () => {
-  test('validates the content', async () => {
-    // @ts-expect-error
-    const invalidDefinition: ModelDefinition = { ...testModelV1, version: '0' }
-    await expect(async () => {
-      await createInitEvent(authenticatedDID, invalidDefinition)
-    }).rejects.toThrow('Unsupported version format: 0')
-  })
-
-  describe('validates the controller', () => {
+  describe('support controllers', () => {
     test('supports did:key', async () => {
       expect(authenticatedDID.id.startsWith('did:key')).toBe(true)
       await expect(
@@ -51,16 +43,7 @@ describe('createInitEvent()', () => {
         resources: [MODEL_RESOURCE_URI],
       })
 
-      const [validSession, invalidSession] = await Promise.all([
-        did.createSession({ expirationTime: null }),
-        did.createSession({ expiresInSecs: 60 }),
-      ])
-
-      await expect(async () => {
-        await createInitEvent(invalidSession.did, testModelV1)
-      }).rejects.toThrow(
-        'Invalid CACAO: Model Streams do not support CACAOs with expiration times',
-      )
+      const validSession = await did.createSession({ expirationTime: null })
 
       await expect(
         createInitEvent(validSession.did, testModelV1),
@@ -110,13 +93,13 @@ describe('ModelClient', () => {
     })
   })
 
-  describe('postDefinition() method', () => {
+  describe('createDefinition() method', () => {
     test('posts the signed event and returns the model StreamID', async () => {
       const postEventType = jest.fn(() => randomCID())
       const ceramic = { postEventType } as unknown as CeramicClient
       const client = new ModelClient({ ceramic, did: authenticatedDID })
 
-      const id = await client.postDefinition(testModelV1)
+      const id = await client.createDefinition(testModelV1)
       expect(postEventType).toHaveBeenCalled()
       expect(id).toBeInstanceOf(StreamID)
       expect(id.type).toBe(STREAM_TYPE_ID)

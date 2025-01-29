@@ -160,13 +160,13 @@ describe('ModelInstanceClient', () => {
     })
   })
 
-  describe('postDeterministicInit() method', () => {
-    test('posts the deterministic init event and returns the MID init CommitID', async () => {
+  describe('createSingleton() method', () => {
+    test('creates singleton instance and returns the CommitID', async () => {
       const postEventType = jest.fn(() => randomCID())
       const ceramic = { postEventType } as unknown as CeramicClient
       const client = new ModelInstanceClient({ ceramic, did: authenticatedDID })
 
-      const id = await client.postDeterministicInit({
+      const id = await client.createSingleton({
         controller: 'did:key:123',
         model: randomStreamID(),
       })
@@ -176,13 +176,13 @@ describe('ModelInstanceClient', () => {
     })
   })
 
-  describe('postSignedInit() method', () => {
-    test('posts the signed init event and returns the MID init CommitID', async () => {
+  describe('createInstance() method', () => {
+    test('creates instance and returns the CommitID', async () => {
       const postEventType = jest.fn(() => randomCID())
       const ceramic = { postEventType } as unknown as CeramicClient
       const client = new ModelInstanceClient({ ceramic, did: authenticatedDID })
 
-      const id = await client.postSignedInit({
+      const id = await client.createInstance({
         content: { test: true },
         controller: authenticatedDID,
         model: randomStreamID(),
@@ -199,7 +199,7 @@ describe('ModelInstanceClient', () => {
       const ceramic = { postEventType } as unknown as CeramicClient
       const client = new ModelInstanceClient({ ceramic, did: authenticatedDID })
 
-      const initCommitID = await client.postSignedInit({
+      const initCommitID = await client.createInstance({
         content: { test: 0 },
         controller: authenticatedDID,
         model: randomStreamID(),

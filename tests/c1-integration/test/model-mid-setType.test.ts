@@ -77,7 +77,7 @@ describe('model integration test for list model and MID', () => {
 
   beforeAll(async () => {
     c1Container = await CeramicOneContainer.startContainer(CONTAINER_OPTS)
-    modelStream = await modelClient.postDefinition(testModel)
+    modelStream = await modelClient.createDefinition(testModel)
     flightClient = await createFlightSqlClient(FLIGHT_OPTIONS)
   }, 10000)
 
@@ -88,8 +88,8 @@ describe('model integration test for list model and MID', () => {
     const definition = await modelClient.getModelDefinition(modelStream)
     expect(definition).toEqual(testModel)
   })
-  test('posts signed init event and obtains correct state', async () => {
-    const documentStream = await modelInstanceClient.postSignedInit({
+  test('creates instance and obtains correct state', async () => {
+    const documentStream = await modelInstanceClient.createInstance({
       model: modelStream,
       content: { test: 'hello' },
       shouldIndex: true,
@@ -103,7 +103,7 @@ describe('model integration test for list model and MID', () => {
     expect(currentState.content).toEqual({ test: 'hello' })
   })
   test('updates document and obtains correct state', async () => {
-    const documentStream = await modelInstanceClient.postSignedInit({
+    const documentStream = await modelInstanceClient.createInstance({
       model: modelStream,
       content: { test: 'hello' },
       shouldIndex: true,

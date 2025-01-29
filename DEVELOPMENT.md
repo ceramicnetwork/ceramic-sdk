@@ -71,7 +71,7 @@ git checkout -b release/any-name
 5. Create release commit, include each package and version to be released, for example:
 
 ```
-git commit -m @ceramic-sdk/events@0.2.0, @ceramic-sdk/flight-sql-client@0.2.0, @ceramic-sdk/http-client@0.2.0, @ceramic-sdk/identifiers@0.2.0, @ceramic-sdk/model-client@0.2.0, @ceramic-sdk/model-handler@0.2.0, @ceramic-sdk/model-instance-client@0.2.0, @ceramic-sdk/model-instance-handler@0.2.0, @ceramic-sdk/model-instance-protocol@0.2.0, @ceramic-sdk/model-protocol@0.2.0, @ceramic-sdk/stream-client@0.2.0, @ceramic-sdk/test-utils@0.2.0
+git commit -m @ceramic-sdk/events@0.2.0, @ceramic-sdk/flight-sql-client@0.2.0, @ceramic-sdk/http-client@0.2.0, @ceramic-sdk/identifiers@0.2.0, @ceramic-sdk/model-client@0.2.0, @ceramic-sdk/model-instance-client@0.2.0, @ceramic-sdk/model-instance-protocol@0.2.0, @ceramic-sdk/model-protocol@0.2.0, @ceramic-sdk/stream-client@0.2.0, @ceramic-sdk/test-utils@0.2.0
 ```
 
 6. Push and open PR, request review and make sure all github checks pass before merging.
