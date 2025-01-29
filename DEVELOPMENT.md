@@ -66,7 +66,7 @@ git checkout -b release/any-name
 
 3. Manually update the flight-sql-client/npm/*/package.json versions if desired. This isn't yet included with the changeset. You must download the artifacts from CI, put them in `flight-sql-client/artifacts` and `run pnpm artifacts` to move them to the platform packages similar to how the CI workfow step `Publish flight-sql-client` does this, but it isn't yet released.
 
-4. Run `pnpm lint && pnpm install`. This will update the lockfile and rebuild packages.
+4. Run `pnpm lint:fix && pnpm install`. This will update the lockfile and rebuild packages.
 
 5. Create release commit, include each package and version to be released, for example:
 

@@ -65,14 +65,16 @@ describe('stream client', () => {
     const signedEvent = await signEvent(authenticatedDID, encodedPayload)
     cid = await ceramicClient.postEventType(SignedEvent, signedEvent)
 
-    // obtain the stream ID
+    // obtain the stream ID by waiting for the event state to be populated
     const client = await getClient()
-    const buffer = await client.query('SELECT * FROM conclusion_events LIMIT 1')
+    const buffer = await client.query(
+      'SELECT stream_cid FROM event_states_feed LIMIT 1',
+    )
     const data = tableFromIPC(buffer)
     const row = data.get(0)
     const streamCid = CID.decode(row?.stream_cid).toString()
-    streamId = new StreamID(3, streamCid)
-  }, 10000)
+    streamId = new StreamID('MID', streamCid)
+  }, 20000)
 
   test('gets a stream', async () => {
     const client = new StreamClient({ ceramic: ceramicClient })
