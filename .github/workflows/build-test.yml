@@ -35,6 +35,10 @@ jobs:
           - host: macos-latest
             target: aarch64-apple-darwin
             build: pnpm build:rust --target aarch64-apple-darwin && pnpm build:js
+          - host: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+            build: pnpm build --target x86_64-unknown-linux-musl
     name: stable - ${{ matrix.settings.target }} - node@20
     runs-on: ${{ matrix.settings.host }}
     steps:
@@ -213,6 +217,56 @@ jobs:
       - name: Test bindings
         working-directory: ${{ env.FLIGHT_SQL_PATH }}
         run: pnpm test
+  test-linux-x64-musl-binding:
+    name: Test bindings on x86_64-unknown-linux-musl - node@${{ matrix.node }}
+    needs:
+      - build
+    strategy:
+      fail-fast: false
+      matrix:
+        node:
+          - '20'
+          - '22'
+    runs-on: ubuntu-latest
+    steps:
+      # - uses: actions/checkout@v4
+      # - name: Setup node
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: ${{ matrix.node }}
+      # - name: Install pnpm
+      #   id: pnpm-install
+      #   uses: pnpm/action-setup@v3
+      #   with:
+      #     version: 9.8.0
+      #     run_install: false
+      # - name: Get pnpm store directory
+      #   id: pnpm-cache
+      #   shell: bash
+      #   run: |
+      #       echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+      # - name: Setup pnpm cache
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+      #     key: ${{ runner.os }}_x86_64-unknown-linux-musl-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}_x86_64-unknown-linux-musl-pnpm-store-
+      # - name: Install dependencies
+      #   run: |
+      #     pnpm config set supportedArchitectures.libc "musl"
+      #     pnpm install --frozen-lockfile
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: bindings-x86_64-unknown-linux-musl
+          path: ${{ env.FLIGHT_SQL_PATH }}
+      - name: List packages
+        working-directory: ${{ env.FLIGHT_SQL_PATH }}
+        run: ls -R .
+        shell: bash
+      # - name: Test bindings
+      #   run: docker run --rm -v $(pwd):/build -w /build node:${{ matrix.node }}-alpine pnpm test
   publish:
     name: Publish flight-sql-client
     runs-on: ubuntu-latest
