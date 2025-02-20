@@ -6,6 +6,8 @@ import {
 } from '@ceramic-sdk/flight-sql-client'
 import { CeramicClient } from '@ceramic-sdk/http-client'
 import { StreamID } from '@ceramic-sdk/identifiers'
+import { ModelClient } from '@ceramic-sdk/model-client'
+import type { ModelDefinition } from '@ceramic-sdk/model-protocol'
 import { StreamClient } from '@ceramic-sdk/stream-client'
 import { asDIDString } from '@didtools/codecs'
 import { getAuthenticatedDID } from '@didtools/key-did'
@@ -33,10 +35,21 @@ const OPTIONS: ClientOptions = {
   port: CONTAINER_OPTS.flightSqlPort,
 }
 
-async function getClient(): Promise<FlightSqlClient> {
-  return createFlightSqlClient(OPTIONS)
+const testModel: ModelDefinition = {
+  version: '2.0',
+  name: 'SingleTestModel',
+  description: 'Single Test model',
+  accountRelation: { type: 'single' },
+  interface: false,
+  implements: [],
+  schema: {
+    type: 'object',
+    properties: {
+      test: { type: 'string', maxLength: 10 },
+    },
+    additionalProperties: false,
+  },
 }
-
 describe('stream client', () => {
   let c1Container: CeramicOneContainer
   const ceramicClient = new CeramicClient({
@@ -46,19 +59,24 @@ describe('stream client', () => {
   let cid: CID
   beforeAll(async () => {
     c1Container = await CeramicOneContainer.startContainer(CONTAINER_OPTS)
+    const client = new CeramicClient({
+      url: `http://127.0.0.1:${CONTAINER_OPTS.apiPort}`,
+    })
 
     // create a new event
-    const model = StreamID.fromString(
-      'kjzl6hvfrbw6c5he7fxl3oakeckm2kchkqboqug08inkh1tmfqpd8v3oceriml2',
-    )
+    const modelClient = new ModelClient({
+      ceramic: client,
+      did: authenticatedDID,
+    })
+    const model = await modelClient.createDefinition(testModel)
     const eventPayload: InitEventPayload = {
       data: {
-        body: 'This is a simple message',
+        test: 'test message',
       },
       header: {
         controllers: [asDIDString(authenticatedDID.id)],
         model,
-        sep: 'test',
+        sep: 'model',
       },
     }
     const encodedPayload = InitEventPayload.encode(eventPayload)
@@ -66,8 +84,8 @@ describe('stream client', () => {
     cid = await ceramicClient.postEventType(SignedEvent, signedEvent)
 
     // obtain the stream ID by waiting for the event state to be populated
-    const client = await getClient()
-    const buffer = await client.query(
+    const flightClient = await createFlightSqlClient(OPTIONS)
+    const buffer = await flightClient.query(
       'SELECT stream_cid FROM event_states_feed LIMIT 1',
     )
     const data = tableFromIPC(buffer)

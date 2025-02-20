@@ -110,7 +110,7 @@ export async function waitForEventState(
   event_cid: CID,
 ) {
   await flightClient.preparedQuery(
-    'SELECT "index" FROM event_states_feed WHERE event_cid = $event_cid LIMIT 1',
+    'SELECT event_state_order FROM event_states_feed WHERE event_cid = $event_cid LIMIT 1',
     new Array(['$event_cid', event_cid.toString(base64.encoder)]),
   )
 }

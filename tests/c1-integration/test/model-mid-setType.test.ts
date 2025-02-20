@@ -91,7 +91,7 @@ describe('model integration test for list model and MID', () => {
   test('creates instance and obtains correct state', async () => {
     const documentStream = await modelInstanceClient.createInstance({
       model: modelStream,
-      content: { test: 'hello' },
+      content: null,
       shouldIndex: true,
     })
     // Use the flightsql stream behavior to ensure the events states have been process before querying their states.
@@ -100,12 +100,12 @@ describe('model integration test for list model and MID', () => {
     const currentState = await modelInstanceClient.getDocumentState(
       documentStream.baseID,
     )
-    expect(currentState.content).toEqual({ test: 'hello' })
+    expect(currentState.content).toBeNull()
   })
   test('updates document and obtains correct state', async () => {
     const documentStream = await modelInstanceClient.createInstance({
       model: modelStream,
-      content: { test: 'hello' },
+      content: null,
       shouldIndex: true,
     })
     // Use the flightsql stream behavior to ensure the events states have been process before querying their states.
