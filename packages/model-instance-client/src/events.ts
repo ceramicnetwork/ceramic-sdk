@@ -14,6 +14,7 @@ import {
 } from '@ceramic-sdk/model-instance-protocol'
 import type { DIDString } from '@didtools/codecs'
 import type { DID } from 'dids'
+import type { CID } from 'multiformats/cid'
 
 import type { StreamState } from '@ceramic-sdk/stream-client'
 import type { UnknownContent } from './types.js'
@@ -29,6 +30,9 @@ export type CreateInitEventParams<T extends UnknownContent = UnknownContent> = {
   controller: DID
   /** Stream ID of the Model used by the ModelInstanceDocument stream */
   model: StreamID
+  /** CID of specific model version to use when validating this instance.
+   * When empty the the init commit of the model is used */
+  modelVersion?: CID
   /** Optional context */
   context?: StreamID
   /** Flag indicating if indexers should index the ModelInstanceDocument stream (defaults to `true`) */
@@ -151,6 +155,9 @@ export type CreateDataEventParams<T extends UnknownContent = UnknownContent> = {
   newContent?: T
   /** Flag indicating if indexers should index the stream */
   shouldIndex?: boolean
+  /** CID of specific model version to use when validating this instance.
+   * When empty the the init commit of the model is used */
+  modelVersion?: CID
 }
 
 /**
@@ -165,6 +172,9 @@ export type PostDataEventParams<T extends UnknownContent = UnknownContent> = {
   currentState?: StreamState
   /** Flag indicating if indexers should index the stream */
   shouldIndex?: boolean
+  /** CID of specific model version to use when validating this instance.
+   * When empty the the init commit of the model is used */
+  modelVersion?: CID
 }
 
 /**
@@ -186,8 +196,13 @@ export async function createDataEvent<
   )
   // Header must only be provided if there are values
   // CBOR encoding doesn't support undefined values
-  const header =
-    params.shouldIndex == null ? undefined : { shouldIndex: params.shouldIndex }
+  const header: DocumentDataEventHeader = {}
+  if (params.shouldIndex != null) {
+    header.shouldIndex = params.shouldIndex
+  }
+  if (params.modelVersion != null) {
+    header.modelVersion = params.modelVersion
+  }
   const payload = createDataEventPayload(params.currentID, operations, header)
   return await signEvent(params.controller, payload)
 }

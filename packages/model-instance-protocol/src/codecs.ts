@@ -102,6 +102,7 @@ export const DocumentInitEventHeader = sparse(
   {
     controllers: tuple([didString]),
     model: streamIDAsBytes,
+    modelVersion: optional(cid),
     sep: literal('model'),
     unique: optional(uint8array),
     context: optional(streamIDAsBytes),
@@ -155,6 +156,7 @@ export type DocumentInitEventPayload = TypeOf<typeof DocumentInitEventPayload>
 export const DocumentDataEventHeader = sparse(
   {
     shouldIndex: optional(boolean),
+    modelVersion: optional(cid),
   },
   'DocumentDataEventHeader',
 )
