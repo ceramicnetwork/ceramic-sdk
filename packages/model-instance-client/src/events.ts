@@ -196,12 +196,15 @@ export async function createDataEvent<
   )
   // Header must only be provided if there are values
   // CBOR encoding doesn't support undefined values
-  const header: DocumentDataEventHeader = {}
+  let header: DocumentDataEventHeader | undefined = {}
   if (params.shouldIndex != null) {
     header.shouldIndex = params.shouldIndex
   }
   if (params.modelVersion != null) {
     header.modelVersion = params.modelVersion
+  }
+  if (Object.keys(header).length === 0) {
+    header = undefined
   }
   const payload = createDataEventPayload(params.currentID, operations, header)
   return await signEvent(params.controller, payload)

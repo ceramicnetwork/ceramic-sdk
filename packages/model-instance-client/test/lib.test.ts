@@ -126,7 +126,7 @@ describe('createDataEvent()', () => {
       { op: 'replace', path: '/hello', value: 'world' },
       { op: 'add', path: '/test', value: true },
     ])
-    expect(payload.header).toEqual({})
+    expect(payload.header).toBeUndefined()
   })
 
   test('adds the shouldIndex header when provided', async () => {
