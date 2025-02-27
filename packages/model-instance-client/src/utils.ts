@@ -5,6 +5,7 @@ import {
 } from '@ceramic-sdk/model-instance-protocol'
 import { type DIDString, asDIDString } from '@didtools/codecs'
 import jsonpatch from 'fast-json-patch'
+import type { CID } from 'multiformats/cid'
 
 import type { UnknownContent } from './types.js'
 
@@ -34,6 +35,9 @@ export function randomBytes(length: number): Uint8Array {
 export type CreateInitHeaderParams = {
   /** The stream ID of the model associated with the document. */
   model: StreamID
+  /** CID of specific model version to use when validating this instance.
+   * When empty the the init commit of the model is used */
+  modelVersion?: CID
   /** The DID string or literal string representing the controller of the document. */
   controller: DIDString | string
   /** A unique value to ensure determinism, or a boolean to indicate uniqueness type. */
@@ -86,6 +90,9 @@ export function createInitHeader(
   }
   if (params.shouldIndex != null) {
     header.shouldIndex = params.shouldIndex
+  }
+  if (params.modelVersion != null) {
+    header.modelVersion = params.modelVersion
   }
 
   // Validate header before returning

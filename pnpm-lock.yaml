@@ -267,6 +267,12 @@ importers:
       '@ceramic-sdk/stream-client':
         specifier: workspace:^
         version: link:../stream-client
+      '@didtools/codecs':
+        specifier: ^3.0.0
+        version: 3.0.0
+      fast-json-patch:
+        specifier: ^3.1.1
+        version: 3.1.1
     devDependencies:
       '@ceramic-sdk/http-client':
         specifier: workspace:^
@@ -304,6 +310,9 @@ importers:
       fast-json-patch:
         specifier: ^3.1.1
         version: 3.1.1
+      multiformats:
+        specifier: ^13.3.0
+        version: 13.3.0
     devDependencies:
       '@ceramic-sdk/http-client':
         specifier: workspace:^

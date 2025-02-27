@@ -7,6 +7,5 @@ coverage
 
 # rust
 target
-Cargo.lock
 # napi binaries
 *.node

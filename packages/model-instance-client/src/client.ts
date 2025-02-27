@@ -156,10 +156,12 @@ export class ModelInstanceClient extends StreamClient {
    * @returns The `DocumentState` derived from the stream state.
    */
   streamStateToDocumentState(streamState: StreamState): DocumentState {
+    const streamID = StreamID.fromString(streamState.id)
     const decodedData = decodeMultibaseToJSON(streamState.data)
     const controller = streamState.controller
     const modelID = decodeMultibaseToStreamID(streamState.dimensions.model)
     return {
+      commitID: CommitID.fromStream(streamID, streamState.event_cid),
       content: decodedData.content as UnknownContent | null,
       metadata: {
         model: modelID,
@@ -216,17 +218,19 @@ export class ModelInstanceClient extends StreamClient {
     }
 
     const { content } = currentState
-    const { controller, newContent, shouldIndex } = params
+    const { controller, newContent, shouldIndex, modelVersion } = params
 
-    await this.postData({
+    const newCommit = await this.postData({
       controller: this.getDID(controller),
       currentContent: content ?? undefined,
       newContent,
       currentID: currentId,
       shouldIndex,
+      modelVersion,
     })
 
     return {
+      commitID: newCommit,
       content: newContent,
       metadata: {
         model: currentState.metadata.model,
