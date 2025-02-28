@@ -9,7 +9,7 @@
 Represents a client for interacting with Ceramic models.
 
 The `ModelClient` class extends the `StreamClient` class to provide additional
-methods specific to working with Ceramic models, including fetching and posting
+methods specific to working with Ceramic models, including fetching and creating
 model definitions, retrieving initialization events, and decoding stream data.
 
 ## Extends
@@ -61,6 +61,34 @@ The `CeramicClient` instance associated with this StreamClient.
 #### Defined in
 
 ## Methods
+
+### createDefinition()
+
+> **createDefinition**(`definition`, `signer`?): `Promise`\<[`StreamID`](../../identifiers/classes/StreamID.md)\>
+
+Creates a model definition and returns the resulting stream ID.
+
+#### Parameters
+
+• **definition**: `MapIn`\<`RequiredProps`\<`object`\>, `$TypeOf`\> & `MapIn`\<`OptionalProps`\<`object`\>, `$TypeOf`\> \| `MapIn`\<`RequiredProps`\<`object`\>, `$TypeOf`\> & `MapIn`\<`OptionalProps`\<`object`\>, `$TypeOf`\>
+
+The model JSON definition to post.
+
+• **signer?**: `DID`
+
+(Optional) A `DID` instance for signing the model definition.
+
+#### Returns
+
+`Promise`\<[`StreamID`](../../identifiers/classes/StreamID.md)\>
+
+A promise that resolves to the `StreamID` of the posted model.
+
+#### Throws
+
+Will throw an error if the definition is invalid or the signing process fails.
+
+***
 
 ### getDID()
 
@@ -236,31 +264,3 @@ console.log(streamState);
 #### Inherited from
 
 [`StreamClient`](../../stream-client/classes/StreamClient.md).[`getStreamState`](../../stream-client/classes/StreamClient.md#getstreamstate)
-
-***
-
-### postDefinition()
-
-> **postDefinition**(`definition`, `signer`?): `Promise`\<[`StreamID`](../../identifiers/classes/StreamID.md)\>
-
-Posts a model definition and returns the resulting stream ID.
-
-#### Parameters
-
-• **definition**: `MapIn`\<`RequiredProps`\<`object`\>, `$TypeOf`\> & `MapIn`\<`OptionalProps`\<`object`\>, `$TypeOf`\> \| `MapIn`\<`RequiredProps`\<`object`\>, `$TypeOf`\> & `MapIn`\<`OptionalProps`\<`object`\>, `$TypeOf`\>
-
-The model JSON definition to post.
-
-• **signer?**: `DID`
-
-(Optional) A `DID` instance for signing the model definition.
-
-#### Returns
-
-`Promise`\<[`StreamID`](../../identifiers/classes/StreamID.md)\>
-
-A promise that resolves to the `StreamID` of the posted model.
-
-#### Throws
-
-Will throw an error if the definition is invalid or the signing process fails.
