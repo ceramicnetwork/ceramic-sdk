@@ -30,7 +30,6 @@
 - [ModelViewsDefinitionV2](type-aliases/ModelViewsDefinitionV2.md)
 - [ObjectSchema](type-aliases/ObjectSchema.md)
 - [SchemaType](type-aliases/SchemaType.md)
-- [ValidVersionSatisfies](type-aliases/ValidVersionSatisfies.md)
 
 ## Variables
 
@@ -61,5 +60,4 @@
 
 ## Functions
 
-- [assertValidModelContent](functions/assertValidModelContent.md)
 - [getModelStreamID](functions/getModelStreamID.md)
