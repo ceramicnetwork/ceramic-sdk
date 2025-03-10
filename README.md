@@ -1,3 +1,6 @@
+
+> This repo is now archived, its contents are part of the [ceramic repo](https://github.com/ceramicnetwork/rust-ceramic) under the `sdk` directory.
+
 # Ceramic SDK
 
 TypeScript client and utilities for [Ceramic One](https://github.com/ceramicnetwork/rust-ceramic) interactions
